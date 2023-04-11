@@ -1,0 +1,23 @@
+@import "style/reset";
+@import "style/variable/global";
+@import "style/theme/normal";
+
+body {
+    font: var(--font-m);
+    color: var(--font-color);
+}
+
+.app {
+    background: var(--bg-color);
+    min-height: 100vh;
+    // background: url("./../shared/assets/bg_main.png") no-repeat;
+}
+
+.content-page {
+    display: flex;
+}
+
+.page-wrapper {
+    flex-grow: 1;
+    padding: 20px;
+}
