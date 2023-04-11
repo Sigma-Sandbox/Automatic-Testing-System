@@ -1,0 +1,58 @@
+.button {
+    cursor: pointer;
+    padding: 5px 30px;
+    color: var(--invert-bg-color);
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+}
+
+// Colors
+.button.primaryColor {
+    background-color: var(--primary-color);
+}
+
+.button.secondaryColor {
+    background-color: var(--secondary-color);
+}
+.button.backgroundColor {
+    background-color: var(--bg-color);
+    color: var(--font-color);
+}
+.button.invertBackgroundColor {
+    background-color: var(--invert-bg-color);
+    color: var(--font-color);
+}
+.button.redColor {
+    background-color: var(--red-color);
+}
+
+// Theme
+
+.button.clear {
+    padding: 0;
+    margin: 0;
+    background: none;
+}
+
+.button.outline {
+    border: 1px solid var(--font-color);
+}
+
+// Size
+
+.button.size_m {
+    height: var(--btn-size-m);
+}
+
+.button.size_l {
+    height: var(--btn-size-l);
+}
+
+.button.size_xl {
+    height: var(--btn-size-xl);
+}
