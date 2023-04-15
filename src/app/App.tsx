@@ -5,11 +5,11 @@ import { LoginPage } from 'pages/LoginPage'
 import { AppRouter } from './providers/router'
 
 function App() {
-	return (
-		<div className={classNames('app', {}, [])}>
-			<AppRouter></AppRouter>
-		</div>
-	)
+  return (
+    <div className={classNames('app', {}, [])}>
+      <AppRouter></AppRouter>
+    </div>
+  )
 }
 
 export default App
