@@ -1,19 +1,24 @@
-# Automatic-Testing-System
+# Автоматическая система тестирования
 
-## Getting Started with Create React App
+## Запуск
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+>`npm start`
 
-### Available Scripts
+Одновременно запустятся Backend и Frontend
+В браузере можно перейти по [http://localhost:3000](http://localhost:3000)
 
-In the project directory, you can run:
-
-#### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Codestyle
+1. Кавычки одинарные
+2. Точки с запятой не ставим
+3. Слово public в классах не ставим
+4. Методы классов - обычные функции, а не стрелки. Допускается использовать стрелки, когда нужно сохранить контекст метода
+5. Тип возвращаемого значения пишем всегда, даже если это `void`
+6. Функции, возвращающие разметку React - стрелочные
+7. Всегда используем `const` кроме случаев, когда необходимо использовать `let`
+8. Поля классов типизируем всегда
+9. Стараемся использовать как можно больше интерфейсов и перечислений, а не простыни параметров и массивы
+10. В интерфейсах не ставим запятые
+11. Помещаем переменные в строку при помощи `${}` вместо конкатенации через плюс
+12. Ширина Tab - 2 пробела
 
 #### Project designed by [FeatureSliced](https://feature-sliced.design/)
