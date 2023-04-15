@@ -26,75 +26,75 @@ export class StorageService implements IStorageService {
 
   async createTables() {
     await this.getDB().query(`
-        CREATE TABLE IF NOT EXISTS users
-        (
-            id SERIAL4,
-            access_rights SMALLINT,
-            surname VARCHAR(64),
-            name VARCHAR(64),
-            patronymic VARCHAR(64) NULL,
-            email VARCHAR(64) UNIQUE,
-            password TEXT NULL,
-            actual_link TEXT[],
-            start_link_timestamp TIMESTAMPTZ,
-            end_link_timestamp TIMESTAMPTZ,
-            ids_task_set INT[]
-        );
+      CREATE TABLE IF NOT EXISTS users
+      (
+        id SERIAL4,
+        access_rights SMALLINT,
+        surname VARCHAR(64),
+        name VARCHAR(64),
+        patronymic VARCHAR(64) NULL,
+        email VARCHAR(64) UNIQUE,
+        password TEXT NULL,
+        actual_link TEXT[],
+        start_link_timestamp TIMESTAMPTZ,
+        end_link_timestamp TIMESTAMPTZ,
+        ids_task_set INT[]
+      );
 
-        CREATE TABLE IF NOT EXISTS user_solutions
-        (
-            id SERIAL4,
-            user_id INT,
-            task_type SMALLINT,
-            task_id INT,
-            task_set_id INT,
-            exec_start_time TIMESTAMPTZ,
-            exec_end_time TIMESTAMPTZ,
-            prog_task_time INT NULL,
-            prog_task_memory INT NULL,
-            result SMALLINT,
-            program_code TEXT NULL
-        );
+      CREATE TABLE IF NOT EXISTS user_solutions
+      (
+        id SERIAL4,
+        user_id INT,
+        task_type SMALLINT,
+        task_id INT,
+        task_set_id INT,
+        exec_start_time TIMESTAMPTZ,
+        exec_end_time TIMESTAMPTZ,
+        prog_task_time INT NULL,
+        prog_task_memory INT NULL,
+        result SMALLINT,
+        program_code TEXT NULL
+      );
 
-        CREATE TABLE IF NOT EXISTS task_sets
-        (
-            id SERIAL4,
-            name VARCHAR(64),
-            description TEXT,
-            ids_test_task INT[],
-            ids_prog_task INT[],
-            creator VARCHAR(64),
-            time_of_creation TIMESTAMPTZ,
-            language TEXT[] NULL
-        );
+      CREATE TABLE IF NOT EXISTS task_sets
+      (
+        id SERIAL4,
+        name VARCHAR(64),
+        description TEXT,
+        ids_test_task INT[],
+        ids_prog_task INT[],
+        creator VARCHAR(64),
+        time_of_creation TIMESTAMPTZ,
+        language TEXT[] NULL
+      );
 
-        CREATE TABLE IF NOT EXISTS prog_tasks
-        (
-            id SERIAL4,
-            name VARCHAR(64),
-            description TEXT,
-            auto_tests TEXT[],
-            complexity_assessment INT,
-            conditions JSONB
-        );
+      CREATE TABLE IF NOT EXISTS prog_tasks
+      (
+        id SERIAL4,
+        name VARCHAR(64),
+        description TEXT,
+        auto_tests TEXT[],
+        complexity_assessment INT,
+        conditions JSONB
+      );
 
-        CREATE TABLE IF NOT EXISTS test_tasks
-        (
-            id SERIAL4,
-            name VARCHAR(64),
-            description TEXT,
-            ids_question INT[],
-            exec_time TIMESTAMPTZ
-        );
+      CREATE TABLE IF NOT EXISTS test_tasks
+      (
+        id SERIAL4,
+        name VARCHAR(64),
+        description TEXT,
+        ids_question INT[],
+        exec_time TIMESTAMPTZ
+      );
 
-        CREATE TABLE IF NOT EXISTS test_questions
-        (
-            id SERIAL4,
-            description TEXT,
-            points SMALLINT,
-            wrong_answers TEXT[],
-            correct_answers TEXT[]
-        );`
+      CREATE TABLE IF NOT EXISTS test_questions
+      (
+        id SERIAL4,
+        description TEXT,
+        points SMALLINT,
+        wrong_answers TEXT[],
+        correct_answers TEXT[]
+      );`
     )
   }
 
@@ -103,8 +103,8 @@ export class StorageService implements IStorageService {
 
     try {
       await this.getDB().query(`
-                  INSERT INTO users
-                  VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        INSERT INTO users
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [
           user.id,
           user.accessRights,
@@ -127,8 +127,8 @@ export class StorageService implements IStorageService {
   async addUserSolution(userSolution: UserSolution): Promise<void> {
     try {
       await this.getDB().query(`
-                  INSERT INTO user_solutions
-                  VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        INSERT INTO user_solutions
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [
           userSolution.id,
           userSolution.userId,
@@ -154,8 +154,8 @@ export class StorageService implements IStorageService {
 
     try {
       await this.getDB().query(`
-                  INSERT INTO task_sets
-                  VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+        INSERT INTO task_sets
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
         [
           taskSet.id,
           taskSet.name,
@@ -181,8 +181,8 @@ export class StorageService implements IStorageService {
 
     try {
       await this.getDB().query(`
-                  INSERT INTO prog_tasks
-                  VALUES($1, $2, $3, $4, $5, $6)`,
+        INSERT INTO prog_tasks
+        VALUES($1, $2, $3, $4, $5, $6)`,
         [
           progTask.id,
           progTask.name,
@@ -200,8 +200,8 @@ export class StorageService implements IStorageService {
   async addTestTask(testTask: TestTask): Promise<void> {
     try {
       await this.getDB().query(`
-                  INSERT INTO test_tasks
-                  VALUES($1, $2, $3, $4, $5)`,
+        INSERT INTO test_tasks
+        VALUES($1, $2, $3, $4, $5)`,
         [
           testTask.id,
           testTask.name,
@@ -218,8 +218,8 @@ export class StorageService implements IStorageService {
   async addTestQuestion(testQuestion: TestQuestion): Promise<void> {
     try {
       await this.getDB().query(`
-                  INSERT INTO test_questions
-                  VALUES($1, $2, $3, $4, $5)`,
+        INSERT INTO test_questions
+        VALUES($1, $2, $3, $4, $5)`,
         [
           testQuestion.id,
           testQuestion.description,
@@ -276,19 +276,19 @@ export class StorageService implements IStorageService {
     }
 
     const result = await this.getDB().query(`
-        SELECT
-            id,
-            access_rights,
-            surname,
-            name,
-            patronymic,
-            email,
-            password,
-            actual_link,
-            start_link_timestamp,
-            end_link_timestamp,
-            ids_task_set
-        FROM users` + resultCondition + strConditions.join(' AND '),
+      SELECT
+        id,
+        access_rights,
+        surname,
+        name,
+        patronymic,
+        email,
+        password,
+        actual_link,
+        start_link_timestamp,
+        end_link_timestamp,
+        ids_task_set
+      FROM users` + resultCondition + strConditions.join(' AND '),
       params
     )
 
@@ -362,19 +362,19 @@ export class StorageService implements IStorageService {
     }
 
     const result = await this.getDB().query(`
-        SELECT
-            id,
-            user_id,
-            task_type,
-            task_id,
-            task_set_id,
-            exec_start_time,
-            exec_end_time,
-            prog_task_time,
-            prog_task_memory,
-            result,
-            program_code
-        FROM user_solutions` + resultCondition + strConditions.join(' AND '),
+      SELECT
+        id,
+        user_id,
+        task_type,
+        task_id,
+        task_set_id,
+        exec_start_time,
+        exec_end_time,
+        prog_task_time,
+        prog_task_memory,
+        result,
+        program_code
+      FROM user_solutions` + resultCondition + strConditions.join(' AND '),
       params
     )
 
@@ -447,16 +447,16 @@ export class StorageService implements IStorageService {
     }
 
     const result = await this.getDB().query(`
-        SELECT
-            id,
-            name,
-            description,
-            ids_test_task,
-            ids_prog_task,
-            creator,
-            time_of_creation,
-            language
-        FROM task_sets` + resultCondition + strConditions.join(' AND '),
+      SELECT
+        id,
+        name,
+        description,
+        ids_test_task,
+        ids_prog_task,
+        creator,
+        time_of_creation,
+        language
+      FROM task_sets` + resultCondition + strConditions.join(' AND '),
       params
     )
 
@@ -527,14 +527,14 @@ export class StorageService implements IStorageService {
     }
 
     const result = await this.getDB().query(`
-        SELECT
-            id,
-            name,
-            description,
-            auto_tests,
-            complexity_assessment,
-            conditions
-        FROM prog_tasks` + resultCondition + strConditions.join(' AND '),
+      SELECT
+        id,
+        name,
+        description,
+        auto_tests,
+        complexity_assessment,
+        conditions
+      FROM prog_tasks` + resultCondition + strConditions.join(' AND '),
       params
     )
 
@@ -591,13 +591,13 @@ export class StorageService implements IStorageService {
     }
 
     const result = await this.getDB().query(`
-        SELECT
-            id,
-            name,
-            description,
-            ids_question,
-            exec_time
-        FROM test_tasks` + resultCondition + strConditions.join(' AND '),
+      SELECT
+        id,
+        name,
+        description,
+        ids_question,
+        exec_time
+      FROM test_tasks` + resultCondition + strConditions.join(' AND '),
       params
     )
 
@@ -655,13 +655,13 @@ export class StorageService implements IStorageService {
     }
 
     const result = await this.getDB().query(`
-        SELECT
-            id,
-            description,
-            points,
-            wrong_answers,
-            correct_answers
-        FROM test_questions` + resultCondition + strConditions.join(' AND '),
+      SELECT
+        id,
+        description,
+        points,
+        wrong_answers,
+        correct_answers
+      FROM test_questions` + resultCondition + strConditions.join(' AND '),
       params
     )
 
@@ -686,18 +686,18 @@ export class StorageService implements IStorageService {
 
     try {
       await this.getDB().query(`
-                  UPDATE users SET
-                                   access_rights = $2,
-                                   surname = $3,
-                                   name = $4,
-                                   patronymic = $5,
-                                   email = $6,
-                                   password = $7,
-                                   actual_link = $8,
-                                   start_link_timestamp = $9,
-                                   end_link_timestamp = $10,
-                                   ids_task_set = $11
-                  WHERE id = $1`,
+        UPDATE users SET
+          access_rights = $2,
+          surname = $3,
+          name = $4,
+          patronymic = $5,
+          email = $6,
+          password = $7,
+          actual_link = $8,
+          start_link_timestamp = $9,
+          end_link_timestamp = $10,
+          ids_task_set = $11
+        WHERE id = $1`,
         [
           user.id,
           user.accessRights,
@@ -720,18 +720,18 @@ export class StorageService implements IStorageService {
   async updateUserSolution(userSolution: UserSolution): Promise<void> {
     try {
       await this.getDB().query(`
-                  UPDATE user_solutions SET
-                                            user_id = $2,
-                                            task_type = $3,
-                                            task_id = $4,
-                                            task_set_id = $5,
-                                            exec_start_time = $6,
-                                            exec_end_time = $7,
-                                            prog_task_time = $8,
-                                            prog_task_memory = $9,
-                                            result = $10,
-                                            program_code = $11
-                  WHERE id = $1`,
+        UPDATE user_solutions SET
+          user_id = $2,
+          task_type = $3,
+          task_id = $4,
+          task_set_id = $5,
+          exec_start_time = $6,
+          exec_end_time = $7,
+          prog_task_time = $8,
+          prog_task_memory = $9,
+          result = $10,
+          program_code = $11
+        WHERE id = $1`,
         [
           userSolution.id,
           userSolution.userId,
@@ -757,15 +757,15 @@ export class StorageService implements IStorageService {
 
     try {
       await this.getDB().query(`
-                  UPDATE task_sets SET
-                                       name = $2,
-                                       description = $3,
-                                       ids_test_task = $4,
-                                       ids_prog_task = $5,
-                                       creator = $6,
-                                       time_of_creation = $7,
-                                       language = $8
-                  WHERE id = $1`,
+        UPDATE task_sets SET
+          name = $2,
+          description = $3,
+          ids_test_task = $4,
+          ids_prog_task = $5,
+          creator = $6,
+          time_of_creation = $7,
+          language = $8
+        WHERE id = $1`,
         [
           taskSet.id,
           taskSet.name,
@@ -791,13 +791,13 @@ export class StorageService implements IStorageService {
 
     try {
       await this.getDB().query(`
-                  UPDATE prog_tasks SET
-                                        name = $2,
-                                        description = $3,
-                                        auto_tests = $4,
-                                        complexity_assessment = $5,
-                                        conditions = $6
-                  WHERE id = $1`,
+        UPDATE prog_tasks SET
+          name = $2,
+          description = $3,
+          auto_tests = $4,
+          complexity_assessment = $5,
+          conditions = $6
+        WHERE id = $1`,
         [
           progTask.id,
           progTask.name,
@@ -815,12 +815,12 @@ export class StorageService implements IStorageService {
   async updateTestTask(testTask: TestTask): Promise<void> {
     try {
       await this.getDB().query(`
-                  UPDATE test_tasks SET
-                                        name = $2,
-                                        description = $3,
-                                        ids_question = $4,
-                                        exec_time = $5
-                  WHERE id = $1`,
+        UPDATE test_tasks SET
+          name = $2,
+          description = $3,
+          ids_question = $4,
+          exec_time = $5
+        WHERE id = $1`,
         [
           testTask.id,
           testTask.name,
@@ -837,12 +837,12 @@ export class StorageService implements IStorageService {
   async updateTestQuestion(testQuestion: TestQuestion): Promise<void> {
     try {
       await this.getDB().query(`
-                  UPDATE test_questions SET
-                                            description = $2,
-                                            points = $3,
-                                            wrong_answers = $4,
-                                            correct_answers = $5
-                  WHERE id = $1`,
+        UPDATE test_questions SET
+          description = $2,
+          points = $3,
+          wrong_answers = $4,
+          correct_answers = $5
+        WHERE id = $1`,
         [
           testQuestion.id,
           testQuestion.description,
@@ -859,8 +859,8 @@ export class StorageService implements IStorageService {
   async deleteUser(id: number): Promise<void> {
     try {
       await this.getDB().query(`
-                  DELETE FROM users
-                  WHERE id = $1`,
+        DELETE FROM users
+        WHERE id = $1`,
         [
           id
         ]
@@ -873,8 +873,8 @@ export class StorageService implements IStorageService {
   async deleteUserSolution(id: number): Promise<void> {
     try {
       await this.getDB().query(`
-                  DELETE FROM user_solutions
-                  WHERE id = $1`,
+        DELETE FROM user_solutions
+        WHERE id = $1`,
         [
           id
         ]
@@ -887,8 +887,8 @@ export class StorageService implements IStorageService {
   async deleteTaskSet(id: number): Promise<void> {
     try {
       await this.getDB().query(`
-                  DELETE FROM task_sets
-                  WHERE id = $1`,
+        DELETE FROM task_sets
+        WHERE id = $1`,
         [
           id
         ]
@@ -901,8 +901,8 @@ export class StorageService implements IStorageService {
   async deleteProgTask(id: number): Promise<void> {
     try {
       await this.getDB().query(`
-                  DELETE FROM prog_tasks
-                  WHERE id = $1`,
+        DELETE FROM prog_tasks
+        WHERE id = $1`,
         [
           id
         ]
@@ -915,8 +915,8 @@ export class StorageService implements IStorageService {
   async deleteTestTask(id: number): Promise<void> {
     try {
       await this.getDB().query(`
-                  DELETE FROM test_tasks
-                  WHERE id = $1`,
+        DELETE FROM test_tasks
+        WHERE id = $1`,
         [
           id
         ]
@@ -929,8 +929,8 @@ export class StorageService implements IStorageService {
   async deleteTestQuestion(id: number): Promise<void> {
     try {
       await this.getDB().query(`
-                  DELETE FROM test_questions
-                  WHERE id = $1`,
+        DELETE FROM test_questions
+        WHERE id = $1`,
         [
           id
         ]
