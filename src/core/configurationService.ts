@@ -1,24 +1,27 @@
 import { IConfigurationService } from './interfaces'
 import { promises } from 'fs'
 import config from './config'
+import path from 'path'
 import nconf from 'nconf'
 
 export class ConfigurationService implements IConfigurationService {
   private configName = 'config.json'
 
 	async init() {
+    const configPath = path.join(process.cwd(), this.configName)
+
     // Читаем аргументы и переменные среды
     try {
-      nconf.argv().env().file({file: 'config.json'})
+      await promises.access(configPath)
     } catch {
       try {
-        await promises.writeFile(this.configName, JSON.stringify(config, null, '\t'), 'utf-8')
+        await promises.writeFile(configPath, JSON.stringify(config, null, '\t'), 'utf-8')
       } catch (e) {
         console.log(`Не удалось скопировать конфигурационный файл! ${e}`)
       }
     }
 
-    nconf.argv().env().file({file: 'config.json'})
+    nconf.argv().env().file({file: configPath })
   }
 
   async getConfiguration(name: string): Promise<any> {
