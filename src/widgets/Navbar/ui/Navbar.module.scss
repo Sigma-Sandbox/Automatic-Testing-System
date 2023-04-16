@@ -1,0 +1,37 @@
+.navbar {
+  width: 100%;
+  height: var(--navbar-height);
+  transition: all 0.5s ease;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  opacity: 1;
+
+  // opacity: 1;
+
+  // load effect
+  transition: all 0.5s ease;
+  position: fixed;
+  left: 50%;
+  top: 0;
+  width: 100%;
+  transform: translateX(-50%);
+}
+
+.navbar.collaps {
+  // width: 0;
+  height: 0;
+  overflow: hidden;
+
+  // load effect
+  top: -100%;
+}
+
+.position {
+}
+
+.name {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,58 +1,62 @@
 .button {
-    cursor: pointer;
-    padding: 5px 30px;
-    color: var(--invert-bg-color);
-    outline: none;
-    border: none;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: fit-content;
+  cursor: pointer;
+  padding: 5px 30px;
+  color: var(--invert-bg-color);
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  transition: all 0.3s ease;
 }
-
+.button:hover {
+  transform: scale(1.02);
+  // box-shadow: var(--shadow-min-block);
+}
 // Colors
 .button.primaryColor {
-    background-color: var(--primary-color);
+  background-color: var(--primary-color);
 }
 
 .button.secondaryColor {
-    background-color: var(--secondary-color);
+  background-color: var(--secondary-color);
 }
 .button.backgroundColor {
-    background-color: var(--bg-color);
-    color: var(--font-color);
+  background-color: var(--bg-color);
+  color: var(--font-color);
 }
 .button.invertBackgroundColor {
-    background-color: var(--invert-bg-color);
-    color: var(--font-color);
+  background-color: var(--invert-bg-color);
+  color: var(--font-color);
 }
 .button.redColor {
-    background-color: var(--red-color);
+  background-color: var(--red-color);
 }
 
 // Theme
 
 .button.clear {
-    padding: 0;
-    margin: 0;
-    background: none;
+  padding: 0;
+  margin: 0;
+  background: none;
 }
 
 .button.outline {
-    border: 1px solid var(--font-color);
+  border: 1px solid var(--font-color);
 }
 
 // Size
 
 .button.size_m {
-    height: var(--btn-size-m);
+  height: var(--btn-size-m);
 }
 
 .button.size_l {
-    height: var(--btn-size-l);
+  height: var(--btn-size-l);
 }
 
 .button.size_xl {
-    height: var(--btn-size-xl);
+  height: var(--btn-size-xl);
 }
