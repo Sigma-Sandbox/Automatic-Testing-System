@@ -1,19 +1,19 @@
 .loginForm {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 .button {
-    margin: 0 auto;
-    box-shadow: var(--shadow-block);
+  margin: 0 auto;
+  box-shadow: var(--shadow-block);
 }
 
 .input {
-    box-shadow: var(--shadow-block);
+  box-shadow: var(--shadow-block);
 }

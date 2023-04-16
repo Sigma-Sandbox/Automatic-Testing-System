@@ -1,23 +1,48 @@
-@import "style/reset";
-@import "style/variable/global";
-@import "style/theme/normal";
+@import 'style/reset';
+@import 'style/variable/global';
+@import 'style/theme/normal';
 
 body {
-    font: var(--font-m);
-    color: var(--font-color);
+  font: var(--font-m);
+  color: var(--font-color);
 }
 
 .app {
-    background: var(--bg-color);
-    min-height: 100vh;
-    // background: url("./../shared/assets/bg_main.png") no-repeat;
+  background: var(--bg-color);
+  min-height: 100vh;
+  display: flex;
+  // flex-direction: column;
+  // background: url("./../shared/assets/bg_main.png") no-repeat;
 }
 
 .content-page {
-    display: flex;
+  display: flex;
+  min-height: inherit;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .page-wrapper {
-    flex-grow: 1;
-    padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+// card with text
+.box_invert_bg {
+  padding: 5px 20px;
+  border-radius: 10px;
+  background-color: var(--invert-bg-color);
+  color: var(--font-color);
+  box-shadow: var(--shadow-around-block);
+  display: block;
+  width: fit-content;
 }
