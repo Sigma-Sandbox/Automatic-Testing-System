@@ -1,0 +1,44 @@
+.testTaskPreview {
+  background-color: var(--bg-color);
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-radius: 10px;
+  align-items: center;
+  text-align: end;
+  box-shadow: var(--shadow-block);
+  transition: all 0.3s ease;
+}
+
+.testTaskPreview:hover {
+  box-shadow: var(--shadow-big-block);
+}
+.testName {
+  text-align: initial;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.testName:hover {
+  width: fit-content;
+}
+.testInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.testCount {
+  width: 140px;
+}
+.testRight {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: end;
+}
+.testTimer {
+  width: 160px;
+}

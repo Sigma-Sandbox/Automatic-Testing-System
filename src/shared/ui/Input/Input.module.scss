@@ -1,19 +1,19 @@
 .inputWrapper {
-    position: relative;
-    background-color: var(--invert-bg-color);
-    width: fit-content;
-    border-radius: 5px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px 5px;
+  position: relative;
+  background-color: var(--invert-bg-color);
+  width: fit-content;
+  border-radius: 5px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 5px;
 }
 
 .inputWrapper input {
-    background-color: inherit;
-    outline: none;
-    border: none;
-    border-radius: inherit;
-    padding: 0 5px;
+  background-color: inherit;
+  outline: none;
+  border: none;
+  border-radius: inherit;
+  padding: 0 5px;
 }
