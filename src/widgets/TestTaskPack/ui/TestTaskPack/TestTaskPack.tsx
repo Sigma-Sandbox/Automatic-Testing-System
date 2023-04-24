@@ -20,7 +20,7 @@ export const TestTaskPack: React.FC<TestTaskPackProps> = (props) => {
       testTaskItemList?.data?.map((item) => (
         <TestTaskPreview
           timeLimits={item.timeLimits}
-          countTask={item.taskCount}
+          countTask={item.taskCount || 6}
           name={item.name}
           startTest={startTest}
         />
@@ -30,7 +30,7 @@ export const TestTaskPack: React.FC<TestTaskPackProps> = (props) => {
 
   return (
     <div className={classNames(cls.testTaskPack, {}, [className])}>
-      <div className={classNames(cls.testTaskBrow)}>Тестовые задания</div>
+      <div className={classNames(cls.testTaskBrow, {}, ['Brow_card'])}>Тестовые задания</div>
       <div className={cls.testTaskList}>{testTaskListMemo.length > 0 ? testTaskListMemo : 'Заданий нет'}</div>
     </div>
   )

@@ -1,0 +1,32 @@
+.start {
+  position: relative;
+  margin: 0 auto;
+  width: fit-content;
+  background: var(--invert-bg-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 110px 80px 50px 80px;
+  border-radius: 10px;
+  max-width: 700px;
+}
+.taskCount {
+}
+.cardItem {
+  margin-bottom: 25px;
+  width: fit-content;
+  box-shadow: var(--shadow-block);
+  padding: 10px 15px;
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.cardItem:hover {
+  box-shadow: var(--shadow-big-block);
+}
+.timeLimits {
+}
+.btn {
+  margin-top: 30px;
+}

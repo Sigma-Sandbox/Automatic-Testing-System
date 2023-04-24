@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './TestTaskPreview.module.scss'
-import {TestTask} from 'entities/TestTask'
+import {TestTaskSets} from 'entities/TestTask'
 import taskImgSrc from 'shared/assets/icon/test_prev.svg'
 import timerImgSrc from 'shared/assets/icon/timer_prev.svg'
 import {Button, ColorButton, ThemeButton} from 'shared/ui/Button/Button'

@@ -1,0 +1,45 @@
+.item {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-color);
+  border-radius: 10px;
+  //   box-shadow: var(--shadow-block);
+  position: relative;
+  flex: none;
+}
+
+.item.loader::after {
+  content: url('../../../../shared/assets/icon/load.svg');
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.item.success::after {
+  content: url('../../../../shared/assets/icon/check.svg');
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.item.false::after {
+  content: url('../../../../shared/assets/icon/cross.svg');
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.item.success {
+  border: 2px solid var(--secondary-color);
+}
+.item.false {
+  border: 2px solid var(--red-color);
+}
+.item.select {
+  border: 2px solid var(--primary-color);
+  box-shadow: 0px 0px 4px var(--primary-color);
+}

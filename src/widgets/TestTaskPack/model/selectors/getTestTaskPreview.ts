@@ -1,27 +1,14 @@
-import { createSelector } from '@reduxjs/toolkit'
-import { TestTask, selectTestTask } from 'entities/TestTask'
+import {createSelector} from '@reduxjs/toolkit'
+import {TestTaskPack, TestTaskSets, selectTestTask} from 'entities/TestTask'
 // import { TestTaskPrevew } from "../type/testTaskPack";
 
-export const getTestTaskPreview = createSelector(
-  selectTestTask,
-  (testTaskData: TestTask | undefined) => {
-    console.log(testTaskData)
-    if (!testTaskData) {
-      console.log('test data not')
-      const initPreviewData: TestTask = {
-        id: '0',
-        name: 'test',
-        timeLimits: '25 февраля 2023',
-        data: [],
-      }
-      return initPreviewData
-    }
-    const previewData: TestTask = {
-      id: testTaskData.id,
-      name: testTaskData.name,
-      timeLimits: testTaskData?.timeLimits,
-      data: testTaskData.data,
-    }
-    return previewData
+export const getTestTaskPreview = createSelector(selectTestTask, (testTaskPack: TestTaskPack | undefined) => {
+  console.log(testTaskPack)
+  const previewData: TestTaskPack = {
+    id: testTaskPack?.id || '0',
+    name: testTaskPack?.name || 'test',
+    timeLimits: testTaskPack?.timeLimits || '25 февраля 2023',
+    data: testTaskPack?.data || [],
   }
-)
+  return previewData
+})

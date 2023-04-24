@@ -1,6 +1,7 @@
 import React from 'react'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './TestPage.module.scss'
+import {MainContainer} from 'widgets/Test'
 
 interface TestPageProps {
   className?: string
@@ -9,5 +10,9 @@ interface TestPageProps {
 export const TestPage: React.FC<TestPageProps> = (props) => {
   const {className = ''} = props
 
-  return <div className={classNames(cls.TestPage, {}, [className, 'container'])}>test Page</div>
+  return (
+    <div className={classNames(cls.testPage, {}, [className, 'container'])}>
+      <MainContainer />
+    </div>
+  )
 }
