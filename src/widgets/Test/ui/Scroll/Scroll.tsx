@@ -10,9 +10,5 @@ interface ScrollProps {
 export const Scroll: React.FC<PropsWithChildren<ScrollProps>> = (props) => {
   const {className = '', children} = props
 
-  useEffect(() => {
-    console.log(children)
-  }, [])
-
   return <div className={classNames(cls.scroll, {}, [className])}>{children}</div>
 }

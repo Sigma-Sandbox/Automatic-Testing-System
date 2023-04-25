@@ -3,7 +3,7 @@ import {StatusItemTest} from '../const/testConst'
 export interface TestUser {
   currentItem: number | string
   allCountItem: number
-  statusItem: {[key: string | number]: StatusItemTest}
+  statusItem: {[key: string | number]: {status: StatusItemTest; id: number | string}}
 }
 
 export interface TestUserSchema {

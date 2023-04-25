@@ -1,21 +1,29 @@
 import {StateSchema} from 'app/providers/StoreProvider'
 
 // Test or task code
-export interface TestTaskItem {
+export interface TestTaskCode {
   id: string
   description: string
-  taskCount?: number
-  timeLimits: string | number | null
   name: string
 }
 
+export type TestItemType = {id: number | string; description: string; rightAns: string[]; wrongAns: string[]}
+export interface TestTaskTest {
+  id: string
+  taskCount: number
+  testItem: TestItemType[]
+  timeLimits?: string | number
+  name: string
+}
 //
+
+export type TestTaskSetsData = (TestTaskTest | TestTaskCode)[]
 export interface TestTaskSets {
   id: string
   name: string
   timeLimits: string | number
   description?: string
-  data?: TestTaskItem[]
+  data?: TestTaskSetsData
   taskCount?: number
 }
 

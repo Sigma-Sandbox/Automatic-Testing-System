@@ -10,16 +10,13 @@ interface TaskTestItemProps {
   rightAns: string[]
   wrongAns: string[]
   nextQuestion: () => void
+  calcTransform: string
 }
 
 export const TaskTestItem: React.FC<TaskTestItemProps> = (props) => {
-  const {className = '', descript, rightAns, wrongAns, nextQuestion} = props
+  const {className = '', descript, rightAns, wrongAns, nextQuestion, calcTransform} = props
 
   const [selectedItems, setSelectedItems] = useState<string[]>([])
-
-  useEffect(() => {
-    console.log('effect')
-  })
 
   const addSelectedItems = (newItem: string) => {
     const newState = [...selectedItems, newItem]
@@ -68,7 +65,7 @@ export const TaskTestItem: React.FC<TaskTestItemProps> = (props) => {
 
   const itemOptions = useMemo(() => {
     const allItems = createAllItem
-    let a = allItems.map((item, index) => {
+    return allItems.map((item, index) => {
       return (
         <label key={`${index} ${selectedItems.includes(item)}`}>
           <input
@@ -83,12 +80,9 @@ export const TaskTestItem: React.FC<TaskTestItemProps> = (props) => {
         </label>
       )
     })
-    console.log(a)
-    return a
   }, [createAllItem, selectedItems])
-
   return (
-    <div className={classNames(cls.taskTestItem, {}, [className])}>
+    <div className={classNames(cls.taskTestItem, {}, [className])} style={{transform: calcTransform}}>
       <div className={classNames(cls.itemDescr)}>{descript}</div>
       <img
         src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxVf9FOcF5qEKCCut0cdGZgNPMc-KlS1X77O-GqP2lw2W7nkBY5i5JuJptwJUgTiYbp3k&usqp=CAU'

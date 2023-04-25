@@ -24,8 +24,6 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   const dispatch = useDispatch()
   const [, turnOnSwitching] = useSwitching()
 
-  useEffect(() => console.log(testItem), [testItem])
-
   const testItemList = useMemo(() => {
     if (!testItem) return null
 
@@ -34,7 +32,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       turnOnSwitching()
     }
     return Object.entries(testItem?.statusItem || {}).map(([key, value]) => {
-      return <SidebarItem count={key} status={value} selectId={`${testItem.currentItem}`} handler={goToTask} />
+      return <SidebarItem count={key} status={value.status} selectId={`${testItem.currentItem}`} handler={goToTask} />
     })
   }, [testItem, testItem?.currentItem])
 

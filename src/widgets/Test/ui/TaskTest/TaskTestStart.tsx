@@ -9,13 +9,17 @@ interface TaskTestStartProps {
   name: string
   time: string
   startTest: () => void
+  currentTestItem: number
 }
 
 export const TaskTestStart: React.FC<TaskTestStartProps> = (props) => {
-  const {className = '', allCountTest, name, time, startTest} = props
+  const {className = '', allCountTest, name, time, startTest, currentTestItem} = props
 
   return (
-    <div className={classNames(cls.taskTestItem, {}, [className, cls.taskTestStart])}>
+    <div
+      className={classNames(cls.taskTestItem, {}, [className, cls.taskTestStart])}
+      style={{transform: `translateX(calc(${currentTestItem} * -100%))`}}
+    >
       <div className={cls.startItem}>{name}</div>
       <div className={cls.startItem}>Количество вопросов: {allCountTest}</div>
       <div className={cls.startItem}>Ограничения по времени: {time}</div>

@@ -15,10 +15,6 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
   const userData = useSelector(getUserData)
   const {pathname} = useLocation()
 
-  useEffect(() => {
-    console.log(userData)
-  }, [userData])
-
   return (
     <div className={classNames(cls.navbar, {[cls.collaps]: pathname === RoutePath.login}, [className, 'container'])}>
       <span className={classNames(cls.position, {[cls.collaps]: !!userData}, ['Box_invert_bg'])}>

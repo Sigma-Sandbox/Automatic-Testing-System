@@ -96,7 +96,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  transform: translateX(calc(180px - (var(--count-test-item) * 60px)));
+  // transform: translateX(calc(180px - (var(--count-test-item) * 60px)));
   transition: all 0.3s ease;
 }
 

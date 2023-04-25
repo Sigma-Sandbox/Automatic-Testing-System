@@ -8,9 +8,7 @@ import {AppDispatch} from 'app/providers/StoreProvider/config/store'
 type ReturnType = TestTaskSets | null
 export const getCurrentTask = (testId: string) =>
   createSelector(selectTestTask, (testTask: TestTaskPack | undefined): ReturnType => {
-    const dispatch = useDispatch<AppDispatch>()
     const task = testTask?.data.find((elem) => elem.id === testId) || null
-    if (task) dispatch()
 
-    return
+    return task
   })

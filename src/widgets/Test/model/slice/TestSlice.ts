@@ -2,18 +2,13 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {TestUser, TestUserSchema} from '../type/test'
 import {fetchDecision} from '../services/fetchDecision/fetchDecision'
 import {StatusItemTest} from '../const/testConst'
+import {TestTaskSets, TestTaskSetsData} from 'entities/TestTask'
 
 const initialState: TestUserSchema = {
   data: {
     currentItem: 0,
-    allCountItem: 3,
-    statusItem: {
-      '0': StatusItemTest.ENABLE,
-      '1': StatusItemTest.SUCCESS,
-      '2': StatusItemTest.FALSE,
-      '3': StatusItemTest.LOADER,
-      '4': StatusItemTest.DISABLE,
-    },
+    allCountItem: 0,
+    statusItem: {},
   },
   isLoading: false,
   error: null,
@@ -23,8 +18,16 @@ export const testUserSlice = createSlice({
   name: 'test',
   initialState,
   reducers: {
-    setInitialData: (state, action: PayloadAction<TestUser>) => {
-      state.data = action.payload
+    setInitialData: (state, action: PayloadAction<TestTaskSetsData>) => {
+      const newData: TestUser = {
+        currentItem: 0,
+        allCountItem: action.payload.length,
+        statusItem: {'0': {status: StatusItemTest.ENABLE, id: 'start'}},
+      }
+      for (let i = 1; i <= newData.allCountItem; i++) {
+        newData.statusItem[i] = {status: StatusItemTest.ENABLE, id: action.payload[i - 1].id}
+      }
+      state.data = newData
     },
     setNewCurrentItem: (state, action: PayloadAction<number>) => {
       if (action.payload > (state.data?.allCountItem || 3)) {

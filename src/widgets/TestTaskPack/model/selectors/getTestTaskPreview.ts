@@ -3,7 +3,6 @@ import {TestTaskPack, TestTaskSets, selectTestTask} from 'entities/TestTask'
 // import { TestTaskPrevew } from "../type/testTaskPack";
 
 export const getTestTaskPreview = createSelector(selectTestTask, (testTaskPack: TestTaskPack | undefined) => {
-  console.log(testTaskPack)
   const previewData: TestTaskPack = {
     id: testTaskPack?.id || '0',
     name: testTaskPack?.name || 'test',
