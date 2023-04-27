@@ -10,10 +10,10 @@
 
 .mainItem {
   height: 100vh;
+  padding: 15px 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid;
   flex: none;
   transform: translateY(calc(var(--count-main-test-item) * -100vh));
   transition: all 0.5s ease;

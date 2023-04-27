@@ -9,6 +9,7 @@ const initialState: TestUserSchema = {
     currentItem: 0,
     allCountItem: 0,
     statusItem: {},
+    timeLimits: 1800,
   },
   isLoading: false,
   error: null,
@@ -23,6 +24,7 @@ export const testUserSlice = createSlice({
         currentItem: 0,
         allCountItem: action.payload.length,
         statusItem: {'0': {status: StatusItemTest.ENABLE, id: 'start'}},
+        timeLimits: 1800,
       }
       for (let i = 1; i <= newData.allCountItem; i++) {
         newData.statusItem[i] = {status: StatusItemTest.ENABLE, id: action.payload[i - 1].id}
@@ -30,6 +32,7 @@ export const testUserSlice = createSlice({
       state.data = newData
     },
     setNewCurrentItem: (state, action: PayloadAction<number>) => {
+      state.data.statusItem['0'] = {status: StatusItemTest.DISABLE, id: 'start'}
       if (action.payload > (state.data?.allCountItem || 3)) {
         state.data.currentItem = 1
       } else {

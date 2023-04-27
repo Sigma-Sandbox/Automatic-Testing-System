@@ -33,6 +33,10 @@
   transform: translateX(-50%);
 }
 
+.item.disable {
+  opacity: 0.5;
+}
+
 .item.success {
   border: 2px solid var(--secondary-color);
 }

@@ -31,9 +31,15 @@ body {
 }
 
 .container {
-  max-width: 1280px;
+  max-width: calc(1280px + 2 * var(--sidebar-width));
   width: 100%;
   margin: 0 auto;
+  padding: 0 var(--sidebar-width);
+}
+
+.container.full {
+  max-width: none;
+  width: 100%;
 }
 
 // card with text

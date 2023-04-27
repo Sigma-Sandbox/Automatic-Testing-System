@@ -11,7 +11,7 @@ export const TestPage: React.FC<TestPageProps> = (props) => {
   const {className = ''} = props
 
   return (
-    <div className={classNames(cls.testPage, {}, [className, 'container'])}>
+    <div className={classNames(cls.testPage, {}, [className, cls.testContainer])}>
       <MainContainer />
     </div>
   )

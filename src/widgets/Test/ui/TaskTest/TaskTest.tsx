@@ -6,14 +6,11 @@ import markImg from 'shared/assets/icon/check.svg'
 import {TaskTestStart} from './TaskTestStart'
 import markSrc from 'shared/assets/icon/check.svg'
 import {TimeType, useTimer} from 'shared/lib/hooks/useTimer/useTimer'
-import {TestItemType} from 'entities/TestTask'
+import {TestItemType, TestTaskTest} from 'entities/TestTask'
 
 interface TaskTestProps {
   className?: string
-  allCountTest?: number
-  testItem: TestItemType[]
-  name?: string
-  time?: string | number
+  dataItem: TestTaskTest
 }
 
 enum TypeTransformState {
@@ -21,7 +18,8 @@ enum TypeTransformState {
   NAVBAR_ITEM = 'NAVBAR_ITEM',
 }
 export const TaskTest: React.FC<TaskTestProps> = (props) => {
-  const {className = '', allCountTest = 5, name = 'Тест на знание JS', time = '25:00', testItem} = props
+  const className = props.className || ''
+  const {taskCount = 5, name = 'Тест на знание JS', timeLimits = '25:00', testItem} = props.dataItem
   const [currentTestItem, setCurrentTestItem] = useState<number>(0)
   const [timer, timeOptions] = useTimer(600)
 
@@ -30,10 +28,10 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
   }, [currentTestItem])
 
   const nextQuestion = () => {
-    if (allCountTest > currentTestItem) {
+    if (taskCount > currentTestItem) {
       setCurrentTestItem(currentTestItem + 1)
     }
-    if (allCountTest === currentTestItem) {
+    if (taskCount === currentTestItem) {
       finishTest()
       setCurrentTestItem(currentTestItem + 1)
     }
@@ -64,7 +62,7 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
 
   const navbarItem = useMemo(() => {
     const navbarList = []
-    for (let i = 0; i <= allCountTest + 1; i++) {
+    for (let i = 0; i <= taskCount + 1; i++) {
       navbarList.push(
         <div
           className={classNames(
@@ -74,7 +72,7 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
           )}
           style={{transform: calcTransformState(TypeTransformState.NAVBAR_ITEM)}}
         >
-          {i === allCountTest + 1 ? <img src={markImg} alt='mark' /> : i}
+          {i === taskCount + 1 ? <img src={markImg} alt='mark' /> : i}
         </div>
       )
     }
@@ -89,8 +87,8 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
       <TaskTestStart
         startTest={startTest}
         name={name}
-        time={`${time}`}
-        allCountTest={allCountTest}
+        time={`${timeLimits}`}
+        allCountTest={taskCount}
         currentTestItem={currentTestItem}
       ></TaskTestStart>
     )

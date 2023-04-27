@@ -5,6 +5,9 @@ export interface TestTaskCode {
   id: string
   description: string
   name: string
+  examples?: string
+  condition: string[]
+  complexityAssessment?: number
 }
 
 export type TestItemType = {id: number | string; description: string; rightAns: string[]; wrongAns: string[]}

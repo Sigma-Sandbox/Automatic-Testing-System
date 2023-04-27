@@ -16,8 +16,7 @@ function App() {
 
         <div className='content-page'>
           <Navbar></Navbar>
-          {/* <AppRouter></AppRouter> */}
-          <TestPage></TestPage>
+          <AppRouter></AppRouter>
         </div>
       </Suspense>
     </div>

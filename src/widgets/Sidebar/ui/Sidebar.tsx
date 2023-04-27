@@ -34,7 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
     return Object.entries(testItem?.statusItem || {}).map(([key, value]) => {
       return <SidebarItem count={key} status={value.status} selectId={`${testItem.currentItem}`} handler={goToTask} />
     })
-  }, [testItem, testItem?.currentItem])
+  }, [testItem, testItem?.currentItem, testItem.statusItem])
 
   return (
     <div className={classNames(cls.sidebar, {[cls.collaps]: pathname === RoutePath.login}, [className])}>

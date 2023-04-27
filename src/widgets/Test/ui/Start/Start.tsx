@@ -8,10 +8,11 @@ interface StartProps {
   name: string
   timeLimits: string | number
   taskCount?: number
+  goNextPage: () => void
 }
 
 export const Start: React.FC<StartProps> = (props) => {
-  const {className = '', name, timeLimits, taskCount} = props
+  const {className = '', name, timeLimits, taskCount, goNextPage} = props
 
   return (
     <div className={classNames(cls.startWrap, {}, [className])}>
@@ -27,7 +28,7 @@ export const Start: React.FC<StartProps> = (props) => {
           Ограничения по времени: <span>{timeLimits}</span>
         </div>
 
-        <Button className={cls.btn} size={SizeButton.XL} color={ColorButton.SECONDARY_COLOR}>
+        <Button className={cls.btn} size={SizeButton.XL} color={ColorButton.SECONDARY_COLOR} onClick={goNextPage}>
           Начать
         </Button>
       </div>
