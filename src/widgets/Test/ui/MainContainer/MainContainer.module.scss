@@ -1,0 +1,31 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  scroll-snap-type: x mandatory;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.mainItem {
+  height: 100vh;
+  padding: 15px 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: none;
+  transform: translateY(calc(var(--count-main-test-item) * -100vh));
+  transition: all 0.5s ease;
+}
+
+.mainItem.animate {
+  transition: all 0.5s ease;
+  transform: translateY(calc(var(--count-main-test-item) * -100vh)) scale(0.9);
+}
+
+.btn {
+  position: fixed;
+  top: 0;
+  right: 0;
+}

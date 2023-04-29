@@ -31,13 +31,19 @@ body {
 }
 
 .container {
-  max-width: 1280px;
+  max-width: calc(1280px + 2 * var(--sidebar-width));
   width: 100%;
   margin: 0 auto;
+  padding: 0 var(--sidebar-width);
+}
+
+.container.full {
+  max-width: none;
+  width: 100%;
 }
 
 // card with text
-.box_invert_bg {
+.Box_invert_bg {
   padding: 5px 20px;
   border-radius: 10px;
   background-color: var(--invert-bg-color);
@@ -45,4 +51,16 @@ body {
   box-shadow: var(--shadow-around-block);
   display: block;
   width: fit-content;
+}
+
+// brow up card
+.Brow_card {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  top: 0;
+  background-color: var(--primary-color);
+  color: var(--invert-bg-color);
+  padding: 10px 25px;
+  border-radius: 0 0 10px 10px;
 }

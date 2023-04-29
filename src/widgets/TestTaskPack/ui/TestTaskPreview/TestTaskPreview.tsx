@@ -1,20 +1,25 @@
-import React, { useEffect } from 'react'
-import { classNames } from 'shared/lib/classNames/classNames'
+import React, {useEffect} from 'react'
+import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './TestTaskPreview.module.scss'
-import { TestTask } from 'entities/TestTask'
+import {TestTaskSets} from 'entities/TestTask'
 import taskImgSrc from 'shared/assets/icon/test_prev.svg'
 import timerImgSrc from 'shared/assets/icon/timer_prev.svg'
-import { Button, ColorButton, ThemeButton } from 'shared/ui/Button/Button'
+import {Button, ColorButton, ThemeButton} from 'shared/ui/Button/Button'
 
 interface TestTaskPreviewProps {
   className?: string
   countTask: number
   timeLimits: string | number
   name: string
+  startTest: (idTest: string) => void
 }
 
 export const TestTaskPreview: React.FC<TestTaskPreviewProps> = (props) => {
-  const { className = '', countTask, timeLimits, name } = props
+  const {className = '', countTask, timeLimits, name, startTest} = props
+
+  const handlerBtn = () => {
+    startTest(name)
+  }
 
   return (
     <div className={classNames(cls.testTaskPreview, {}, [className])}>
@@ -31,10 +36,7 @@ export const TestTaskPreview: React.FC<TestTaskPreviewProps> = (props) => {
           <img src={timerImgSrc} alt='timer' />
         </div>
 
-        <Button
-          theme={ThemeButton.BACKGROUND}
-          color={ColorButton.SECONDARY_COLOR}
-        >
+        <Button theme={ThemeButton.BACKGROUND} color={ColorButton.SECONDARY_COLOR} onClick={handlerBtn}>
           Начать
         </Button>
       </div>
