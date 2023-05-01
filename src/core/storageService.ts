@@ -53,7 +53,8 @@ export class StorageService implements IStorageService {
         prog_task_time INT NULL,
         prog_task_memory INT NULL,
         result SMALLINT,
-        program_code TEXT NULL
+        program_code TEXT NULL,
+        question_answers TEXT[] NULL
       );
 
       CREATE TABLE IF NOT EXISTS task_sets
@@ -84,7 +85,7 @@ export class StorageService implements IStorageService {
         name VARCHAR(64),
         description TEXT,
         ids_question INT[],
-        exec_time TIMESTAMPTZ
+        exec_time INT
       );
 
       CREATE TABLE IF NOT EXISTS test_questions
@@ -99,14 +100,13 @@ export class StorageService implements IStorageService {
   }
 
   async addUser(user: User): Promise<void> {
-    const idsTaskSet: number[] = user.taskSets.map(taskSet => taskSet.id)
+    const idsTaskSet: number[] = user.taskSets.map(taskSet => taskSet.id!)
 
     try {
       await this.getDB().query(`
         INSERT INTO users
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
         [
-          user.id,
           user.accessRights,
           user.surname,
           user.name,
@@ -128,19 +128,19 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(`
         INSERT INTO user_solutions
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [
-          userSolution.id,
           userSolution.userId,
           userSolution.taskType,
           userSolution.taskId,
           userSolution.taskSetId,
-          userSolution.execStartTime,
-          userSolution.execEndTime,
-          userSolution.progTaskTime,
+          new Date(userSolution.execStartTime),
+          new Date(userSolution.execEndTime),
+          userSolution.progTaskTime ? Math.round(userSolution.progTaskTime * 1000) : undefined,
           userSolution.progTaskMemory,
           userSolution.result,
-          userSolution.programCode
+          userSolution.programCode,
+          userSolution.questionAnswers
         ]
       )
     } catch (err) {
@@ -149,15 +149,14 @@ export class StorageService implements IStorageService {
   }
 
   async addTaskSet(taskSet: TaskSet): Promise<void> {
-    const idsTestTask: number[] = taskSet.testTasks.map(testTask => testTask.id)
-    const idsProgTask: number[] = taskSet.progTasks.map(progTask => progTask.id)
+    const idsTestTask: number[] = taskSet.testTasks.map(testTask => testTask.id!)
+    const idsProgTask: number[] = taskSet.progTasks.map(progTask => progTask.id!)
 
     try {
       await this.getDB().query(`
         INSERT INTO task_sets
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+        VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7)`,
         [
-          taskSet.id,
           taskSet.name,
           taskSet.description,
           idsTestTask,
@@ -182,9 +181,8 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(`
         INSERT INTO prog_tasks
-        VALUES($1, $2, $3, $4, $5, $6)`,
+        VALUES(DEFAULT, $1, $2, $3, $4, $5)`,
         [
-          progTask.id,
           progTask.name,
           progTask.description,
           progTask.autoTests,
@@ -201,9 +199,8 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(`
         INSERT INTO test_tasks
-        VALUES($1, $2, $3, $4, $5)`,
+        VALUES(DEFAULT, $1, $2, $3, $4)`,
         [
-          testTask.id,
           testTask.name,
           testTask.description,
           testTask.questions.map(test => test.id),
@@ -219,9 +216,8 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(`
         INSERT INTO test_questions
-        VALUES($1, $2, $3, $4, $5)`,
+        VALUES(DEFAULT, $1, $2, $3, $4)`,
         [
-          testQuestion.id,
           testQuestion.description,
           testQuestion.points,
           testQuestion.wrongAnswers,
@@ -373,7 +369,8 @@ export class StorageService implements IStorageService {
         prog_task_time,
         prog_task_memory,
         result,
-        program_code
+        program_code,
+        question_answers
       FROM user_solutions` + resultCondition + strConditions.join(' AND '),
       params
     )
@@ -391,7 +388,8 @@ export class StorageService implements IStorageService {
           progTaskTime: row.prog_task_time,
           progTaskMemory: row.prog_task_memory,
           result: row.result,
-          programCode: row.program_code
+          programCode: row.program_code,
+          questionAnswers: row.question_answers
         }
       })
     } else {
@@ -682,7 +680,7 @@ export class StorageService implements IStorageService {
   }
 
   async updateUser(user: User): Promise<void> {
-    const idsTaskSet: number[] = user.taskSets.map(taskSet => taskSet.id)
+    const idsTaskSet: number[] = user.taskSets.map(taskSet => taskSet.id!)
 
     try {
       await this.getDB().query(`
@@ -730,7 +728,8 @@ export class StorageService implements IStorageService {
           prog_task_time = $8,
           prog_task_memory = $9,
           result = $10,
-          program_code = $11
+          program_code = $11,
+          question_answers = $12
         WHERE id = $1`,
         [
           userSolution.id,
@@ -738,12 +737,13 @@ export class StorageService implements IStorageService {
           userSolution.taskType,
           userSolution.taskId,
           userSolution.taskSetId,
-          userSolution.execStartTime,
-          userSolution.execEndTime,
-          userSolution.progTaskTime,
+          new Date(userSolution.execStartTime),
+          new Date(userSolution.execEndTime),
+          userSolution.progTaskTime ? Math.round(userSolution.progTaskTime * 1000) : undefined,
           userSolution.progTaskMemory,
           userSolution.result,
-          userSolution.programCode
+          userSolution.programCode,
+          userSolution.questionAnswers
         ]
       )
     } catch (err) {
@@ -752,8 +752,8 @@ export class StorageService implements IStorageService {
   }
 
   async updateTaskSet(taskSet: TaskSet): Promise<void> {
-    const idsTestTask: number[] = taskSet.testTasks.map(testTask => testTask.id)
-    const idsProgTask: number[] = taskSet.progTasks.map(progTask => progTask.id)
+    const idsTestTask: number[] = taskSet.testTasks.map(testTask => testTask.id!)
+    const idsProgTask: number[] = taskSet.progTasks.map(progTask => progTask.id!)
 
     try {
       await this.getDB().query(`

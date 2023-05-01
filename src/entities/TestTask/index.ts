@@ -3,15 +3,15 @@ import {selectTestTask} from './model/selectors/testTask'
 import {fetchTestTask} from './model/services/fetchTestTask/getTestTask'
 import {testTaskReducer} from './model/slice/testTaskSlice'
 import {
-  TestTaskSchema,
-  TestTaskPack,
-  TestTaskSets,
-  TestTaskCode,
-  TestTaskTest,
-  TestTaskSetsData,
-  TestItemType,
+  TaskSetPackSchema,
+  TaskSetPack,
+  TaskSet,
+  ProgTask,
+  TestTask,
+  Task,
+  TestQuestion,
 } from './model/types/testTask'
 
-export type {TestTaskSchema, TestTaskPack, TestTaskSets, TestTaskCode, TestTaskTest, TestTaskSetsData, TestItemType}
+export type {TaskSetPackSchema, TaskSetPack, TaskSet, ProgTask, TestTask, Task, TestQuestion}
 
 export {selectTestTask, testTaskReducer, fetchTestTask, getCurrentTask}

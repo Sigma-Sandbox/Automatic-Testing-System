@@ -1,46 +1,49 @@
-import {StateSchema} from 'app/providers/StoreProvider'
+import { Condition } from 'core/entities'
 
 // Test or task code
-export interface TestTaskCode {
-  id: string
+export interface ProgTask {
+  id: number
   description: string
   name: string
   examples?: string
-  condition: string[]
+  condition: Condition[]
   complexityAssessment?: number
 }
 
-export type TestItemType = {id: number | string; description: string; rightAns: string[]; wrongAns: string[]}
-export interface TestTaskTest {
-  id: string
-  taskCount: number
-  testItem: TestItemType[]
-  timeLimits?: string | number
-  name: string
-}
-//
-
-export type TestTaskSetsData = (TestTaskTest | TestTaskCode)[]
-export interface TestTaskSets {
-  id: string
-  name: string
-  timeLimits: string | number
-  description?: string
-  data?: TestTaskSetsData
-  taskCount?: number
+export interface TestQuestion {
+  id: number
+  description: string
+  rightAns: string[]
+  wrongAns: string[]
 }
 
-export interface TestTaskPack {
-  id: string
+export interface TestTask {
+  id: number
+  testItem: TestQuestion[]
+  timeLimits?: number
+  name: string
+}
+
+export type Task = (TestTask | ProgTask)[]
+export interface TaskSet {
+  id: number
+  name: string
+  timeLimits: number
+  description?: string
+  data?: Task
+}
+
+export interface TaskSetPack {
+  id: number
   name: string
   description?: string
-  timeLimits: string | number
-  data: TestTaskSets[]
+  timeLimits: number
+  data: TaskSet[]
 }
-export interface TestTaskSchema {
+export interface TaskSetPackSchema {
   isLoading: boolean
   error?: string
-  data?: TestTaskPack
+  data?: TaskSetPack
 }
 
 // export type Selector<S> = (state: StateSchema) => S

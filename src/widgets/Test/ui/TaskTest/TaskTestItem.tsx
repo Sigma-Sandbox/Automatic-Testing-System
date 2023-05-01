@@ -9,7 +9,7 @@ interface TaskTestItemProps {
   descript: string
   rightAns: string[]
   wrongAns: string[]
-  nextQuestion: () => void
+  nextQuestion: (selectedItems: string[], result: boolean) => void
   calcTransform: string
 }
 
@@ -96,7 +96,7 @@ export const TaskTestItem: React.FC<TaskTestItemProps> = (props) => {
           className={classNames(cls.itemButton)}
           color={ColorButton.SECONDARY_COLOR}
           size={SizeButton.L}
-          onClick={nextQuestion}
+          onClick={() => nextQuestion(selectedItems, JSON.stringify(selectedItems.sort()) === JSON.stringify(rightAns.slice().sort()))}
         >
           Продолжить
         </Button>

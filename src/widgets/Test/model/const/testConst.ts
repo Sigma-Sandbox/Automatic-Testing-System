@@ -1,3 +1,5 @@
+import { ProgrammingLanguage } from 'core/enums'
+
 export enum StatusItemTest {
   LOADER = 'loader',
   SUCCESS = 'success',
@@ -6,12 +8,24 @@ export enum StatusItemTest {
   ENABLE = 'enable',
 }
 
-export const languageOptions = [
-  {id: 1, name: 'JavaScript (Node.js 12.14.0)', label: 'JavaScript (Node.js 12.14.0)', value: 'javascript'},
+export interface Language {
+  id: number
+  name: string
+  label: string
+  value: ProgrammingLanguage
+}
+
+export const languageOptions: Language[] = [
   {
-    id: 2,
+    id: 63,
+    name: 'JavaScript (Node.js 12.14.0)',
+    label: 'JavaScript (Node.js 12.14.0)',
+    value: ProgrammingLanguage.JavaScript
+  },
+  {
+    id: 62,
     name: 'Java (OpenJDK 13.0.1)',
     label: 'Java (OpenJDK 13.0.1)',
-    value: 'java',
+    value: ProgrammingLanguage.Java
   },
 ]

@@ -21,4 +21,40 @@
 11. Помещаем переменные в строку при помощи `${}` вместо конкатенации через плюс
 12. Ширина Tab - 2 пробела
 
+## Пример вызовов методов БД
+
+```javascript
+const postUserSolution = async (solution: UserSolution) => {
+  fetch('api/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(solution),
+  })
+  
+  fetch('api/update', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({...solution, id: 2}),
+  })
+  
+  fetch('api/delete/user_solution', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({id: 4}),
+  })
+  
+  const conditions: GetUserSolutionConditions = {
+    id: 1,
+    userId: 1
+  }
+  const response = await fetch('api/get/user_solution', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(conditions),
+  })
+  const body: UserSolution[] = await response.json()
+  console.log(body)
+}
+```
+
 #### Project designed by [FeatureSliced](https://feature-sliced.design/)

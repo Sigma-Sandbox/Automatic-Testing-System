@@ -2,7 +2,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {TestUser, TestUserSchema} from '../type/test'
 import {fetchDecision} from '../services/fetchDecision/fetchDecision'
 import {StatusItemTest} from '../const/testConst'
-import {TestTaskSets, TestTaskSetsData} from 'entities/TestTask'
+import {Task} from 'entities/TestTask'
 
 const initialState: TestUserSchema = {
   data: {
@@ -19,7 +19,7 @@ export const testUserSlice = createSlice({
   name: 'test',
   initialState,
   reducers: {
-    setInitialData: (state, action: PayloadAction<TestTaskSetsData>) => {
+    setInitialData: (state, action: PayloadAction<Task>) => {
       const newData: TestUser = {
         currentItem: 0,
         allCountItem: action.payload.length,

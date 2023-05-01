@@ -1,15 +1,15 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './TestTaskPreview.module.scss'
-import {TestTaskSets} from 'entities/TestTask'
 import taskImgSrc from 'shared/assets/icon/test_prev.svg'
 import timerImgSrc from 'shared/assets/icon/timer_prev.svg'
 import {Button, ColorButton, ThemeButton} from 'shared/ui/Button/Button'
+import { timeConverter } from 'utils/dataConverter'
 
 interface TestTaskPreviewProps {
   className?: string
   countTask: number
-  timeLimits: string | number
+  timeLimits: number
   name: string
   startTest: (idTest: string) => void
 }
@@ -28,11 +28,11 @@ export const TestTaskPreview: React.FC<TestTaskPreviewProps> = (props) => {
       </div>
       <div className={cls.testInfo}>
         <div className={classNames(cls.testCount, {}, [cls.testRight])}>
-          <span>{countTask} задания</span>
+          <span>Tasks: {countTask}</span>
           <img src={taskImgSrc} alt='test' />
         </div>
         <div className={classNames(cls.testTimer, {}, [cls.testRight])}>
-          <span>{timeLimits}</span>
+          <span>{timeConverter(timeLimits)}</span>
           <img src={timerImgSrc} alt='timer' />
         </div>
 

@@ -1,8 +1,8 @@
-import { AccessRight, ProgrammingLanguage, TaskResult, TaskType } from './enums'
+import { UserRole, ProgrammingLanguage, TaskResult, TaskType } from './enums'
 
 export interface User {
-  id: number
-  accessRights: AccessRight
+  id?: number
+  accessRights: UserRole
   surname: string
   name: string
   patronymic?: string
@@ -15,7 +15,7 @@ export interface User {
 }
 
 export interface UserSolution {
-  id: number
+  id?: number
   userId: number
   taskType: TaskType
   taskId: number
@@ -26,10 +26,11 @@ export interface UserSolution {
   progTaskMemory?: number
   result: TaskResult
   programCode?: string
+  questionAnswers?: string[]
 }
 
 export interface TaskSet {
-  id: number
+  id?: number
   name: string
   description: string
   testTasks: TestTask[]
@@ -40,7 +41,7 @@ export interface TaskSet {
 }
 
 export interface Task {
-  id: number
+  id?: number
   name: string
   description: string
 }
@@ -63,7 +64,7 @@ export interface TestTask extends Task {
 }
 
 export interface TestQuestion {
-  id: number
+  id?: number
   description: string
   points: number
   wrongAnswers: string[]

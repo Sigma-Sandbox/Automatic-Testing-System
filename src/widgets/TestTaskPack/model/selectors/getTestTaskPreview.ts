@@ -1,12 +1,11 @@
 import {createSelector} from '@reduxjs/toolkit'
-import {TestTaskPack, TestTaskSets, selectTestTask} from 'entities/TestTask'
-// import { TestTaskPrevew } from "../type/testTaskPack";
+import {TaskSetPack, selectTestTask} from 'entities/TestTask'
 
-export const getTestTaskPreview = createSelector(selectTestTask, (testTaskPack: TestTaskPack | undefined) => {
-  const previewData: TestTaskPack = {
-    id: testTaskPack?.id || '0',
+export const getTestTaskPreview = createSelector(selectTestTask, (testTaskPack: TaskSetPack | undefined) => {
+  const previewData: TaskSetPack = {
+    id: testTaskPack?.id || 1,
     name: testTaskPack?.name || 'test',
-    timeLimits: testTaskPack?.timeLimits || '25 февраля 2023',
+    timeLimits: testTaskPack?.timeLimits || 0,
     data: testTaskPack?.data || [],
   }
   return previewData

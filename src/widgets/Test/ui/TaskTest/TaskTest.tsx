@@ -1,16 +1,17 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './TaskTest.module.scss'
-import {TaskTestItem} from './TaskTestItem'
+import { TaskTestItem } from './TaskTestItem'
 import markImg from 'shared/assets/icon/check.svg'
-import {TaskTestStart} from './TaskTestStart'
-import markSrc from 'shared/assets/icon/check.svg'
-import {TimeType, useTimer} from 'shared/lib/hooks/useTimer/useTimer'
-import {TestItemType, TestTaskTest} from 'entities/TestTask'
+import { TaskTestStart } from './TaskTestStart'
+import { TimeType, useTimer } from 'shared/lib/hooks/useTimer/useTimer'
+import { TestTask } from 'entities/TestTask'
+import { UserSolution } from 'core/entities'
+import { TaskResult, TaskType } from 'core/enums'
 
 interface TaskTestProps {
   className?: string
-  dataItem: TestTaskTest
+  dataItem: TestTask
 }
 
 enum TypeTransformState {
@@ -19,15 +20,16 @@ enum TypeTransformState {
 }
 export const TaskTest: React.FC<TaskTestProps> = (props) => {
   const className = props.className || ''
-  const {taskCount = 5, name = 'Тест на знание JS', timeLimits = '25:00', testItem} = props.dataItem
+  const {id, name = 'Тест на знание JS', timeLimits = 1800, testItem} = props.dataItem
   const [currentTestItem, setCurrentTestItem] = useState<number>(0)
   const [timer, timeOptions] = useTimer(600)
+  const taskCount = testItem.length
 
   useEffect(() => {
     document.body.style.setProperty('--count-test-item', `${currentTestItem}`)
   }, [currentTestItem])
 
-  const nextQuestion = () => {
+  const nextQuestion = (selectedItems: string[], result: boolean) => {
     if (taskCount > currentTestItem) {
       setCurrentTestItem(currentTestItem + 1)
     }
@@ -35,6 +37,28 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
       finishTest()
       setCurrentTestItem(currentTestItem + 1)
     }
+
+    // FIXME: userId, execStartTime, taskSetId поправить на нужные
+    const userSolution: UserSolution = {
+      taskId: id,
+      userId: 1,
+      execStartTime: Date.now() - 1000,
+      execEndTime: Date.now(),
+      taskSetId: 1,
+      taskType: TaskType.TEST_QUESTION,
+      result: result ? TaskResult.DONE : TaskResult.FAIL,
+      questionAnswers: selectedItems
+    }
+
+    postUserSolutionQuestion(userSolution)
+  }
+
+  const postUserSolutionQuestion = async (solution: UserSolution) => {
+    fetch('api/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(solution),
+    })
   }
 
   const startTest = () => {
@@ -87,7 +111,7 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
       <TaskTestStart
         startTest={startTest}
         name={name}
-        time={`${timeLimits}`}
+        time={timeLimits}
         allCountTest={taskCount}
         currentTestItem={currentTestItem}
       ></TaskTestStart>

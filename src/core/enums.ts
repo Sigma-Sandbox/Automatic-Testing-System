@@ -1,4 +1,4 @@
-export enum AccessRight {
+export enum UserRole {
   ADMIN,
   EMPLOYEE,
   APPLICANT,
@@ -17,6 +17,6 @@ export enum TaskResult {
 }
 
 export enum ProgrammingLanguage {
-  Java = 'Java',
-  JavaScript = 'JavaScript'
+  Java = 'java',
+  JavaScript = 'javascript'
 }

@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { UserSchema, User } from '../types/user'
-import { UserRole } from '../consts/userConsts'
 
 const initialState: UserSchema = {}
 

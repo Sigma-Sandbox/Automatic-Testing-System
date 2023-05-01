@@ -1,20 +1,16 @@
-import React, {useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useMemo} from 'react'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './MainContainer.module.scss'
 import {Start} from '../Start/Start'
-import {TestTaskSets, getCurrentTask} from 'entities/TestTask'
+import {getCurrentTask} from 'entities/TestTask'
 import {useLocation} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
-import {StateSchema} from 'app/providers/StoreProvider'
 import {TaskCode} from '../TaskCode/TaskCode'
 import {TaskTest} from '../TaskTest/TaskTest'
-import {Scroll} from '../Scroll/Scroll'
-import {Button} from 'shared/ui/Button/Button'
 import {testUserActions} from 'widgets/Test/model/slice/TestSlice'
 import {getTestItemData} from '../../model/selectors/getTest'
 import {useSwitching} from 'shared/lib/hooks/useSwitching/useSwitching'
 import {AppDispatch} from 'app/providers/StoreProvider/config/store'
-import {useTimer} from 'shared/lib/hooks/useTimer/useTimer'
 
 interface MainContainerProps {
   className?: string
@@ -23,9 +19,8 @@ interface MainContainerProps {
 export const MainContainer: React.FC<MainContainerProps> = (props) => {
   const {className = ''} = props
   const location = useLocation()
-  const testData = useSelector(getCurrentTask(location.state?.testId || '1'))
+  const testData = useSelector(getCurrentTask(location.state?.testId || 1))
   const testItemData = useSelector(getTestItemData)
-  const [timeLimitsTotal, optionsTimeLimitTotal] = useTimer(1800)
 
   const [isSwitchPage, turnOnSwitching] = useSwitching()
   const dispatch = useDispatch<AppDispatch>()
@@ -58,7 +53,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
         <Start
           className={classNames(cls.mainItem, {[cls.animate]: isSwitchPage}, [])}
           timeLimits={testData.timeLimits}
-          taskCount={testData.taskCount}
+          taskCount={testData.data?.length}
           name={testData.name}
           goNextPage={goNextPage}
         />
