@@ -7,11 +7,11 @@ import { LoginForm } from '../LoginForm/LoginForm'
 
 interface LoginModalProps {
   className?: string
-  onSucces: () => void
+  onSuccess: () => void
 }
 
 export const LoginModal: React.FC<LoginModalProps> = (props) => {
-  const { className, onSucces } = props
+  const { className, onSuccess } = props
 
   const [loginUser, setLoginUser] = useState(true)
 
@@ -27,7 +27,7 @@ export const LoginModal: React.FC<LoginModalProps> = (props) => {
         isUser={loginUser}
         className={cls.toggle}
       />
-      <LoginForm onSuccess={onSucces} />
+      <LoginForm onSuccess={onSuccess} />
     </div>
   )
 }

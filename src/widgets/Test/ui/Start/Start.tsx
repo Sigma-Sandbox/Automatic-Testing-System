@@ -2,11 +2,12 @@ import React from 'react'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './Start.module.scss'
 import {Button, ColorButton, SizeButton} from 'shared/ui/Button/Button'
+import { timeConverter } from 'utils/dataConverter'
 
 interface StartProps {
   className?: string
   name: string
-  timeLimits: string | number
+  timeLimits: number
   taskCount?: number
   goNextPage: () => void
 }
@@ -22,10 +23,10 @@ export const Start: React.FC<StartProps> = (props) => {
           <span>{name}</span>
         </div>
         <div className={classNames(cls.taskCount, {}, [cls.cardItem])}>
-          Количество задний: <span>{taskCount}</span>
+          Количество заданий: <span>{taskCount}</span>
         </div>
         <div className={classNames(cls.timeLimits, {}, [cls.cardItem])}>
-          Ограничения по времени: <span>{timeLimits}</span>
+          Ограничения по времени: <span>{timeConverter(timeLimits)}</span>
         </div>
 
         <Button className={cls.btn} size={SizeButton.XL} color={ColorButton.SECONDARY_COLOR} onClick={goNextPage}>

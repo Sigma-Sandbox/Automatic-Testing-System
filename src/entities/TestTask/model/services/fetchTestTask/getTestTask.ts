@@ -1,15 +1,14 @@
 import {createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
-import {TestTaskPack} from '../../types/testTask'
-import {testTaskActions} from '../../slice/testTaskSlice'
+import {TaskSetPack} from '../../types/testTask'
 
 interface FetchTestTaskProps {}
 
-export const fetchTestTask = createAsyncThunk<TestTaskPack, FetchTestTaskProps, {rejectValue: string}>(
+export const fetchTestTask = createAsyncThunk<TaskSetPack, FetchTestTaskProps, {rejectValue: string}>(
   'testTask/getTestTask',
   async (testTask, thunkAPI) => {
     try {
-      const response = await axios.get<TestTaskPack>('https://jsonplaceholder.typicode.com/posts')
+      const response = await axios.get<TaskSetPack>('https://jsonplaceholder.typicode.com/posts')
 
       if (!response.data) {
         throw new Error()

@@ -1,7 +1,6 @@
-import React, {PropsWithChildren, useEffect} from 'react'
+import React, {PropsWithChildren} from 'react'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './Scroll.module.scss'
-import {use} from 'nconf'
 
 interface ScrollProps {
   className?: string

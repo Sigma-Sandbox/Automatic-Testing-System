@@ -1,7 +1,7 @@
-import { UserRole } from '../consts/userConsts'
+import { UserRole } from 'core/enums'
 
 export interface User {
-  id: string
+  id: number
   username: string
   firstname: string
   lastname: string

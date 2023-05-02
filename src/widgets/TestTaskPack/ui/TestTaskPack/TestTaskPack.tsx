@@ -1,10 +1,9 @@
-import React, {useMemo, useEffect} from 'react'
+import React, {useMemo} from 'react'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './TestTaskPack.module.scss'
 import {useSelector} from 'react-redux'
 import {getTestTaskPreview} from '../../model/selectors/getTestTaskPreview'
 import {TestTaskPreview} from '../TestTaskPreview/TestTaskPreview'
-import {time} from 'console'
 
 interface TestTaskPackProps {
   className?: string
@@ -20,7 +19,7 @@ export const TestTaskPack: React.FC<TestTaskPackProps> = (props) => {
       testTaskItemList?.data?.map((item) => (
         <TestTaskPreview
           timeLimits={item.timeLimits}
-          countTask={item.taskCount || 6}
+          countTask={item.data?.length || 0}
           name={item.name}
           startTest={startTest}
         />

@@ -14,13 +14,13 @@ export const LoginPage: React.FC<LoginProps> = (props) => {
   const { className } = props
   let navigate = useNavigate()
 
-  const onSucces = useCallback(async () => {
+  const onSuccess = useCallback(async () => {
     navigate(RoutePath.main)
   }, [])
 
   return (
     <div className={classNames(cls.login, {}, [])}>
-      <LoginModal onSucces={onSucces} />
+      <LoginModal onSuccess={onSuccess} />
     </div>
   )
 }
