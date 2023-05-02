@@ -23,96 +23,90 @@ configurationService.init().then(() => {
   connectPostgreSQL(configurationService).then(pool => storageService.setPool(pool))
 })
 
-serverApp.post('/api/add', async (req, res) => {
+serverApp.post('/api/add', (req, res) => {
   if ('accessRights' in req.body) {
-    await storageService.addUser(req.body as User)
+    storageService.addUser(req.body as User).then(() => res.send())
   } else if ('result' in req.body) {
-    await storageService.addUserSolution(req.body as UserSolution)
+    storageService.addUserSolution(req.body as UserSolution).then(() => res.send())
   } else if ('testTasks' in req.body) {
-    await storageService.addTaskSet(req.body as TaskSet)
+    storageService.addTaskSet(req.body as TaskSet).then(() => res.send())
   } else if ('conditions' in req.body) {
-    await storageService.addProgTask(req.body as ProgTask)
+    storageService.addProgTask(req.body as ProgTask).then(() => res.send())
   } else if ('questions' in req.body) {
-    await storageService.addTestTask(req.body as TestTask)
+    storageService.addTestTask(req.body as TestTask).then(() => res.send())
   } else if ('wrongAnswers' in req.body) {
-    await storageService.addTestQuestion(req.body as TestQuestion)
+    storageService.addTestQuestion(req.body as TestQuestion).then(() => res.send())
   }
 })
 
 serverApp.post('/api/get/user', async (req, res) => {
-  storageService.getUser(req.body as GetUserConditions).then(dbRows => {
-    res.send(JSON.stringify(dbRows))
-  })
+  const dbRows = await storageService.getUser(req.body as GetUserConditions)
+  res.send(dbRows)
 })
 
 serverApp.post('/api/get/user_solution', async (req, res) => {
-  storageService.getUserSolution(req.body as GetUserSolutionConditions).then(dbRows => {
-    res.send(JSON.stringify(dbRows))
-  })
+  const dbRows = await storageService.getUserSolution(req.body as GetUserSolutionConditions)
+  res.send(dbRows)
 })
 
 serverApp.post('/api/get/task_set', async (req, res) => {
-  storageService.getTaskSet(req.body as GetTaskSetConditions).then(dbRows => {
-    res.send(JSON.stringify(dbRows))
-  })
+  const dbRows = await storageService.getTaskSet(req.body as GetTaskSetConditions)
+  res.send(dbRows)
 })
 
 serverApp.post('/api/get/prog_task', async (req, res) => {
-  storageService.getProgTask(req.body as GetProgTaskConditions).then(dbRows => {
-    res.send(JSON.stringify(dbRows))
-  })
+  const dbRows = await storageService.getProgTask(req.body as GetProgTaskConditions)
+  res.send(dbRows)
 })
 
 serverApp.post('/api/get/test_task', async (req, res) => {
-  storageService.getTestTask(req.body as GetTestTaskConditions).then(dbRows => {
-    res.send(JSON.stringify(dbRows))
-  })
+  const dbRows = await storageService.getTestTask(req.body as GetTestTaskConditions)
+  res.send(dbRows)
 })
 
 serverApp.post('/api/get/test_question', async (req, res) => {
-  storageService.getTestQuestion(req.body as GetTestQuestionConditions).then(dbRows => {
-    res.send(JSON.stringify(dbRows))
-  })
+  const dbRows = await storageService.getTestQuestion(req.body as GetTestQuestionConditions)
+  res.send(dbRows)
 })
 
-serverApp.post('/api/update', async (req, res) => {
+serverApp.post('/api/update', (req, res) => {
   if ('accessRights' in req.body) {
-    await storageService.updateUser(req.body as User)
+    storageService.updateUser(req.body as User).then(() => res.send())
   } else if ('result' in req.body) {
-    await storageService.updateUserSolution(req.body as UserSolution)
+    storageService.updateUserSolution(req.body as UserSolution).then(() => res.send())
   } else if ('testTasks' in req.body) {
-    await storageService.updateTaskSet(req.body as TaskSet)
+    storageService.updateTaskSet(req.body as TaskSet).then(() => res.send())
   } else if ('conditions' in req.body) {
-    await storageService.updateProgTask(req.body as ProgTask)
+    storageService.updateProgTask(req.body as ProgTask).then(() => res.send())
   } else if ('questions' in req.body) {
-    await storageService.updateTestTask(req.body as TestTask)
+    storageService.updateTestTask(req.body as TestTask).then(() => res.send())
   } else if ('wrongAnswers' in req.body) {
-    await storageService.updateTestQuestion(req.body as TestQuestion)
+    storageService.updateTestQuestion(req.body as TestQuestion).then(() => res.send())
   }
 })
 
-serverApp.post('/api/delete/user', async (req, res) => {
-  await storageService.deleteUser(req.body.id)
+serverApp.post('/api/delete/user', (req, res) => {
+  storageService.deleteUser(req.body.id).then(() => res.send())
 })
 
-serverApp.post('/api/delete/user_solution', async (req, res) => {
-  await storageService.deleteUserSolution(req.body.id)
+serverApp.post('/api/delete/user_solution', (req, res) => {
+  storageService.deleteUserSolution(req.body.id).then(() => res.send())
 })
 
-serverApp.post('/api/delete/task_set', async (req, res) => {
-  await storageService.deleteTaskSet(req.body.id)
+serverApp.post('/api/delete/task_set', (req, res) => {
+  storageService.deleteTaskSet(req.body.id).then(() => res.send())
 })
 
-serverApp.post('/api/delete/prog_task', async (req, res) => {
-  await storageService.deleteProgTask(req.body.id)
+serverApp.post('/api/delete/prog_task', (req, res) => {
+  storageService.deleteProgTask(req.body.id).then(() => res.send())
 })
 
-serverApp.post('/api/delete/test_task', async (req, res) => {
-  await storageService.deleteTestTask(req.body.id)
+serverApp.post('/api/delete/test_task', (req, res) => {
+  storageService.deleteTestTask(req.body.id).then(() => res.send())
 })
 
-serverApp.post('/api/delete/test_question', async (req, res) => {
-  await storageService.deleteTestQuestion(req.body.id)
+serverApp.post('/api/delete/test_question', (req, res) => {
+  storageService.deleteTestQuestion(req.body.id).then(() => res.send())
 })
 
 serverApp.listen(port, () => console.log(`Express server listening on port ${port}`))
