@@ -7,6 +7,20 @@
 Одновременно запустятся Backend и Frontend
 В браузере можно перейти по [http://localhost:3000](http://localhost:3000)
 
+## Запуск обработки задач по программированию
+
+1. Устанавливаем Docker
+2. Скачиваем последнюю версию judge0 `https://github.com/judge0/judge0/releases/download/v1.13.0/judge0-v1.13.0.zip`
+3. Распаковываем и выполняем (занимает примерно 10-20 минут)
+```
+cd judge0-v1.13.0
+docker-compose up -d db redis
+sleep 10s
+docker-compose up -d
+sleep 5s
+```
+4. Заходим в Docker и видим контейнер, который работает по адресу `http://<IP ADDRESS OF YOUR SERVER>:2358`
+
 ## Codestyle
 1. Кавычки одинарные
 2. Точки с запятой не ставим
