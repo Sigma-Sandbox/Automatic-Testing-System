@@ -1,5 +1,5 @@
 import { ProgTask, Task, TaskSet, TestQuestion, TestTask, User, UserSolution } from './entities'
-import { ProgrammingLanguage, TaskType } from './enums'
+import { ProgrammingLanguage, TaskType, Vacancy } from './enums'
 
 export interface GetUserConditions {
   id?: number
@@ -8,6 +8,7 @@ export interface GetUserConditions {
   name?: string
   patronymic?: string
   actualLink?: string
+  vacancy?: Vacancy
 }
 
 export interface GetUserSolutionConditions {

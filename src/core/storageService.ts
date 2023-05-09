@@ -36,10 +36,10 @@ export class StorageService implements IStorageService {
         patronymic VARCHAR(64) NULL,
         email VARCHAR(64) UNIQUE,
         password TEXT NULL,
-        actual_link TEXT[],
+        actual_link TEXT,
         start_link_timestamp TIMESTAMPTZ,
         end_link_timestamp TIMESTAMPTZ,
-        ids_task_set INT[]
+        vacancies JSONB
       );
 
       CREATE TABLE IF NOT EXISTS user_solutions
@@ -101,7 +101,15 @@ export class StorageService implements IStorageService {
   }
 
   async addUser(user: User): Promise<void> {
-    const idsTaskSet: number[] = user.taskSets.map(taskSet => taskSet.id!)
+    const vacancies: { [vacancy: string] : { [numOfTry: string] : number[] } } = {}
+    for (const vacancy in user.vacancies) {
+      const map = user.vacancies[vacancy]
+      const taskSetsIds: { [numOfTry: string] : number[] } = {}
+      for (const numOfTry in map) {
+        taskSetsIds[String(numOfTry)] = map[numOfTry].map((taskSet: TaskSet) => taskSet.id!)
+      }
+      vacancies[vacancy] = taskSetsIds
+    }
 
     try {
       await this.getDB().query(`
@@ -117,7 +125,7 @@ export class StorageService implements IStorageService {
           user.actualLink,
           user.startLinkTimestamp,
           user.endLinkTimestamp,
-          idsTaskSet
+          vacancies
         ]
       )
     } catch (err) {
@@ -175,7 +183,7 @@ export class StorageService implements IStorageService {
   async addProgTask(progTask: ProgTask): Promise<void> {
     const conditions: {[k: string]: [number, number]} = {}
     progTask.conditions.forEach(condition => {
-      return conditions[condition.language] = [condition.maxTime, condition.maxMemory]
+      conditions[condition.language] = [condition.maxTime, condition.maxMemory]
     })
 
     try {
@@ -265,6 +273,10 @@ export class StorageService implements IStorageService {
         strConditions.push(`actual_link = $${index}`)
         params.push(conditions.actualLink)
       }
+      if (conditions.vacancy) {
+        strConditions.push(`vacancies ? $${index}`)
+        params.push(conditions.vacancy)
+      }
     }
 
     if (strConditions.length > 0) {
@@ -283,22 +295,30 @@ export class StorageService implements IStorageService {
         actual_link,
         start_link_timestamp,
         end_link_timestamp,
-        ids_task_set
+        vacancies
       FROM users` + resultCondition + strConditions.join(' AND '),
       params
     )
 
     if (result.rows) {
       const promises: Promise<TaskSet[] | undefined>[] = []
+      const numOfTries: number[] = []
+      const vacancies: string[] = []
       const ids: number[] = []
       const temp: User[] = result.rows.map(row => {
-        row.ids_task_set.forEach((idTaskSet: number) => {
-          const taskSet = this.getTaskSet({ id: idTaskSet })
-          promises.push(taskSet)
-          ids.push(row.id)
-          // TODO: подумать, что делать с пользователями,
-          //  у которых больше нет доступа до некоторых наборов с задачами (индекс не существует)
-        })
+        for (const vac in row.vacancies) {
+          for (const numOfTry in row.vacancies[vac]) {
+            for (const id of row.vacancies[vac][numOfTry]) {
+              const taskSet = this.getTaskSet({id: id})
+              promises.push(taskSet)
+              numOfTries.push(+numOfTry)
+              vacancies.push(vac)
+              ids.push(row.id)
+              // TODO: подумать, что делать с пользователями,
+              //  у которых больше нет доступа до некоторых наборов с задачами (индекс не существует)
+            }
+          }
+        }
 
         return {
           id: row.id,
@@ -311,7 +331,7 @@ export class StorageService implements IStorageService {
           actualLink: row.actual_link,
           startLinkTimestamp: row.start_link_timestamp,
           endLinkTimestamp: row.end_link_timestamp,
-          taskSets: []
+          vacancies: {}
         }
       })
 
@@ -320,14 +340,26 @@ export class StorageService implements IStorageService {
 
       for (let i = 0; i < ids.length; i++) {
         const id = ids[i]
+        const vac = vacancies[i]
+        const numOfTry = numOfTries[i]
         const taskSet = a[i]
         const user = answer.find(t => t.id === id)
         if (user) {
           const index = answer.indexOf(user)
-          answer[index].taskSets.push(taskSet as unknown as TaskSet)
+          const findVac = answer[index].vacancies[vac]
+          if (findVac === undefined) {
+            answer[index].vacancies[vac] = {}
+          }
+          const array = answer[index].vacancies[vac][+numOfTry]
+          if (array) {
+            array.push(taskSet![0])
+            answer[index].vacancies[vac][+numOfTry] = array
+          } else {
+            answer[index].vacancies[vac][+numOfTry] = taskSet!
+          }
         } else {
           const user = temp.find(t => t.id === id)!
-          user.taskSets.push(taskSet as unknown as TaskSet)
+          user.vacancies[vac] = { [+numOfTry]: taskSet! }
           answer.push(user)
         }
       }
@@ -752,7 +784,15 @@ export class StorageService implements IStorageService {
   }
 
   async updateUser(user: User): Promise<void> {
-    const idsTaskSet: number[] = user.taskSets.map(taskSet => taskSet.id!)
+    const vacancies: { [vacancy: string] : { [numOfTry: string] : number[] } } = {}
+    for (const vacancy in user.vacancies) {
+      const map = user.vacancies[vacancy]
+      const taskSetsIds: { [numOfTry: string] : number[] } = {}
+      for (const numOfTry in map) {
+        taskSetsIds[String(numOfTry)] = map[numOfTry].map((taskSet: TaskSet) => taskSet.id!)
+      }
+      vacancies[vacancy] = taskSetsIds
+    }
 
     try {
       await this.getDB().query(`
@@ -766,7 +806,7 @@ export class StorageService implements IStorageService {
           actual_link = $8,
           start_link_timestamp = $9,
           end_link_timestamp = $10,
-          ids_task_set = $11
+          vacancies = $11
         WHERE id = $1`,
         [
           user.id,
@@ -779,7 +819,7 @@ export class StorageService implements IStorageService {
           user.actualLink,
           user.startLinkTimestamp,
           user.endLinkTimestamp,
-          idsTaskSet
+          vacancies
         ]
       )
     } catch (err) {
@@ -857,7 +897,7 @@ export class StorageService implements IStorageService {
   async updateProgTask(progTask: ProgTask): Promise<void> {
     const conditions: {[k: string]: [number, number]} = {}
     progTask.conditions.forEach(condition => {
-      return conditions[condition.language] = [condition.maxTime, condition.maxMemory]
+      conditions[condition.language] = [condition.maxTime, condition.maxMemory]
     })
 
     try {
