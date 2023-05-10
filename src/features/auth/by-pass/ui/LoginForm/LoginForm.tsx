@@ -1,20 +1,15 @@
-import React, { useCallback, useEffect } from 'react'
-import { classNames } from 'shared/lib/classNames/classNames'
+import React, {useCallback, useEffect} from 'react'
+import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './LoginForm.module.scss'
-import { Input } from 'shared/ui/Input/Input'
+import {Input} from 'shared/ui/Input/Input'
 import lockIconSrc from 'shared/assets/icon/lock.svg'
 import userIconSrc from 'shared/assets/icon/user.svg'
-import {
-  Button,
-  ColorButton,
-  SizeButton,
-  ThemeButton,
-} from 'shared/ui/Button/Button'
-import { useDispatch, useSelector } from 'react-redux'
-import { loginActions } from '../../model/slice/loginSlice'
-import { getLoginState } from '../../model/selectors/getLoginState/getLoginState'
-import { loginByUsername } from '../../model/services/loginByUsername/loginByUsername'
-import { AppDispatch } from 'app/providers/StoreProvider/config/store'
+import {Button, ColorButton, SizeButton, ThemeButton} from 'shared/ui/Button/Button'
+import {useDispatch, useSelector} from 'react-redux'
+import {loginActions} from '../../model/slice/loginSlice'
+import {getLoginState} from '../../model/selectors/getLoginState/getLoginState'
+import {loginByUsername} from '../../model/services/loginByUsername/loginByUsername'
+import {AppDispatch} from 'app/providers/StoreProvider/config/store'
 
 interface LoginFormProps {
   className?: string
@@ -22,10 +17,10 @@ interface LoginFormProps {
 }
 
 export const LoginForm: React.FC<LoginFormProps> = (props) => {
-  const { className, onSuccess } = props
+  const {className, onSuccess} = props
 
   const dispatch = useDispatch<AppDispatch>()
-  const { username, password, error, isLoading } = useSelector(getLoginState)
+  const {username, password, error, isLoading} = useSelector(getLoginState)
 
   const onChangeUsername = useCallback(
     (value: string) => {
@@ -42,7 +37,7 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
   )
 
   const onLoginClick = useCallback(async () => {
-    const result = await dispatch(loginByUsername({ username, password }))
+    const result = await dispatch(loginByUsername({username, password}))
     if (result.meta.requestStatus === 'fulfilled') {
       onSuccess()
     }
@@ -64,6 +59,7 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
           icon={lockIconSrc}
           value={password}
           onChange={onChangePassword}
+          type={'password'}
         />
       </div>
 

@@ -31,17 +31,8 @@
 .button.redColor {
   background-color: var(--red-color);
 }
-
-// Theme
-
-.button.clear {
-  padding: 0;
-  margin: 0;
-  background: none;
-}
-
-.button.outline {
-  border: 1px solid var(--font-color);
+.button.redColor:hover {
+  background-color: red;
 }
 
 // Size
@@ -56,4 +47,16 @@
 
 .button.size_xl {
   height: var(--btn-size-xl);
+}
+
+// Theme
+
+.button.clear {
+  padding: 0;
+  margin: 0;
+  background: none;
+}
+
+.button.outline {
+  border: 1px solid var(--font-color);
 }

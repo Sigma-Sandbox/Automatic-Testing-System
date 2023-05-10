@@ -1,10 +1,11 @@
 import {configureStore, ReducersMapObject} from '@reduxjs/toolkit'
 // import { CounterReducer } from "entities/Counter";
-import {userReducer} from 'entities/User'
+import {userReducer} from 'entities/Candidate/User'
 import {StateSchema} from './StateSchema'
 import {loginReducer} from 'features/auth/by-pass'
-import {testTaskReducer} from 'entities/TestTask'
-import {testUserReducer} from 'widgets/Test'
+import {testTaskReducer} from 'entities/Candidate/TestTask'
+import {testUserReducer} from 'widgets/Candidate/Test'
+import {usersDataReducer} from 'entities/Admin/Users'
 
 export function createReduxStore(initialState?: StateSchema) {
   const rootReducers: ReducersMapObject<StateSchema> = {
@@ -12,6 +13,7 @@ export function createReduxStore(initialState?: StateSchema) {
     loginForm: loginReducer,
     testTask: testTaskReducer,
     testUser: testUserReducer,
+    allUsersData: usersDataReducer,
   }
   return configureStore<StateSchema>({
     reducer: rootReducers,

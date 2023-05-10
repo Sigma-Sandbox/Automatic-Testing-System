@@ -9,6 +9,12 @@
   //   box-shadow: var(--shadow-block);
   position: relative;
   flex: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.item:hover {
+  box-shadow: var(--shadow-around-min-block);
 }
 
 .item.loader::after {
@@ -35,6 +41,12 @@
 
 .item.disable {
   opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+.item.disable:hover {
+  box-shadow: none;
 }
 
 .item.success {

@@ -1,37 +1,37 @@
 import {LoginPage} from 'pages/LoginPage'
-import {MainPage} from 'pages/MainPage'
-import {TestPage} from 'pages/TestPage'
+import {MainPage} from 'pages/Candidate/MainPage'
+import {TestPage} from 'pages/Candidate/TestPage'
 import {Navigate, RouteProps} from 'react-router-dom'
 
-export enum AppRoutes {
+export enum AppRoutesCandidate {
   LOGIN = 'login',
-  MAIN = 'main',
+  CANDIDATE_MAIN = 'main',
   DEFAULT = 'default',
-  TEST = 'test',
+  CANDIDATE_TEST = 'test',
 }
 
-export const RoutePath: Record<AppRoutes, string> = {
-  [AppRoutes.MAIN]: '/main',
-  [AppRoutes.LOGIN]: '/login',
-  [AppRoutes.DEFAULT]: '*',
-  [AppRoutes.TEST]: '/test',
+export const RoutePathCandidate: Record<AppRoutesCandidate, string> = {
+  [AppRoutesCandidate.CANDIDATE_MAIN]: '/main',
+  [AppRoutesCandidate.LOGIN]: '/login',
+  [AppRoutesCandidate.DEFAULT]: '*',
+  [AppRoutesCandidate.CANDIDATE_TEST]: '/test',
 }
 
-export const routeConfig: Record<AppRoutes, RouteProps> = {
-  [AppRoutes.MAIN]: {
-    path: RoutePath.main,
+export const routeConfigCandidate: Record<AppRoutesCandidate, RouteProps> = {
+  [AppRoutesCandidate.CANDIDATE_MAIN]: {
+    path: RoutePathCandidate.main,
     element: <MainPage />,
   },
-  [AppRoutes.LOGIN]: {
-    path: RoutePath.login,
+  [AppRoutesCandidate.LOGIN]: {
+    path: RoutePathCandidate.login,
     element: <LoginPage />,
   },
-  [AppRoutes.TEST]: {
-    path: RoutePath.test,
+  [AppRoutesCandidate.CANDIDATE_TEST]: {
+    path: RoutePathCandidate.test,
     element: <TestPage />,
   },
-  [AppRoutes.DEFAULT]: {
-    path: RoutePath.default,
-    element: <Navigate to={RoutePath.login} replace />,
+  [AppRoutesCandidate.DEFAULT]: {
+    path: RoutePathCandidate.default,
+    element: <Navigate to={RoutePathCandidate.login} replace />,
   },
 }

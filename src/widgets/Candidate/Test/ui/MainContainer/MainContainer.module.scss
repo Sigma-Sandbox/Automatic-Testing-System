@@ -1,0 +1,67 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  scroll-snap-type: x mandatory;
+  max-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.mainItem {
+  height: 100vh;
+  padding: 15px 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: none;
+  transform: translateY(calc(var(--count-main-test-item) * -100vh));
+  transition: all 0.5s ease;
+}
+
+.mainItem.animate {
+  transition: all 0.5s ease;
+  transform: translateY(calc(var(--count-main-test-item) * -100vh)) scale(0.9);
+}
+
+.btn {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+
+.toggleTask {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.3s ease 0.5s;
+  z-index: calc(var(--zIndex-navbar) + 10);
+}
+
+.toggleTask:hover img {
+  width: 37px;
+  height: 37px;
+}
+.toggleTask img {
+  width: 35px;
+  height: 35px;
+  transition: all 0.3s ease;
+}
+.toggleUp.hide {
+  top: -200%;
+}
+.toggleDown.hide {
+  bottom: -200%;
+}
+.toggleUp {
+  top: 50px;
+}
+.toggleDown {
+  bottom: 10px;
+}
+
+.toggleTask.disable {
+  opacity: 0.5;
+  pointer-events: none;
+}

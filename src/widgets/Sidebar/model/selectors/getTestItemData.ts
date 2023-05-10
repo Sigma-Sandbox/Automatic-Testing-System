@@ -1,6 +1,6 @@
 import {createSelector} from '@reduxjs/toolkit'
 import {StateSchema} from 'app/providers/StoreProvider'
-import {TestUser, TestUserSchema} from 'widgets/Test'
+import {TestUser, TestUserSchema} from 'widgets/Candidate/Test'
 
 export const getTestItemData = createSelector(
   (state: StateSchema) => state.testUser,

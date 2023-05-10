@@ -1,7 +1,7 @@
 import React from 'react'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './SidebarItem.module.scss'
-import {StatusItemTest} from 'widgets/Test'
+import {StatusItemTest} from 'widgets/Candidate/Test'
 
 interface SidebarItemProps {
   className?: string
@@ -16,7 +16,11 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
 
   return (
     <div
-      className={classNames(cls.item, {[cls.select]: selectId === count}, [className, cls[status], cls.backImg])}
+      className={classNames(
+        cls.item,
+        {[cls.select]: selectId === count, [cls.disable]: selectId === '0' && count !== '0'},
+        [className, cls[status], cls.backImg]
+      )}
       onClick={() => handler(+count)}
     >
       {count}

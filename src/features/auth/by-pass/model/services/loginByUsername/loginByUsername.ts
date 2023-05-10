@@ -1,9 +1,9 @@
 import {createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
-import {testTaskActions} from 'entities/TestTask/model/slice/testTaskSlice'
-import {User, userActions} from 'entities/User'
-import { UserRole } from 'core/enums'
-import { testTaskDataExample } from 'entities/TestTask/model/consts/testTaskConsts'
+import {testTaskActions} from 'entities/Candidate/TestTask/'
+import {User, userActions} from 'entities/Candidate/User'
+import {UserRole} from 'core/enums'
+import {testTaskDataExample} from 'entities/Candidate/TestTask/model/consts/testTaskConsts'
 
 interface LoginByUsernameProps {
   username: string
@@ -19,21 +19,25 @@ export const loginByUsername = createAsyncThunk<User, LoginByUsernameProps, {rej
       // if (!response.data) {
       //     throw new Error();
       // }
+      console.log(thunkAPI.getState())
 
       // Mock data
       thunkAPI.dispatch(
         userActions.setAuthData({
           id: 0,
-          username: 'gigpopotam',
-          firstname: 'Иван',
-          lastname: 'Иванов',
-          roles: UserRole.APPLICANT,
+          name: 'Иван',
+          surname: 'Иванов',
+          accessRights: UserRole.APPLICANT,
           position: 'Java-разработчик',
+          email: 'dkjfa@gmail.com',
+          password: 'dalkjfa',
+          startLinkTimestamp: 1234,
+          endLinkTimestamp: 1234,
+          actualLink: 'dzc',
+          taskSets: testTaskDataExample,
         })
       )
-      thunkAPI.dispatch(
-        testTaskActions.setTestTaskData(testTaskDataExample)
-      )
+      thunkAPI.dispatch(testTaskActions.setTestTaskData(testTaskDataExample))
 
       return response.data
     } catch (e) {

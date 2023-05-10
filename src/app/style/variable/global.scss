@@ -26,6 +26,7 @@
   --shadow-block: 0px 4px 4px var(--shadow-color);
   --shadow-big-block: 0px 4px 4px var(--shadow-deep-color);
   --shadow-around-block: 0px 0px 10px var(--shadow-deep-color);
+  --shadow-around-min-block: 0px 0px 5px var(--shadow-deep-color);
 
   // Navbar height
   --navbar-height: 80px;
@@ -41,4 +42,8 @@
   --count-main-test-item: 0;
 
   --count-test-item: 0;
+
+  // z-index
+
+  --zIndex-navbar: 10000;
 }

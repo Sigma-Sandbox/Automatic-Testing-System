@@ -6,7 +6,7 @@ import {AppRouter} from './providers/router'
 import {Loader} from 'shared/ui/Loader/Loader'
 import {Navbar} from 'widgets/Navbar'
 import {Sidebar} from 'widgets/Sidebar'
-import {TestPage} from 'pages/TestPage'
+import {TestPage} from 'pages/Candidate/TestPage'
 
 function App() {
   return (

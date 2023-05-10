@@ -1,0 +1,125 @@
+.taskCode {
+  width: 100%;
+  padding: 10px;
+  padding-top: calc(var(--navbar-height) + 10px);
+}
+.wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  gap: 5px;
+}
+.text {
+  flex-basis: 40%;
+  background-color: var(--invert-bg-color);
+  border-radius: 10px;
+  padding: 10px 20px 30px 20px;
+  margin-bottom: 44px;
+}
+
+.taskNum {
+}
+.descrip {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.descripName {
+  box-shadow: var(--shadow-around-block);
+  border-radius: 10px;
+  padding: 10px 20px;
+  width: fit-content;
+  margin-top: 20px;
+}
+.descripComplexity {
+  opacity: 0.5;
+}
+.descripText {
+}
+.descripExample {
+  background-color: var(--bg-color);
+  padding: 20px;
+  border-radius: 10px;
+  white-space: break-spaces;
+}
+.descripCond {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.descripCondList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 20px;
+}
+.code {
+  display: flex;
+  flex-basis: 60%;
+  flex-direction: column;
+  gap: 5px;
+}
+.codeRedact {
+  flex-basis: 65%;
+  padding: 5px;
+  border-radius: 10px 10px 0 0;
+  height: 100%;
+  background-color: white;
+  position: relative;
+  overflow: hidden;
+}
+.codeResult {
+  padding: 5px;
+  flex-basis: 35%;
+  position: relative;
+  background-color: white;
+  height: 100%;
+  border-radius: 0 0 10px 10px;
+}
+
+.codeBtns {
+  height: 40px;
+  padding-right: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.codeEditorWrap {
+  height: 100%;
+  border-radius: 10px 10px 0 0;
+}
+.codeEditor {
+  height: 100%;
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+}
+
+.topPanel {
+  display: flex;
+  align-items: center;
+}
+
+.codeName {
+  height: 40px;
+  font-size: 16px;
+  margin: 5px 0px 10px 10px;
+  box-shadow: var(--shadow-min-block);
+  display: inline-block;
+  border-radius: 5px;
+  padding: 8px 10px 5px 10px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.languageSelector {
+  composes: codeName;
+  height: auto;
+  padding: 0;
+}
+
+.execute {
+  composes: codeName;
+  border: None;
+}
