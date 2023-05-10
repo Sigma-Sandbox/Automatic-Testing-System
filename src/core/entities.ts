@@ -11,7 +11,7 @@ export interface User {
   actualLink: string
   startLinkTimestamp: number
   endLinkTimestamp: number
-  taskSets: TaskSet[]
+  vacancies: { [vacancy: string] : { [numOfTry: number]: TaskSet[] } }
 }
 
 export interface UserSolution {
