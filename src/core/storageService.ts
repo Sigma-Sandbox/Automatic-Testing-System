@@ -2,11 +2,17 @@ import {
   GetProgTaskConditions,
   GetTaskSetConditions,
   GetTestQuestionConditions,
+  GetTaskSetConditions,
+  GetTestQuestionConditions,
   GetTestTaskConditions,
   GetUserConditions,
   GetUserSolutionConditions,
   IStorageService,
+  IStorageService,
 } from './interfaces'
+import {Pool} from 'pg'
+import {Condition, ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution} from './entities'
+import {ProgrammingLanguage} from './enums'
 import {Pool} from 'pg'
 import {Condition, ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution} from './entities'
 import {ProgrammingLanguage} from './enums'
@@ -14,6 +20,7 @@ import {ProgrammingLanguage} from './enums'
 export class StorageService implements IStorageService {
   db: Pool | undefined = undefined
 
+  constructor() {}
   constructor() {}
 
   async setPool(pool: Pool) {
@@ -97,6 +104,7 @@ export class StorageService implements IStorageService {
         wrong_answers TEXT[],
         correct_answers TEXT[]
       );`)
+      );`)
   }
 
   async addUser(user: User): Promise<void> {
@@ -111,6 +119,8 @@ export class StorageService implements IStorageService {
     }
 
     try {
+      await this.getDB().query(
+        `
       await this.getDB().query(
         `
         INSERT INTO users
@@ -137,6 +147,8 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         INSERT INTO user_solutions
         VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [
@@ -151,6 +163,7 @@ export class StorageService implements IStorageService {
           userSolution.result,
           userSolution.programCode,
           userSolution.questionAnswers,
+          userSolution.questionAnswers,
         ]
       )
     } catch (err) {
@@ -161,8 +174,12 @@ export class StorageService implements IStorageService {
   async addTaskSet(taskSet: TaskSet): Promise<void> {
     const idsTestTask: number[] = taskSet.testTasks.map((testTask) => testTask.id!)
     const idsProgTask: number[] = taskSet.progTasks.map((progTask) => progTask.id!)
+    const idsTestTask: number[] = taskSet.testTasks.map((testTask) => testTask.id!)
+    const idsProgTask: number[] = taskSet.progTasks.map((progTask) => progTask.id!)
 
     try {
+      await this.getDB().query(
+        `
       await this.getDB().query(
         `
         INSERT INTO task_sets
@@ -174,6 +191,7 @@ export class StorageService implements IStorageService {
           idsProgTask,
           taskSet.creator,
           new Date(taskSet.timeOfCreation),
+          taskSet.language,
           taskSet.language,
         ]
       )
@@ -191,6 +209,8 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         INSERT INTO prog_tasks
         VALUES(DEFAULT, $1, $2, $3, $4, $5)`,
         [
@@ -198,6 +218,7 @@ export class StorageService implements IStorageService {
           progTask.description,
           progTask.autoTests,
           progTask.complexityAssessment,
+          conditions,
           conditions,
         ]
       )
@@ -210,11 +231,15 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         INSERT INTO test_tasks
         VALUES(DEFAULT, $1, $2, $3, $4)`,
         [
           testTask.name,
           testTask.description,
+          testTask.questions.map((test) => test.id),
+          testTask.execTime,
           testTask.questions.map((test) => test.id),
           testTask.execTime,
         ]
@@ -228,12 +253,15 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         INSERT INTO test_questions
         VALUES(DEFAULT, $1, $2, $3, $4)`,
         [
           testQuestion.description,
           testQuestion.points,
           testQuestion.wrongAnswers,
+          testQuestion.correctAnswers,
           testQuestion.correctAnswers,
         ]
       )
@@ -288,6 +316,8 @@ export class StorageService implements IStorageService {
       resultCondition = ` WHERE `
     }
 
+    const result = await this.getDB().query(
+      `
     const result = await this.getDB().query(
       `
       SELECT
@@ -352,6 +382,7 @@ export class StorageService implements IStorageService {
         const numOfTry = numOfTries[i]
         const taskSet = a[i]
         const user = answer.find((t) => t.id === id)
+        const user = answer.find((t) => t.id === id)
         if (user) {
           const index = answer.indexOf(user)
           const findVac = answer[index].vacancies[vac]
@@ -378,6 +409,9 @@ export class StorageService implements IStorageService {
     }
   }
 
+  async getUserSolution(
+    conditions?: GetUserSolutionConditions
+  ): Promise<UserSolution[] | undefined> {
   async getUserSolution(
     conditions?: GetUserSolutionConditions
   ): Promise<UserSolution[] | undefined> {
@@ -419,6 +453,8 @@ export class StorageService implements IStorageService {
 
     const result = await this.getDB().query(
       `
+    const result = await this.getDB().query(
+      `
       SELECT
         id,
         user_id,
@@ -435,10 +471,14 @@ export class StorageService implements IStorageService {
       FROM user_solutions` +
         resultCondition +
         strConditions.join(' AND '),
+      FROM user_solutions` +
+        resultCondition +
+        strConditions.join(' AND '),
       params
     )
 
     if (result.rows) {
+      return result.rows.map((row) => {
       return result.rows.map((row) => {
         return {
           id: row.id,
@@ -452,6 +492,7 @@ export class StorageService implements IStorageService {
           progTaskMemory: row.prog_task_memory,
           result: row.result,
           programCode: row.program_code,
+          questionAnswers: row.question_answers,
           questionAnswers: row.question_answers,
         }
       })
@@ -509,6 +550,8 @@ export class StorageService implements IStorageService {
 
     const result = await this.getDB().query(
       `
+    const result = await this.getDB().query(
+      `
       SELECT
         id,
         name,
@@ -521,6 +564,9 @@ export class StorageService implements IStorageService {
       FROM task_sets` +
         resultCondition +
         strConditions.join(' AND '),
+      FROM task_sets` +
+        resultCondition +
+        strConditions.join(' AND '),
       params
     )
 
@@ -530,7 +576,9 @@ export class StorageService implements IStorageService {
       const idsTT: number[] = []
       const idsPT: number[] = []
       const temp: TaskSet[] = result.rows.map((row) => {
+      const temp: TaskSet[] = result.rows.map((row) => {
         row.ids_test_task.forEach((idTestTask: number) => {
+          const testTask = this.getTestTask({id: idTestTask})
           const testTask = this.getTestTask({id: idTestTask})
           promisesTT.push(testTask)
           idsTT.push(row.id)
@@ -539,6 +587,7 @@ export class StorageService implements IStorageService {
         })
 
         row.ids_prog_task.forEach((idProgTask: number) => {
+          const progTask = this.getProgTask({id: idProgTask})
           const progTask = this.getProgTask({id: idProgTask})
           promisesPT.push(progTask)
           idsPT.push(row.id)
@@ -555,6 +604,7 @@ export class StorageService implements IStorageService {
           creator: row.creator,
           timeOfCreation: row.time_of_creation,
           language: row.language,
+          language: row.language,
         }
       })
 
@@ -568,10 +618,12 @@ export class StorageService implements IStorageService {
         const id = idsTT[i]
         const testTask = a[i]
         const taskSet = answer_temp.find((t) => t.id === id)
+        const taskSet = answer_temp.find((t) => t.id === id)
         if (taskSet) {
           const index = answer_temp.indexOf(taskSet)
           answer_temp[index].testTasks.push(testTask as unknown as TestTask)
         } else {
+          const taskSet = temp.find((t) => t.id === id)!
           const taskSet = temp.find((t) => t.id === id)!
           taskSet.testTasks.push(testTask as unknown as TestTask)
           answer_temp.push(taskSet)
@@ -585,6 +637,7 @@ export class StorageService implements IStorageService {
           const index = answer.indexOf(taskSet)
           answer[index].progTasks.push(progTask as unknown as ProgTask)
         } else {
+          const taskSet = answer_temp.find((t) => t.id === id)!
           const taskSet = answer_temp.find((t) => t.id === id)!
           taskSet.progTasks.push(progTask as unknown as ProgTask)
           answer.push(taskSet)
@@ -627,6 +680,8 @@ export class StorageService implements IStorageService {
 
     const result = await this.getDB().query(
       `
+    const result = await this.getDB().query(
+      `
       SELECT
         id,
         name,
@@ -637,16 +692,21 @@ export class StorageService implements IStorageService {
       FROM prog_tasks` +
         resultCondition +
         strConditions.join(' AND '),
+      FROM prog_tasks` +
+        resultCondition +
+        strConditions.join(' AND '),
       params
     )
 
     if (result.rows) {
+      return result.rows.map((row) => {
       return result.rows.map((row) => {
         const conditions: Condition[] = []
         for (let key in row.conditions) {
           conditions.push({
             language: key as ProgrammingLanguage,
             maxTime: row.conditions[key][0],
+            maxMemory: row.conditions[key][1],
             maxMemory: row.conditions[key][1],
           })
         }
@@ -657,6 +717,7 @@ export class StorageService implements IStorageService {
           description: row.description,
           autoTests: row.auto_tests,
           complexityAssessment: row.complexity_assessment,
+          conditions: conditions,
           conditions: conditions,
         }
       })
@@ -695,12 +756,17 @@ export class StorageService implements IStorageService {
 
     const result = await this.getDB().query(
       `
+    const result = await this.getDB().query(
+      `
       SELECT
         id,
         name,
         description,
         ids_question,
         exec_time
+      FROM test_tasks` +
+        resultCondition +
+        strConditions.join(' AND '),
       FROM test_tasks` +
         resultCondition +
         strConditions.join(' AND '),
@@ -711,7 +777,9 @@ export class StorageService implements IStorageService {
       const promises: Promise<TestQuestion[] | undefined>[] = []
       const ids: number[] = []
       const temp: TestTask[] = result.rows.map((row) => {
+      const temp: TestTask[] = result.rows.map((row) => {
         row.ids_question.forEach((idQuestion: number) => {
+          const testQuestion = this.getTestQuestion({id: idQuestion})
           const testQuestion = this.getTestQuestion({id: idQuestion})
           promises.push(testQuestion)
           ids.push(row.id)
@@ -725,6 +793,7 @@ export class StorageService implements IStorageService {
           description: row.description,
           questions: [],
           execTime: row.exec_time,
+          execTime: row.exec_time,
         }
       })
 
@@ -735,10 +804,12 @@ export class StorageService implements IStorageService {
         const id = ids[i]
         const question = a[i]
         const testTask = answer.find((t) => t.id === id)
+        const testTask = answer.find((t) => t.id === id)
         if (testTask) {
           const index = answer.indexOf(testTask)
           answer[index].questions.push(question as unknown as TestQuestion)
         } else {
+          const testTask = temp.find((t) => t.id === id)!
           const testTask = temp.find((t) => t.id === id)!
           testTask.questions.push(question as unknown as TestQuestion)
           answer.push(testTask)
@@ -751,6 +822,9 @@ export class StorageService implements IStorageService {
     }
   }
 
+  async getTestQuestion(
+    conditions?: GetTestQuestionConditions
+  ): Promise<TestQuestion[] | undefined> {
   async getTestQuestion(
     conditions?: GetTestQuestionConditions
   ): Promise<TestQuestion[] | undefined> {
@@ -782,6 +856,8 @@ export class StorageService implements IStorageService {
 
     const result = await this.getDB().query(
       `
+    const result = await this.getDB().query(
+      `
       SELECT
         id,
         description,
@@ -791,16 +867,21 @@ export class StorageService implements IStorageService {
       FROM test_questions` +
         resultCondition +
         strConditions.join(' AND '),
+      FROM test_questions` +
+        resultCondition +
+        strConditions.join(' AND '),
       params
     )
 
     if (result.rows) {
+      return result.rows.map((row) => {
       return result.rows.map((row) => {
         return {
           id: row.id,
           description: row.description,
           points: row.points,
           wrongAnswers: row.wrong_answers,
+          correctAnswers: row.correct_answers,
           correctAnswers: row.correct_answers,
         }
       })
@@ -822,6 +903,8 @@ export class StorageService implements IStorageService {
     }
 
     try {
+      await this.getDB().query(
+        `
       await this.getDB().query(
         `
         UPDATE users SET
@@ -859,6 +942,8 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         UPDATE user_solutions SET
           user_id = $2,
           task_type = $3,
@@ -885,6 +970,7 @@ export class StorageService implements IStorageService {
           userSolution.result,
           userSolution.programCode,
           userSolution.questionAnswers,
+          userSolution.questionAnswers,
         ]
       )
     } catch (err) {
@@ -895,8 +981,12 @@ export class StorageService implements IStorageService {
   async updateTaskSet(taskSet: TaskSet): Promise<void> {
     const idsTestTask: number[] = taskSet.testTasks.map((testTask) => testTask.id!)
     const idsProgTask: number[] = taskSet.progTasks.map((progTask) => progTask.id!)
+    const idsTestTask: number[] = taskSet.testTasks.map((testTask) => testTask.id!)
+    const idsProgTask: number[] = taskSet.progTasks.map((progTask) => progTask.id!)
 
     try {
+      await this.getDB().query(
+        `
       await this.getDB().query(
         `
         UPDATE task_sets SET
@@ -917,6 +1007,7 @@ export class StorageService implements IStorageService {
           taskSet.creator,
           new Date(taskSet.timeOfCreation),
           taskSet.language,
+          taskSet.language,
         ]
       )
     } catch (err) {
@@ -933,6 +1024,8 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         UPDATE prog_tasks SET
           name = $2,
           description = $3,
@@ -947,6 +1040,7 @@ export class StorageService implements IStorageService {
           progTask.autoTests,
           progTask.complexityAssessment,
           conditions,
+          conditions,
         ]
       )
     } catch (err) {
@@ -956,6 +1050,8 @@ export class StorageService implements IStorageService {
 
   async updateTestTask(testTask: TestTask): Promise<void> {
     try {
+      await this.getDB().query(
+        `
       await this.getDB().query(
         `
         UPDATE test_tasks SET
@@ -970,6 +1066,8 @@ export class StorageService implements IStorageService {
           testTask.description,
           testTask.questions.map((test) => test.id),
           testTask.execTime,
+          testTask.questions.map((test) => test.id),
+          testTask.execTime,
         ]
       )
     } catch (err) {
@@ -979,6 +1077,8 @@ export class StorageService implements IStorageService {
 
   async updateTestQuestion(testQuestion: TestQuestion): Promise<void> {
     try {
+      await this.getDB().query(
+        `
       await this.getDB().query(
         `
         UPDATE test_questions SET
@@ -993,6 +1093,7 @@ export class StorageService implements IStorageService {
           testQuestion.points,
           testQuestion.wrongAnswers,
           testQuestion.correctAnswers,
+          testQuestion.correctAnswers,
         ]
       )
     } catch (err) {
@@ -1004,8 +1105,11 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         DELETE FROM users
         WHERE id = $1`,
+        [id]
         [id]
       )
     } catch (err) {
@@ -1017,8 +1121,11 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         DELETE FROM user_solutions
         WHERE id = $1`,
+        [id]
         [id]
       )
     } catch (err) {
@@ -1030,8 +1137,11 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         DELETE FROM task_sets
         WHERE id = $1`,
+        [id]
         [id]
       )
     } catch (err) {
@@ -1043,8 +1153,11 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         DELETE FROM prog_tasks
         WHERE id = $1`,
+        [id]
         [id]
       )
     } catch (err) {
@@ -1056,8 +1169,11 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         DELETE FROM test_tasks
         WHERE id = $1`,
+        [id]
         [id]
       )
     } catch (err) {
@@ -1069,8 +1185,11 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(
         `
+      await this.getDB().query(
+        `
         DELETE FROM test_questions
         WHERE id = $1`,
+        [id]
         [id]
       )
     } catch (err) {
