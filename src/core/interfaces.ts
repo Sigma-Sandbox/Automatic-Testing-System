@@ -1,4 +1,4 @@
-import { ProgTask, Task, TaskSet, TestQuestion, TestTask, User, UserSolution } from './entities'
+import { ProgTask, Task, TaskSet, TestQuestion, TestTask, User, UserSolution, VacancyTest } from './entities'
 import { ProgrammingLanguage, TaskType, Vacancy } from './enums'
 
 export interface GetUserConditions {
@@ -8,14 +8,22 @@ export interface GetUserConditions {
   name?: string
   patronymic?: string
   actualLink?: string
-  vacancy?: Vacancy
+  vacancyId?: number
 }
 
 export interface GetUserSolutionConditions {
   id?: number
   userId?: number
+  vacancyId?: number
   taskType?: TaskType
   taskId?: number
+  taskSetId?: number
+  numOfTry?: number
+}
+
+export interface GetVacancyTestConditions {
+  id?: number
+  name?: string
   taskSetId?: number
 }
 
@@ -49,6 +57,7 @@ export interface GetTestQuestionConditions {
 export interface IStorageService {
   addUser(user: User): Promise<void>
   addUserSolution(userSolution: UserSolution): Promise<void>
+  addVacancyTest(vacancyTest: VacancyTest): Promise<void>
   addTaskSet(taskSet: TaskSet): Promise<void>
   addProgTask(progTask: ProgTask): Promise<void>
   addTestTask(testTask: TestTask): Promise<void>
@@ -56,6 +65,7 @@ export interface IStorageService {
 
   getUser(conditions?: GetUserConditions): Promise<User[] | undefined>
   getUserSolution(conditions?: GetUserSolutionConditions): Promise<UserSolution[] | undefined>
+  getVacancyTest(conditions?: GetVacancyTestConditions): Promise<VacancyTest[] | undefined>
   getTaskSet(conditions?: GetTaskSetConditions): Promise<TaskSet[] | undefined>
   getProgTask(conditions?: GetProgTaskConditions): Promise<ProgTask[] | undefined>
   getTestTask(conditions?: GetTestTaskConditions): Promise<TestTask[] | undefined>
@@ -63,6 +73,7 @@ export interface IStorageService {
 
   updateUser(user: User): Promise<void>
   updateUserSolution(userSolution: UserSolution): Promise<void>
+  updateVacancyTest(vacancyTest: VacancyTest): Promise<void>
   updateTaskSet(taskSet: TaskSet): Promise<void>
   updateProgTask(progTask: ProgTask): Promise<void>
   updateTestTask(testTask: TestTask): Promise<void>
@@ -70,6 +81,7 @@ export interface IStorageService {
 
   deleteUser(id: number): Promise<void>
   deleteUserSolution(id: number): Promise<void>
+  deleteVacancyTest(id: number): Promise<void>
   deleteTaskSet(id: number): Promise<void>
   deleteProgTask(id: number): Promise<void>
   deleteTestTask(id: number): Promise<void>

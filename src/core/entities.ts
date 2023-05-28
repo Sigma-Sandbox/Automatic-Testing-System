@@ -1,4 +1,13 @@
-import { UserRole, ProgrammingLanguage, TaskResult, TaskType } from './enums'
+import { UserRole, ProgrammingLanguage, TaskResult, TaskType, Vacancy } from './enums'
+
+export type WithNumOfTry<T> = T & { numOfTry: number }
+export type WithVacancyId<T> = T & { vacancyId: number }
+
+export interface ResultVacancyTest {
+  vacancyId: number
+  vacancyName: Vacancy
+  userSolutions: UserSolution[]
+}
 
 export interface User {
   id?: number
@@ -11,12 +20,14 @@ export interface User {
   actualLink: string
   startLinkTimestamp: number
   endLinkTimestamp: number
-  vacancies: { [vacancy: string] : { [numOfTry: number]: TaskSet[] } }
+  vacancies: ResultVacancyTest[]
 }
 
 export interface UserSolution {
   id?: number
+  numOfTry: number
   userId: number
+  vacancyId: number
   taskType: TaskType
   taskId: number
   taskSetId: number
@@ -27,6 +38,12 @@ export interface UserSolution {
   result: TaskResult
   programCode?: string
   questionAnswers?: string[]
+}
+
+export interface VacancyTest {
+  id?: number
+  name: string
+  taskSets: TaskSet[]
 }
 
 export interface TaskSet {
@@ -50,6 +67,7 @@ export interface Condition {
   language: ProgrammingLanguage
   maxTime: number
   maxMemory: number
+  codeExample: string
 }
 
 export interface ProgTask extends Task {

@@ -5,7 +5,6 @@ export interface ProgTask {
   id: number
   description: string
   name: string
-  examples?: string
   condition: Condition[]
   complexityAssessment?: number
 }
@@ -38,6 +37,7 @@ export interface TaskSetPack {
   name: string
   description?: string
   timeLimits: number
+  numOfTry: number
   data: TaskSet[]
 }
 export interface TaskSetPackSchema {

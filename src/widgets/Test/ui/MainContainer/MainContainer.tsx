@@ -40,7 +40,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
     if (testData?.data) {
       dispatch(testUserActions.setInitialData(testData.data))
     }
-  }, [testData])
+  }, [testData?.data])
 
   const goNextPage = () => {
     dispatch(testUserActions.setNewCurrentItem(+testItemData.currentItem + 1))
@@ -62,11 +62,11 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
       testData.data?.forEach((el) => {
         if ('description' in el) {
           taskItemList.push(
-            <TaskCode className={classNames(cls.mainItem, {[cls.animate]: isSwitchPage}, [])} dataItem={el}></TaskCode>
+            <TaskCode className={classNames(cls.mainItem, {[cls.animate]: isSwitchPage}, [])} dataItem={{ ...el, numOfTry: testData.numOfTry, vacancyId: testData.vacancyId }}></TaskCode>
           )
         } else {
           taskItemList.push(
-            <TaskTest className={classNames(cls.mainItem, {[cls.animate]: isSwitchPage}, [])} dataItem={el}></TaskTest>
+            <TaskTest className={classNames(cls.mainItem, {[cls.animate]: isSwitchPage}, [])} dataItem={{ ...el, numOfTry: testData.numOfTry, vacancyId: testData.vacancyId }}></TaskTest>
           )
         }
       })

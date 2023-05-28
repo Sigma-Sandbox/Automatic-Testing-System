@@ -6,6 +6,7 @@ export const testTaskDataExample: TaskSetPack = {
   name: 'Java',
   timeLimits: 10800,
   description: '',
+  numOfTry: 1,
   data: [
     {
       description: 'Cool Task',
@@ -20,11 +21,9 @@ export const testTaskDataExample: TaskSetPack = {
           name: 'Сложная функция',
           complexityAssessment: 5,
           condition: [
-            {language: ProgrammingLanguage.JavaScript, maxTime: 10, maxMemory: 256},
-            {language: ProgrammingLanguage.Java, maxTime: 5, maxMemory: 128},
-          ],
-          examples:
-            'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0',
+            {language: ProgrammingLanguage.JavaScript, maxTime: 10, maxMemory: 256, codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'},
+            {language: ProgrammingLanguage.Java, maxTime: 5, maxMemory: 128, codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'},
+          ]
         },
         {
           id: 2,
@@ -33,10 +32,8 @@ export const testTaskDataExample: TaskSetPack = {
           name: 'Сложная функция',
           complexityAssessment: 5,
           condition: [
-            {language: ProgrammingLanguage.Java, maxTime: 5, maxMemory: 128},
-          ],
-          examples:
-            'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0',
+            {language: ProgrammingLanguage.Java, maxTime: 5, maxMemory: 128, codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'},
+          ]
         },
         {
           name: 'Тест на знание JS',

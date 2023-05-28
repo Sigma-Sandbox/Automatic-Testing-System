@@ -9,12 +9,12 @@ import monacoThemes from 'monaco-themes/themes/themelist.json'
 import axios from 'axios'
 import LanguageSelector from '../LanguageSelector'
 import { SingleValue } from 'react-select'
-import { UserSolution } from 'core/entities'
+import { UserSolution, WithNumOfTry, WithVacancyId } from 'core/entities'
 import { TaskResult, TaskType } from 'core/enums'
 
 interface TaskCodeProps {
   className?: string
-  dataItem: ProgTask
+  dataItem: WithVacancyId<WithNumOfTry<ProgTask>>
 }
 
 export enum ActionTypeCode {
@@ -23,8 +23,9 @@ export enum ActionTypeCode {
 
 export const TaskCode: React.FC<TaskCodeProps> = (props) => {
   const className = props.className || ''
-  const {id, description, name, examples, condition, complexityAssessment} = props.dataItem
-  const [code, setCode] = useState(examples || '')
+  const {id, description, name, condition, complexityAssessment, numOfTry, vacancyId} = props.dataItem
+  const examples = condition[0].codeExample
+  const [code, setCode] = useState(condition[0].codeExample || '')
   const [outputDetails, setOutputDetails]: any = useState(undefined)
   const [language, setLanguage] = useState(languageOptions.find(l => l.value === condition[0].language)!)
   const [processing, setProcessing] = useState(false)
@@ -38,6 +39,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
       if (cond) {
         setMaxTimeExecution(cond.maxTime)
         setMaxMemoryExecution(cond.maxMemory)
+        setCode(cond.codeExample)
       }
     }
   }
@@ -109,7 +111,9 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
     // FIXME: userId, execStartTime, taskSetId поправить на нужные
     let userSolution: UserSolution = {
       taskId: id,
+      numOfTry: numOfTry,
       userId: 1,
+      vacancyId: vacancyId,
       execStartTime: Date.now() - 1000,
       execEndTime: Date.now(),
       programCode: code,
