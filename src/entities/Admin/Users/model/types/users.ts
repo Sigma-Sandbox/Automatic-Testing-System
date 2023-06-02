@@ -15,7 +15,9 @@ export interface UsersData {
 }
 export interface UserSolution {
   id?: number
+  numOfTry: number
   userId: number
+  vacancyId: number
   taskType: TaskType
   taskId: number
   taskSetId: number

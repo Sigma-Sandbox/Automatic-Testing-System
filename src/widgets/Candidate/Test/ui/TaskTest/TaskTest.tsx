@@ -6,12 +6,12 @@ import markImg from 'shared/assets/icon/check.svg'
 import {TaskTestStart} from './TaskTestStart'
 import {TimeType, useTimer} from 'shared/lib/hooks/useTimer/useTimer'
 import {TestTask} from 'entities/Candidate/TestTask'
-import {UserSolution} from 'core/entities'
+import { UserSolution, WithNumOfTry, WithVacancyId } from 'core/entities'
 import {TaskResult, TaskType} from 'core/enums'
 
 interface TaskTestProps {
   className?: string
-  dataItem: TestTask
+  dataItem: WithVacancyId<WithNumOfTry<TestTask>>
   isStartedTest: (state: boolean) => void
 }
 
@@ -21,7 +21,7 @@ enum TypeTransformState {
 }
 export const TaskTest: React.FC<TaskTestProps> = (props) => {
   const className = props.className || ''
-  const {id, name = 'Тест на знание JS', execTime = 1800, questions} = props.dataItem
+  const {id, name = 'Тест на знание JS', execTime = 1800, questions, numOfTry, vacancyId} = props.dataItem
   const isStartedTest = props.isStartedTest
   const [currentTestItem, setCurrentTestItem] = useState<number>(0)
   const [seconds, timeOptions] = useTimer(600)
@@ -47,7 +47,9 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
     // FIXME: userId, execStartTime, taskSetId поправить на нужные
     const userSolution: UserSolution = {
       taskId: id,
+      numOfTry: numOfTry,
       userId: 1,
+      vacancyId: vacancyId,
       execStartTime: startTimeValue,
       execEndTime: +new Date(),
       taskSetId: 1,

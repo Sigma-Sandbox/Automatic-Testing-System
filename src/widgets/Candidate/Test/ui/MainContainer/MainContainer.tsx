@@ -56,7 +56,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
         })
       )
     }
-  }, [testData])
+  }, [testData?.progTasks, testData?.testTasks])
 
   const goToTask = (newTask: number) => {
     dispatch(testUserActions.setNewCurrentItem(newTask))
@@ -85,7 +85,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
             <TaskTest
               key={el.id}
               className={classNames(cls.mainItem, {[cls.animate]: isSwitchPage}, [])}
-              dataItem={el}
+              dataItem={{ ...el, numOfTry: testData.numOfTry, vacancyId: testData.vacancyId }}
               isStartedTest={changeStartedTest}
             ></TaskTest>
           )
@@ -94,7 +94,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
             <TaskCode
               key={el.id}
               className={classNames(cls.mainItem, {[cls.animate]: isSwitchPage}, [])}
-              dataItem={el}
+              dataItem={{ ...el, numOfTry: testData.numOfTry, vacancyId: testData.vacancyId }}
             ></TaskCode>
           )
         }

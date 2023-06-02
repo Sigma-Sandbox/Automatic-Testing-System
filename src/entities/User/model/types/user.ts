@@ -1,5 +1,5 @@
 import {UserRole} from 'core/enums'
-import {TaskSet, TaskSetPack} from 'entities/Candidate/TestTask'
+import { ResultVacancyTest } from 'core/entities'
 
 export interface User {
   id: number
@@ -12,7 +12,7 @@ export interface User {
   actualLink: string
   startLinkTimestamp: number | string
   endLinkTimestamp: number | string
-  vacancies: {[vacancy: string]: {[numOfTry: number]: TaskSet[]}}
+  vacancies: ResultVacancyTest[]
 }
 
 export interface UserSchema {

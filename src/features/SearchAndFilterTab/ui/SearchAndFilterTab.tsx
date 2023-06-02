@@ -31,9 +31,9 @@ export const SearchAndFilterTab: React.FC<SearchAndFilterTabProps> = (props) => 
 
   useEffect(() => {
     let workList = initList
-    if (filterOption.taskSet && workList) {
-      workList = filterTaskSet(workList)
-    }
+    // if (filterOption.taskSet && workList) {
+    //   workList = filterTaskSet(workList)
+    // }
     if (filterOption.vacancy && workList) {
       workList = filterVacancy(workList)
     }
@@ -63,20 +63,20 @@ export const SearchAndFilterTab: React.FC<SearchAndFilterTabProps> = (props) => 
     })
     return newList
   }
-  const filterTaskSet = (workList: User[]) => {
-    const newList = workList?.filter((el) => {
-      for (let vacancy in el.vacancies) {
-        for (let numOfTry in el.vacancies[vacancy]) {
-          if (
-            el.vacancies[vacancy][numOfTry].find((taskSet) => taskSet.name === filterOption.taskSet)
-          ) {
-            return true
-          }
-        }
-      }
-    })
-    return newList
-  }
+  // const filterTaskSet = (workList: User[]) => {
+  //   const newList = workList?.filter((el) => {
+  //     for (let vacancy in el.vacancies) {
+  //       for (let numOfTry in el.vacancies[vacancy]) {
+  //         if (
+  //           el.vacancies[vacancy][numOfTry].find((taskSet) => taskSet.name === filterOption.taskSet)
+  //         ) {
+  //           return true
+  //         }
+  //       }
+  //     }
+  //   })
+  //   return newList
+  // }
   const filterBySearch = (workList: User[]) => {
     const newList = workList?.filter((user) => {
       let text = searchText.toLocaleLowerCase().split(' ')

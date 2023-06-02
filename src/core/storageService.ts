@@ -1,20 +1,20 @@
 import {
   GetProgTaskConditions,
-  GetTaskSetConditions,
-  GetTestQuestionConditions,
+  GetTaskSetConditions, GetTestQuestionConditions,
   GetTestTaskConditions,
   GetUserConditions,
-  GetUserSolutionConditions,
-  IStorageService,
+  GetUserSolutionConditions, GetVacancyTestConditions,
+  IStorageService
 } from './interfaces'
-import {Pool} from 'pg'
-import {Condition, ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution} from './entities'
-import {ProgrammingLanguage} from './enums'
+import { Pool } from 'pg'
+import { Condition, ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution, VacancyTest } from './entities'
+import { ProgrammingLanguage, Vacancy } from './enums'
 
 export class StorageService implements IStorageService {
   db: Pool | undefined = undefined
 
-  constructor() {}
+  constructor() {
+  }
 
   async setPool(pool: Pool) {
     this.db = pool
@@ -39,13 +39,15 @@ export class StorageService implements IStorageService {
         actual_link TEXT,
         start_link_timestamp TIMESTAMPTZ,
         end_link_timestamp TIMESTAMPTZ,
-        vacancies JSONB
+        vacancies SMALLINT[]
       );
 
       CREATE TABLE IF NOT EXISTS user_solutions
       (
         id SERIAL4 PRIMARY KEY ,
+        num_of_try SMALLINT,
         user_id INT,
+        vacancy_id SMALLINT,
         task_type SMALLINT,
         task_id INT,
         task_set_id INT,
@@ -56,6 +58,13 @@ export class StorageService implements IStorageService {
         result SMALLINT,
         program_code TEXT NULL,
         question_answers TEXT[] NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS vacancy_tests
+      (
+        id SERIAL4 PRIMARY KEY ,
+        name VARCHAR(64) UNIQUE ,
+        ids_task_set INT[]
       );
 
       CREATE TABLE IF NOT EXISTS task_sets
@@ -96,23 +105,15 @@ export class StorageService implements IStorageService {
         points SMALLINT,
         wrong_answers TEXT[],
         correct_answers TEXT[]
-      );`)
+      );`
+    )
   }
 
   async addUser(user: User): Promise<void> {
-    const vacancies: {[vacancy: string]: {[numOfTry: string]: number[]}} = {}
-    for (const vacancy in user.vacancies) {
-      const map = user.vacancies[vacancy]
-      const taskSetsIds: {[numOfTry: string]: number[]} = {}
-      for (const numOfTry in map) {
-        taskSetsIds[String(numOfTry)] = map[numOfTry].map((taskSet: TaskSet) => taskSet.id!)
-      }
-      vacancies[vacancy] = taskSetsIds
-    }
+    const vacancies: number[] = user.vacancies.map(vacancy => vacancy.vacancyId)
 
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         INSERT INTO users
         VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
         [
@@ -125,7 +126,7 @@ export class StorageService implements IStorageService {
           user.actualLink,
           user.startLinkTimestamp,
           user.endLinkTimestamp,
-          vacancies,
+          vacancies
         ]
       )
     } catch (err) {
@@ -135,12 +136,13 @@ export class StorageService implements IStorageService {
 
   async addUserSolution(userSolution: UserSolution): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         INSERT INTO user_solutions
-        VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
         [
+          userSolution.numOfTry,
           userSolution.userId,
+          userSolution.vacancyId,
           userSolution.taskType,
           userSolution.taskId,
           userSolution.taskSetId,
@@ -150,7 +152,7 @@ export class StorageService implements IStorageService {
           userSolution.progTaskMemory,
           userSolution.result,
           userSolution.programCode,
-          userSolution.questionAnswers,
+          userSolution.questionAnswers
         ]
       )
     } catch (err) {
@@ -158,13 +160,29 @@ export class StorageService implements IStorageService {
     }
   }
 
-  async addTaskSet(taskSet: TaskSet): Promise<void> {
-    const idsTestTask: number[] = taskSet.testTasks.map((testTask) => testTask.id!)
-    const idsProgTask: number[] = taskSet.progTasks.map((progTask) => progTask.id!)
+  async addVacancyTest(vacancyTest: VacancyTest): Promise<void> {
+    const idsVacancyTest: number[] = vacancyTest.taskSets.map(taskSet => taskSet.id!)
 
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
+        INSERT INTO vacancy_tests
+        VALUES(DEFAULT, $1, $2)`,
+        [
+          vacancyTest.name,
+          idsVacancyTest
+        ]
+      )
+    } catch (err) {
+      console.log('addVacancyTest', err)
+    }
+  }
+
+  async addTaskSet(taskSet: TaskSet): Promise<void> {
+    const idsTestTask: number[] = taskSet.testTasks.map(testTask => testTask.id!)
+    const idsProgTask: number[] = taskSet.progTasks.map(progTask => progTask.id!)
+
+    try {
+      await this.getDB().query(`
         INSERT INTO task_sets
         VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7)`,
         [
@@ -174,7 +192,7 @@ export class StorageService implements IStorageService {
           idsProgTask,
           taskSet.creator,
           new Date(taskSet.timeOfCreation),
-          taskSet.language,
+          taskSet.language
         ]
       )
     } catch (err) {
@@ -183,14 +201,13 @@ export class StorageService implements IStorageService {
   }
 
   async addProgTask(progTask: ProgTask): Promise<void> {
-    const conditions: {[k: string]: [number, number]} = {}
-    progTask.conditions.forEach((condition) => {
-      conditions[condition.language] = [condition.maxTime, condition.maxMemory]
+    const conditions: {[k: string]: [number, number, string]} = {}
+    progTask.conditions.forEach(condition => {
+      conditions[condition.language] = [condition.maxTime, condition.maxMemory, condition.codeExample]
     })
 
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         INSERT INTO prog_tasks
         VALUES(DEFAULT, $1, $2, $3, $4, $5)`,
         [
@@ -198,7 +215,7 @@ export class StorageService implements IStorageService {
           progTask.description,
           progTask.autoTests,
           progTask.complexityAssessment,
-          conditions,
+          conditions
         ]
       )
     } catch (err) {
@@ -208,15 +225,14 @@ export class StorageService implements IStorageService {
 
   async addTestTask(testTask: TestTask): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         INSERT INTO test_tasks
         VALUES(DEFAULT, $1, $2, $3, $4)`,
         [
           testTask.name,
           testTask.description,
-          testTask.questions.map((test) => test.id),
-          testTask.execTime,
+          testTask.questions.map(test => test.id),
+          testTask.execTime
         ]
       )
     } catch (err) {
@@ -226,15 +242,14 @@ export class StorageService implements IStorageService {
 
   async addTestQuestion(testQuestion: TestQuestion): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         INSERT INTO test_questions
         VALUES(DEFAULT, $1, $2, $3, $4)`,
         [
           testQuestion.description,
           testQuestion.points,
           testQuestion.wrongAnswers,
-          testQuestion.correctAnswers,
+          testQuestion.correctAnswers
         ]
       )
     } catch (err) {
@@ -278,9 +293,9 @@ export class StorageService implements IStorageService {
         strConditions.push(`actual_link = $${index}`)
         params.push(conditions.actualLink)
       }
-      if (conditions.vacancy) {
-        strConditions.push(`vacancies ? $${index}`)
-        params.push(conditions.vacancy)
+      if (conditions.vacancyId) {
+        strConditions.push(`$${index} = ANY (vacancies)`)
+        params.push(conditions.vacancyId)
       }
     }
 
@@ -288,8 +303,7 @@ export class StorageService implements IStorageService {
       resultCondition = ` WHERE `
     }
 
-    const result = await this.getDB().query(
-      `
+    const result = await this.getDB().query(`
       SELECT
         id,
         access_rights,
@@ -302,30 +316,23 @@ export class StorageService implements IStorageService {
         start_link_timestamp,
         end_link_timestamp,
         vacancies
-      FROM users` +
-        resultCondition +
-        strConditions.join(' AND '),
+      FROM users` + resultCondition + strConditions.join(' AND '),
       params
     )
 
     if (result.rows) {
-      const promises: Promise<TaskSet[] | undefined>[] = []
-      const numOfTries: number[] = []
-      const vacancies: string[] = []
-      const ids: number[] = []
-      const temp: User[] = result.rows.map((row) => {
-        for (const vac in row.vacancies) {
-          for (const numOfTry in row.vacancies[vac]) {
-            for (const id of row.vacancies[vac][numOfTry]) {
-              const taskSet = this.getTaskSet({id: id})
-              promises.push(taskSet)
-              numOfTries.push(+numOfTry)
-              vacancies.push(vac)
-              ids.push(row.id)
-              // TODO: подумать, что делать с пользователями,
-              //  у которых больше нет доступа до некоторых наборов с задачами (индекс не существует)
-            }
-          }
+      const userSolutionsPromises: Promise<UserSolution[] | undefined>[] = []
+      const vacNamePromises: Promise<VacancyTest[] | undefined>[] = []
+      const vacIds: number[] = []
+      const userIds: number[] = []
+      const temp: User[] = result.rows.map(row => {
+        for (const vacId of row.vacancies) {
+          const userSolutions = this.getUserSolution({userId: row.id, vacancyId: vacId})
+          const vacName = this.getVacancyTest({id: vacId})
+          userSolutionsPromises.push(userSolutions)
+          vacNamePromises.push(vacName)
+          vacIds.push(vacId)
+          userIds.push(row.id)
         }
 
         return {
@@ -339,35 +346,26 @@ export class StorageService implements IStorageService {
           actualLink: row.actual_link,
           startLinkTimestamp: row.start_link_timestamp,
           endLinkTimestamp: row.end_link_timestamp,
-          vacancies: {},
+          vacancies: []
         }
       })
 
-      const a = await Promise.all(promises)
+      const userSolutions = await Promise.all(userSolutionsPromises)
+      const vacNames = await Promise.all(vacNamePromises)
       const answer: User[] = []
 
-      for (let i = 0; i < ids.length; i++) {
-        const id = ids[i]
-        const vac = vacancies[i]
-        const numOfTry = numOfTries[i]
-        const taskSet = a[i]
-        const user = answer.find((t) => t.id === id)
+      for (let i = 0; i < userIds.length; i++) {
+        const userId = userIds[i]
+        const vacId = vacIds[i]
+        const vacName = vacNames[i]
+        const userSolution = userSolutions[i]
+        const user = answer.find(t => t.id === userId)
         if (user) {
           const index = answer.indexOf(user)
-          const findVac = answer[index].vacancies[vac]
-          if (findVac === undefined) {
-            answer[index].vacancies[vac] = {}
-          }
-          const array = answer[index].vacancies[vac][+numOfTry]
-          if (array) {
-            array.push(taskSet![0])
-            answer[index].vacancies[vac][+numOfTry] = array
-          } else {
-            answer[index].vacancies[vac][+numOfTry] = taskSet!
-          }
+          answer[index].vacancies.push({ vacancyId: vacId, vacancyName: vacName![0].name as Vacancy, userSolutions: userSolution! })
         } else {
-          const user = temp.find((t) => t.id === id)!
-          user.vacancies[vac] = {[+numOfTry]: taskSet!}
+          const user = temp.find(t => t.id === userId)!
+          user.vacancies.push({ vacancyId: vacId, vacancyName: vacName![0].name as Vacancy, userSolutions: userSolution! })
           answer.push(user)
         }
       }
@@ -378,9 +376,7 @@ export class StorageService implements IStorageService {
     }
   }
 
-  async getUserSolution(
-    conditions?: GetUserSolutionConditions
-  ): Promise<UserSolution[] | undefined> {
+  async getUserSolution(conditions?: GetUserSolutionConditions): Promise<UserSolution[] | undefined> {
     let resultCondition = ''
     let strConditions = []
     let params = []
@@ -392,9 +388,19 @@ export class StorageService implements IStorageService {
         params.push(conditions.id)
         index++
       }
+      if (conditions.numOfTry) {
+        strConditions.push(`num_of_try = $${index}`)
+        params.push(conditions.numOfTry)
+        index++
+      }
       if (conditions.userId) {
         strConditions.push(`user_id = $${index}`)
         params.push(conditions.userId)
+        index++
+      }
+      if (conditions.vacancyId) {
+        strConditions.push(`vacancy_id = $${index}`)
+        params.push(conditions.vacancyId)
         index++
       }
       if (conditions.taskType !== undefined) {
@@ -417,11 +423,12 @@ export class StorageService implements IStorageService {
       resultCondition = ` WHERE `
     }
 
-    const result = await this.getDB().query(
-      `
+    const result = await this.getDB().query(`
       SELECT
         id,
+        num_of_try,
         user_id,
+        vacancy_id,
         task_type,
         task_id,
         task_set_id,
@@ -432,17 +439,17 @@ export class StorageService implements IStorageService {
         result,
         program_code,
         question_answers
-      FROM user_solutions` +
-        resultCondition +
-        strConditions.join(' AND '),
+      FROM user_solutions` + resultCondition + strConditions.join(' AND '),
       params
     )
 
     if (result.rows) {
-      return result.rows.map((row) => {
+      return result.rows.map(row => {
         return {
           id: row.id,
+          numOfTry: row.num_of_try,
           userId: row.user_id,
+          vacancyId: row.vacancy_id,
           taskType: row.task_type,
           taskId: row.task_id,
           taskSetId: row.task_set_id,
@@ -452,11 +459,90 @@ export class StorageService implements IStorageService {
           progTaskMemory: row.prog_task_memory,
           result: row.result,
           programCode: row.program_code,
-          questionAnswers: row.question_answers,
+          questionAnswers: row.question_answers
         }
       })
     } else {
       console.log('Не найдено ни одного пользовательского решения с такими параметрами!')
+      return undefined
+    }
+  }
+
+  async getVacancyTest(conditions?: GetVacancyTestConditions): Promise<VacancyTest[] | undefined> {
+    let resultCondition = ''
+    let strConditions = []
+    let params = []
+    let index = 1
+
+    if (conditions) {
+      if (conditions.id) {
+        strConditions.push(`id = $${index}`)
+        params.push(conditions.id)
+        index++
+      }
+      if (conditions.name) {
+        strConditions.push(`name = $${index}`)
+        params.push(conditions.name)
+        index++
+      }
+      if (conditions.taskSetId) {
+        strConditions.push(`$${index} = ANY (ids_task_set)`)
+        params.push(conditions.taskSetId)
+        index++
+      }
+    }
+
+    if (strConditions.length > 0) {
+      resultCondition = ` WHERE `
+    }
+
+    const result = await this.getDB().query(`
+      SELECT
+        id,
+        name,
+        ids_task_set
+      FROM vacancy_tests` + resultCondition + strConditions.join(' AND '),
+      params
+    )
+
+    if (result.rows) {
+      const promises: Promise<TaskSet[] | undefined>[] = []
+      const ids: number[] = []
+      const temp: VacancyTest[] = result.rows.map(row => {
+        row.ids_task_set.forEach((idTaskSet: number) => {
+          const taskSet = this.getTaskSet({ id: idTaskSet })
+          promises.push(taskSet)
+          ids.push(row.id)
+          // TODO: подумать, что делать с вакансиями,
+          //  у которых больше нет доступа до некоторых наборов с задачами (индекс не существует)
+        })
+
+        return {
+          id: row.id,
+          name: row.name,
+          taskSets: []
+        }
+      })
+
+      const a = await Promise.all(promises)
+      const answer: VacancyTest[] = []
+
+      for (let i = 0; i < ids.length; i++) {
+        const id = ids[i]
+        const taskSet = a[i]
+        const vacancyTask = answer.find(t => t.id === id)
+        if (vacancyTask) {
+          const index = answer.indexOf(vacancyTask)
+          answer[index].taskSets.push(taskSet as unknown as TaskSet)
+        } else {
+          const vacancyTask = temp.find(t => t.id === id)!
+          vacancyTask.taskSets.push(taskSet as unknown as TaskSet)
+          answer.push(vacancyTask)
+        }
+      }
+      return answer
+    } else {
+      console.log('Не найдено ни одной вакансии с такими параметрами!')
       return undefined
     }
   }
@@ -480,9 +566,9 @@ export class StorageService implements IStorageService {
       }
       if (conditions.task) {
         if ('questions' in conditions.task) {
-          strConditions.push(`$${index} IN ids_test_task`)
+          strConditions.push(`$${index} = ANY (ids_test_task)`)
         } else {
-          strConditions.push(`$${index} IN ids_prog_task`)
+          strConditions.push(`$${index} = ANY (ids_prog_task)`)
         }
         params.push(conditions.task.id)
         index++
@@ -507,8 +593,7 @@ export class StorageService implements IStorageService {
       resultCondition = ` WHERE `
     }
 
-    const result = await this.getDB().query(
-      `
+    const result = await this.getDB().query(`
       SELECT
         id,
         name,
@@ -518,9 +603,7 @@ export class StorageService implements IStorageService {
         creator,
         time_of_creation,
         language
-      FROM task_sets` +
-        resultCondition +
-        strConditions.join(' AND '),
+      FROM task_sets` + resultCondition + strConditions.join(' AND '),
       params
     )
 
@@ -529,9 +612,9 @@ export class StorageService implements IStorageService {
       const promisesPT: Promise<ProgTask[] | undefined>[] = []
       const idsTT: number[] = []
       const idsPT: number[] = []
-      const temp: TaskSet[] = result.rows.map((row) => {
+      const temp: TaskSet[] = result.rows.map(row => {
         row.ids_test_task.forEach((idTestTask: number) => {
-          const testTask = this.getTestTask({id: idTestTask})
+          const testTask = this.getTestTask({ id: idTestTask })
           promisesTT.push(testTask)
           idsTT.push(row.id)
           // TODO: подумать, что делать с наборами задач,
@@ -539,7 +622,7 @@ export class StorageService implements IStorageService {
         })
 
         row.ids_prog_task.forEach((idProgTask: number) => {
-          const progTask = this.getProgTask({id: idProgTask})
+          const progTask = this.getProgTask({ id: idProgTask })
           promisesPT.push(progTask)
           idsPT.push(row.id)
           // TODO: подумать, что делать с наборами задач,
@@ -554,7 +637,7 @@ export class StorageService implements IStorageService {
           progTasks: [],
           creator: row.creator,
           timeOfCreation: row.time_of_creation,
-          language: row.language,
+          language: row.language
         }
       })
 
@@ -567,12 +650,12 @@ export class StorageService implements IStorageService {
       for (let i = 0; i < idsTT.length; i++) {
         const id = idsTT[i]
         const testTask = a[i]
-        const taskSet = answer_temp.find((t) => t.id === id)
+        const taskSet = answer_temp.find(t => t.id === id)
         if (taskSet) {
           const index = answer_temp.indexOf(taskSet)
           answer_temp[index].testTasks.push(testTask as unknown as TestTask)
         } else {
-          const taskSet = temp.find((t) => t.id === id)!
+          const taskSet = temp.find(t => t.id === id)!
           taskSet.testTasks.push(testTask as unknown as TestTask)
           answer_temp.push(taskSet)
         }
@@ -580,12 +663,12 @@ export class StorageService implements IStorageService {
       for (let i = 0; i < idsPT.length; i++) {
         const id = idsPT[i]
         const progTask = b[i]
-        const taskSet = answer.find((t) => t.id === id)
+        const taskSet = answer.find(t => t.id === id)
         if (taskSet) {
           const index = answer.indexOf(taskSet)
           answer[index].progTasks.push(progTask as unknown as ProgTask)
         } else {
-          const taskSet = answer_temp.find((t) => t.id === id)!
+          const taskSet = answer_temp.find(t => t.id === id)!
           taskSet.progTasks.push(progTask as unknown as ProgTask)
           answer.push(taskSet)
         }
@@ -625,8 +708,7 @@ export class StorageService implements IStorageService {
       resultCondition = ` WHERE `
     }
 
-    const result = await this.getDB().query(
-      `
+    const result = await this.getDB().query(`
       SELECT
         id,
         name,
@@ -634,20 +716,19 @@ export class StorageService implements IStorageService {
         auto_tests,
         complexity_assessment,
         conditions
-      FROM prog_tasks` +
-        resultCondition +
-        strConditions.join(' AND '),
+      FROM prog_tasks` + resultCondition + strConditions.join(' AND '),
       params
     )
 
     if (result.rows) {
-      return result.rows.map((row) => {
+      return result.rows.map(row => {
         const conditions: Condition[] = []
         for (let key in row.conditions) {
           conditions.push({
             language: key as ProgrammingLanguage,
             maxTime: row.conditions[key][0],
             maxMemory: row.conditions[key][1],
+            codeExample: row.conditions[key][2]
           })
         }
 
@@ -657,7 +738,7 @@ export class StorageService implements IStorageService {
           description: row.description,
           autoTests: row.auto_tests,
           complexityAssessment: row.complexity_assessment,
-          conditions: conditions,
+          conditions: conditions
         }
       })
     } else {
@@ -684,7 +765,7 @@ export class StorageService implements IStorageService {
         index++
       }
       if (conditions.testQuestion) {
-        strConditions.push(`$${index} IN ids_question`)
+        strConditions.push(`$${index} = ANY (ids_question)`)
         params.push(conditions.testQuestion)
       }
     }
@@ -693,26 +774,23 @@ export class StorageService implements IStorageService {
       resultCondition = ` WHERE `
     }
 
-    const result = await this.getDB().query(
-      `
+    const result = await this.getDB().query(`
       SELECT
         id,
         name,
         description,
         ids_question,
         exec_time
-      FROM test_tasks` +
-        resultCondition +
-        strConditions.join(' AND '),
+      FROM test_tasks` + resultCondition + strConditions.join(' AND '),
       params
     )
 
     if (result.rows) {
       const promises: Promise<TestQuestion[] | undefined>[] = []
       const ids: number[] = []
-      const temp: TestTask[] = result.rows.map((row) => {
+      const temp: TestTask[] = result.rows.map(row => {
         row.ids_question.forEach((idQuestion: number) => {
-          const testQuestion = this.getTestQuestion({id: idQuestion})
+          const testQuestion = this.getTestQuestion({ id: idQuestion })
           promises.push(testQuestion)
           ids.push(row.id)
           // TODO: подумать, что делать с тестами,
@@ -724,7 +802,7 @@ export class StorageService implements IStorageService {
           name: row.name,
           description: row.description,
           questions: [],
-          execTime: row.exec_time,
+          execTime: row.exec_time
         }
       })
 
@@ -734,12 +812,12 @@ export class StorageService implements IStorageService {
       for (let i = 0; i < ids.length; i++) {
         const id = ids[i]
         const question = a[i]
-        const testTask = answer.find((t) => t.id === id)
+        const testTask = answer.find(t => t.id === id)
         if (testTask) {
           const index = answer.indexOf(testTask)
           answer[index].questions.push(question as unknown as TestQuestion)
         } else {
-          const testTask = temp.find((t) => t.id === id)!
+          const testTask = temp.find(t => t.id === id)!
           testTask.questions.push(question as unknown as TestQuestion)
           answer.push(testTask)
         }
@@ -751,9 +829,7 @@ export class StorageService implements IStorageService {
     }
   }
 
-  async getTestQuestion(
-    conditions?: GetTestQuestionConditions
-  ): Promise<TestQuestion[] | undefined> {
+  async getTestQuestion(conditions?: GetTestQuestionConditions): Promise<TestQuestion[] | undefined> {
     let resultCondition = ''
     let strConditions = []
     let params = []
@@ -780,28 +856,25 @@ export class StorageService implements IStorageService {
       resultCondition = ` WHERE `
     }
 
-    const result = await this.getDB().query(
-      `
+    const result = await this.getDB().query(`
       SELECT
         id,
         description,
         points,
         wrong_answers,
         correct_answers
-      FROM test_questions` +
-        resultCondition +
-        strConditions.join(' AND '),
+      FROM test_questions` + resultCondition + strConditions.join(' AND '),
       params
     )
 
     if (result.rows) {
-      return result.rows.map((row) => {
+      return result.rows.map(row => {
         return {
           id: row.id,
           description: row.description,
           points: row.points,
           wrongAnswers: row.wrong_answers,
-          correctAnswers: row.correct_answers,
+          correctAnswers: row.correct_answers
         }
       })
     } else {
@@ -811,19 +884,10 @@ export class StorageService implements IStorageService {
   }
 
   async updateUser(user: User): Promise<void> {
-    const vacancies: {[vacancy: string]: {[numOfTry: string]: number[]}} = {}
-    for (const vacancy in user.vacancies) {
-      const map = user.vacancies[vacancy]
-      const taskSetsIds: {[numOfTry: string]: number[]} = {}
-      for (const numOfTry in map) {
-        taskSetsIds[String(numOfTry)] = map[numOfTry].map((taskSet: TaskSet) => taskSet.id!)
-      }
-      vacancies[vacancy] = taskSetsIds
-    }
+    const vacancies: number[] = user.vacancies.map(vacancy => vacancy.vacancyId)
 
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         UPDATE users SET
           access_rights = $2,
           surname = $3,
@@ -847,7 +911,7 @@ export class StorageService implements IStorageService {
           user.actualLink,
           user.startLinkTimestamp,
           user.endLinkTimestamp,
-          vacancies,
+          vacancies
         ]
       )
     } catch (err) {
@@ -857,8 +921,7 @@ export class StorageService implements IStorageService {
 
   async updateUserSolution(userSolution: UserSolution): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         UPDATE user_solutions SET
           user_id = $2,
           task_type = $3,
@@ -870,7 +933,9 @@ export class StorageService implements IStorageService {
           prog_task_memory = $9,
           result = $10,
           program_code = $11,
-          question_answers = $12
+          question_answers = $12,
+          num_of_try = $13,
+          vacancy_id = $14
         WHERE id = $1`,
         [
           userSolution.id,
@@ -885,6 +950,8 @@ export class StorageService implements IStorageService {
           userSolution.result,
           userSolution.programCode,
           userSolution.questionAnswers,
+          userSolution.numOfTry,
+          userSolution.vacancyId
         ]
       )
     } catch (err) {
@@ -892,13 +959,32 @@ export class StorageService implements IStorageService {
     }
   }
 
-  async updateTaskSet(taskSet: TaskSet): Promise<void> {
-    const idsTestTask: number[] = taskSet.testTasks.map((testTask) => testTask.id!)
-    const idsProgTask: number[] = taskSet.progTasks.map((progTask) => progTask.id!)
+  async updateVacancyTest(vacancyTest: VacancyTest): Promise<void> {
+    const idsVacancyTest: number[] = vacancyTest.taskSets.map(taskSet => taskSet.id!)
 
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
+        UPDATE vacancy_tests SET
+          name = $2,
+          ids_task_set = $3
+        WHERE id = $1`,
+        [
+          vacancyTest.id,
+          vacancyTest.name,
+          idsVacancyTest
+        ]
+      )
+    } catch (err) {
+      console.log('updateVacancyTest', err)
+    }
+  }
+
+  async updateTaskSet(taskSet: TaskSet): Promise<void> {
+    const idsTestTask: number[] = taskSet.testTasks.map(testTask => testTask.id!)
+    const idsProgTask: number[] = taskSet.progTasks.map(progTask => progTask.id!)
+
+    try {
+      await this.getDB().query(`
         UPDATE task_sets SET
           name = $2,
           description = $3,
@@ -916,7 +1002,7 @@ export class StorageService implements IStorageService {
           idsProgTask,
           taskSet.creator,
           new Date(taskSet.timeOfCreation),
-          taskSet.language,
+          taskSet.language
         ]
       )
     } catch (err) {
@@ -925,14 +1011,13 @@ export class StorageService implements IStorageService {
   }
 
   async updateProgTask(progTask: ProgTask): Promise<void> {
-    const conditions: {[k: string]: [number, number]} = {}
-    progTask.conditions.forEach((condition) => {
-      conditions[condition.language] = [condition.maxTime, condition.maxMemory]
+    const conditions: {[k: string]: [number, number, string]} = {}
+    progTask.conditions.forEach(condition => {
+      conditions[condition.language] = [condition.maxTime, condition.maxMemory, condition.codeExample]
     })
 
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         UPDATE prog_tasks SET
           name = $2,
           description = $3,
@@ -946,7 +1031,7 @@ export class StorageService implements IStorageService {
           progTask.description,
           progTask.autoTests,
           progTask.complexityAssessment,
-          conditions,
+          conditions
         ]
       )
     } catch (err) {
@@ -956,8 +1041,7 @@ export class StorageService implements IStorageService {
 
   async updateTestTask(testTask: TestTask): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         UPDATE test_tasks SET
           name = $2,
           description = $3,
@@ -968,8 +1052,8 @@ export class StorageService implements IStorageService {
           testTask.id,
           testTask.name,
           testTask.description,
-          testTask.questions.map((test) => test.id),
-          testTask.execTime,
+          testTask.questions.map(test => test.id),
+          testTask.execTime
         ]
       )
     } catch (err) {
@@ -979,8 +1063,7 @@ export class StorageService implements IStorageService {
 
   async updateTestQuestion(testQuestion: TestQuestion): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         UPDATE test_questions SET
           description = $2,
           points = $3,
@@ -992,7 +1075,7 @@ export class StorageService implements IStorageService {
           testQuestion.description,
           testQuestion.points,
           testQuestion.wrongAnswers,
-          testQuestion.correctAnswers,
+          testQuestion.correctAnswers
         ]
       )
     } catch (err) {
@@ -1002,11 +1085,12 @@ export class StorageService implements IStorageService {
 
   async deleteUser(id: number): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         DELETE FROM users
         WHERE id = $1`,
-        [id]
+        [
+          id
+        ]
       )
     } catch (err) {
       console.log('deleteUser', err)
@@ -1015,24 +1099,40 @@ export class StorageService implements IStorageService {
 
   async deleteUserSolution(id: number): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         DELETE FROM user_solutions
         WHERE id = $1`,
-        [id]
+        [
+          id
+        ]
       )
     } catch (err) {
       console.log('deleteUserSolution', err)
     }
   }
 
+  async deleteVacancyTest(id: number): Promise<void> {
+    try {
+      await this.getDB().query(`
+        DELETE FROM vacancy_tests
+        WHERE id = $1`,
+        [
+          id
+        ]
+      )
+    } catch (err) {
+      console.log('deleteVacancyTest', err)
+    }
+  }
+
   async deleteTaskSet(id: number): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         DELETE FROM task_sets
         WHERE id = $1`,
-        [id]
+        [
+          id
+        ]
       )
     } catch (err) {
       console.log('deleteTaskSet', err)
@@ -1041,11 +1141,12 @@ export class StorageService implements IStorageService {
 
   async deleteProgTask(id: number): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         DELETE FROM prog_tasks
         WHERE id = $1`,
-        [id]
+        [
+          id
+        ]
       )
     } catch (err) {
       console.log('deleteProgTask', err)
@@ -1054,11 +1155,12 @@ export class StorageService implements IStorageService {
 
   async deleteTestTask(id: number): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         DELETE FROM test_tasks
         WHERE id = $1`,
-        [id]
+        [
+          id
+        ]
       )
     } catch (err) {
       console.log('deleteTestTask', err)
@@ -1067,14 +1169,27 @@ export class StorageService implements IStorageService {
 
   async deleteTestQuestion(id: number): Promise<void> {
     try {
-      await this.getDB().query(
-        `
+      await this.getDB().query(`
         DELETE FROM test_questions
         WHERE id = $1`,
-        [id]
+        [
+          id
+        ]
       )
     } catch (err) {
       console.log('deleteTestQuestion', err)
+    }
+  }
+
+  async getNumOfTry(userId: number, vacancy: Vacancy): Promise<number | undefined> {
+    const user = await this.getUser({ id: userId })
+    if (user && user.length > 0) {
+      const resultVacancyTest = user[0].vacancies.find(v => v.vacancyName === vacancy)
+      if (resultVacancyTest && resultVacancyTest.userSolutions.length > 0) {
+        return Math.max(...resultVacancyTest.userSolutions.map(uS => uS.numOfTry))
+      } else {
+        return undefined
+      }
     }
   }
 

@@ -1,9 +1,9 @@
-import {createAsyncThunk} from '@reduxjs/toolkit'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import {testTaskActions} from 'entities/Candidate/TestTask/'
-import {User, userActions} from 'entities/User'
-import {UserRole} from 'core/enums'
-import {testTaskDataExample} from 'entities/Candidate/TestTask/model/consts/testTaskConsts'
+import { testTaskActions } from 'entities/Candidate/TestTask/'
+import { User, userActions } from 'entities/User'
+import { UserRole, Vacancy } from 'core/enums'
+import { testTaskDataExample } from 'entities/Candidate/TestTask/model/consts/testTaskConsts'
 
 interface LoginByUsernameProps {
   username: string
@@ -27,7 +27,7 @@ export const loginByUsername = createAsyncThunk<User, LoginByUsernameProps, {rej
           name: 'Иван',
           surname: 'Иванов',
           accessRights: UserRole.EMPLOYEE,
-          vacancies: {'Java-разработчик': {'2': testTaskDataExample.data}},
+          vacancies: [{ vacancyId: 1, vacancyName: Vacancy.JAVA_JUNIOR, userSolutions: [] }],
           email: 'dkjfa@gmail.com',
           password: 'dalkjfa',
           startLinkTimestamp: 1234,

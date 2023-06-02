@@ -7,11 +7,12 @@ export interface TaskSetPackSchema {
 }
 
 export interface TaskSetPack {
-  id?: number
+  id: number
   name?: string
   description?: string
   timeLimits?: number
   data: TaskSet[]
+  numOfTry: number
 }
 
 export interface TaskSet {
@@ -22,9 +23,7 @@ export interface TaskSet {
   progTasks: ProgTask[]
   creator: string
   timeOfCreation: number
-  // Add new
   timeLimits: number
-  //
   language: ProgrammingLanguage[]
 }
 
@@ -40,15 +39,13 @@ export interface Condition {
   language: ProgrammingLanguage
   maxTime: number
   maxMemory: number
+  codeExample: string
 }
 
 export interface ProgTask extends Task {
   autoTests: string[]
   complexityAssessment: number
   conditions: Condition[]
-  // Add new
-  examples: string
-  //
 }
 
 export interface TestTask extends Task {
@@ -57,7 +54,7 @@ export interface TestTask extends Task {
 }
 
 export interface TestQuestion {
-  id?: number
+  id: number
   description: string
   points: number
   wrongAnswers: string[]

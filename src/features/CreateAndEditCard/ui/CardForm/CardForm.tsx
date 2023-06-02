@@ -1,20 +1,18 @@
-import React, {useEffect, useMemo, useState} from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import React, { useState } from 'react'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './CardForm.module.scss'
-import {Input} from 'shared/ui/Input/Input'
-import {MySelect} from 'shared/ui/Select/Select'
-import {useDispatch, useSelector} from 'react-redux'
-import {getVacanciesName} from 'entities/Admin/Vacancies'
-import {Button, ColorButton, SizeButton, ThemeButton} from 'shared/ui/Button/Button'
+import { MySelect } from 'shared/ui/Select/Select'
+import { useDispatch, useSelector } from 'react-redux'
+import { getVacanciesName } from 'entities/Admin/Vacancies'
+import { Button, ColorButton, SizeButton, ThemeButton } from 'shared/ui/Button/Button'
 import CopySvg from 'shared/assets/icon/copy.svg'
-import {User, userActions} from 'entities/User'
-import axios from 'axios'
-import {getUsersPath, updateEntitiePath} from 'shared/const/queryPath'
-import {PersonInputs} from './PersonInputs'
-import {sendUsersData} from 'features/CreateAndEditCard/model/service/sendUserData/sendUsersData'
-import {usersDataActions} from 'entities/Admin/Users'
-import {ProgrammingLanguage, UserRole} from 'core/enums'
-import {TaskSet} from 'entities/Candidate/TestTask'
+import { User } from 'entities/User'
+import { PersonInputs } from './PersonInputs'
+import { sendUsersData } from 'features/CreateAndEditCard/model/service/sendUserData/sendUsersData'
+import { usersDataActions } from 'entities/Admin/Users'
+import { ProgrammingLanguage, UserRole, Vacancy } from 'core/enums'
+import { TaskSet } from 'entities/Candidate/TestTask'
+
 interface CardFormProps {
   className?: string
   link?: string
@@ -81,17 +79,18 @@ const taskSetMock: TaskSet = {
       description: 'description2',
       autoTests: ['test3', 'test4'],
       complexityAssessment: 20,
-      examples: 'exmaple1',
       conditions: [
         {
           language: ProgrammingLanguage.Java,
           maxTime: 44444,
           maxMemory: 4,
+          codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'
         },
         {
           language: ProgrammingLanguage.Java,
           maxTime: 33333,
           maxMemory: 3,
+          codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'
         },
       ],
     },
@@ -100,7 +99,6 @@ const taskSetMock: TaskSet = {
       id: 3,
       name: 'Name3',
       description: 'description3',
-      examples: 'exmaple1',
       autoTests: ['test5', 'test6'],
       complexityAssessment: 30,
       conditions: [
@@ -108,11 +106,13 @@ const taskSetMock: TaskSet = {
           language: ProgrammingLanguage.Java,
           maxTime: 66666,
           maxMemory: 6,
+          codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'
         },
         {
           language: ProgrammingLanguage.Java,
           maxTime: 55555,
           maxMemory: 5,
+          codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'
         },
       ],
     },
@@ -198,7 +198,7 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
         actualLink: 'blablabalbal',
         startLinkTimestamp: '2023-04-30T21:00:00.000Z',
         endLinkTimestamp: '2023-04-30T21:00:00.000Z',
-        vacancies: {'js-2019': {2: [taskSetMock]}},
+        vacancies: [{ vacancyId: 1, vacancyName: Vacancy.JAVA_JUNIOR, userSolutions: [] }],
       }
       const answer = await sendUsersData(option, true)
       if (answer === 'OK') {

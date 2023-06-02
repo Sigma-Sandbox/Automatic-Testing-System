@@ -1,30 +1,28 @@
-import {ConfigurationService} from './core/configurationService'
-import {StorageService} from './core/storageService'
-import {connectPostgreSQL} from './core/dbConnection'
-import cors from 'cors'
-import {ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution} from './core/entities'
+import { ConfigurationService } from './core/configurationService'
+import { StorageService } from './core/storageService'
+import { connectPostgreSQL } from './core/dbConnection'
+import { ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution, VacancyTest } from './core/entities'
 import express from 'express'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import {
   GetProgTaskConditions,
   GetTaskSetConditions,
   GetTestQuestionConditions,
   GetTestTaskConditions,
   GetUserConditions,
-  GetUserSolutionConditions,
+  GetUserSolutionConditions, GetVacancyTestConditions
 } from './core/interfaces'
 
 const port = process.env.PORT || 3001
 const serverApp = express()
-// For test front
 serverApp.use(cors())
-//
 serverApp.use(bodyParser.json())
 
 const configurationService = new ConfigurationService()
 const storageService = new StorageService()
 configurationService.init().then(() => {
-  connectPostgreSQL(configurationService).then((pool) => storageService.setPool(pool))
+  connectPostgreSQL(configurationService).then(pool => storageService.setPool(pool))
 })
 
 serverApp.post('/api/add', (req, res) => {
@@ -32,6 +30,8 @@ serverApp.post('/api/add', (req, res) => {
     storageService.addUser(req.body as User).then(() => res.send())
   } else if ('result' in req.body) {
     storageService.addUserSolution(req.body as UserSolution).then(() => res.send())
+  } else if ('taskSets' in req.body) {
+    storageService.addVacancyTest(req.body as VacancyTest).then(() => res.send())
   } else if ('testTasks' in req.body) {
     storageService.addTaskSet(req.body as TaskSet).then(() => res.send())
   } else if ('conditions' in req.body) {
@@ -50,6 +50,11 @@ serverApp.post('/api/get/user', async (req, res) => {
 
 serverApp.post('/api/get/user_solution', async (req, res) => {
   const dbRows = await storageService.getUserSolution(req.body as GetUserSolutionConditions)
+  res.send(dbRows)
+})
+
+serverApp.post('/api/get/vacancy_test', async (req, res) => {
+  const dbRows = await storageService.getVacancyTest(req.body as GetVacancyTestConditions)
   res.send(dbRows)
 })
 
@@ -78,6 +83,8 @@ serverApp.post('/api/update', (req, res) => {
     storageService.updateUser(req.body as User).then(() => res.send())
   } else if ('result' in req.body) {
     storageService.updateUserSolution(req.body as UserSolution).then(() => res.send())
+  } else if ('taskSets' in req.body) {
+    storageService.updateVacancyTest(req.body as VacancyTest).then(() => res.send())
   } else if ('testTasks' in req.body) {
     storageService.updateTaskSet(req.body as TaskSet).then(() => res.send())
   } else if ('conditions' in req.body) {
@@ -95,6 +102,10 @@ serverApp.post('/api/delete/user', (req, res) => {
 
 serverApp.post('/api/delete/user_solution', (req, res) => {
   storageService.deleteUserSolution(req.body.id).then(() => res.send())
+})
+
+serverApp.post('/api/delete/vacancy_test', (req, res) => {
+  storageService.deleteVacancyTest(req.body.id).then(() => res.send())
 })
 
 serverApp.post('/api/delete/task_set', (req, res) => {

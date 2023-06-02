@@ -35,11 +35,11 @@ export const UserMainCard: React.FC<UserMainCardProps> = (props) => {
 
   const fetchUserDecision = useCallback(() => {
     const taskSetsUser: TaskSet[] = []
-    for (let vacancy in user.vacancies) {
-      for (let numOfTry in user.vacancies[vacancy]) {
-        user.vacancies[vacancy][numOfTry].forEach((taskSet) => taskSetsUser.push(taskSet))
-      }
-    }
+    // for (let vacancy in user.vacancies) {
+    //   for (let numOfTry in user.vacancies[vacancy]) {
+    //     user.vacancies[vacancy][numOfTry].forEach((taskSet) => taskSetsUser.push(taskSet))
+    //   }
+    // }
     const newResultTaskSet = taskSetsUser.map((taskSet) => (
       <UserResultTaskSet key={taskSet.id} taskSet={taskSet} userId={user.id} />
     ))
