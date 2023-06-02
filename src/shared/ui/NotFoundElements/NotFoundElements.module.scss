@@ -1,0 +1,13 @@
+.notFound {
+  margin: auto;
+  display: flex;
+  align-items: center;
+  padding: 17px 20px;
+  border-radius: 10px;
+  box-shadow: var(--shadow-around-min-block);
+}
+.notFound img {
+  width: 25px;
+  height: 25p;
+  margin-left: 10px;
+}

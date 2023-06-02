@@ -1,5 +1,5 @@
 import {createSelector} from '@reduxjs/toolkit'
-import {getUserAuthData, getUserNavbar} from 'entities/Candidate/User'
+import {getUserAuthData, getUserNavbar} from 'entities/User'
 import {UserNavbar} from '../../type/navbar'
 
 export const getUserData = createSelector(getUserAuthData, (userData) => {
@@ -7,7 +7,7 @@ export const getUserData = createSelector(getUserAuthData, (userData) => {
     const userDataObj: UserNavbar = {
       firstname: userData.name,
       lastname: userData.surname,
-      position: userData.position,
+      position: Object.keys(userData.vacancies),
     }
     return userDataObj
   }

@@ -1,0 +1,25 @@
+.select {
+  position: relative;
+}
+.selectOpt {
+  width: 300px;
+  height: 40px;
+}
+.selectOpt .select__value-container {
+  padding-left: 15px;
+  position: relative;
+}
+
+.selectImg {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+.selectOpt .select__control {
+  width: 100px;
+  height: 100px;
+}

@@ -1,7 +1,8 @@
-import { ConfigurationService } from './core/configurationService'
-import { StorageService } from './core/storageService'
-import { connectPostgreSQL } from './core/dbConnection'
-import { ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution } from './core/entities'
+import {ConfigurationService} from './core/configurationService'
+import {StorageService} from './core/storageService'
+import {connectPostgreSQL} from './core/dbConnection'
+import cors from 'cors'
+import {ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution} from './core/entities'
 import express from 'express'
 import bodyParser from 'body-parser'
 import {
@@ -10,17 +11,20 @@ import {
   GetTestQuestionConditions,
   GetTestTaskConditions,
   GetUserConditions,
-  GetUserSolutionConditions
+  GetUserSolutionConditions,
 } from './core/interfaces'
 
 const port = process.env.PORT || 3001
 const serverApp = express()
+// For test front
+serverApp.use(cors())
+//
 serverApp.use(bodyParser.json())
 
 const configurationService = new ConfigurationService()
 const storageService = new StorageService()
 configurationService.init().then(() => {
-  connectPostgreSQL(configurationService).then(pool => storageService.setPool(pool))
+  connectPostgreSQL(configurationService).then((pool) => storageService.setPool(pool))
 })
 
 serverApp.post('/api/add', (req, res) => {

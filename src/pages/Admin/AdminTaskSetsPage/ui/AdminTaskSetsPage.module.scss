@@ -1,0 +1,30 @@
+.adminTaskSetsPage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+.headerTab {
+  width: fit-content;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 0 auto;
+  // height: 45px;
+  margin-bottom: 50px;
+  align-items: center;
+}
+
+.vacancies {
+  min-height: 70vh;
+  display: grid;
+  grid-template-columns: 350px 350px 350px;
+  grid-auto-rows: 40px;
+  gap: 15px;
+  justify-items: center;
+  margin: 0 auto;
+}
+.vacancy {
+  width: 100%;
+  height: fit-content;
+}

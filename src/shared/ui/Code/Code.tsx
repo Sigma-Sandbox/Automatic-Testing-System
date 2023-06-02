@@ -14,7 +14,7 @@ interface CodeProps {
   code: string
   language: string
 }
-
+// TODO: delete highlight.js (size ~ 1 mb)
 export const Code: React.FC<CodeProps> = (props) => {
   const {code, language = 'javascript'} = props
 
@@ -22,9 +22,6 @@ export const Code: React.FC<CodeProps> = (props) => {
     hljs.registerLanguage('javascript', javascript)
     hljs.registerLanguage('java', java)
     hljs.highlightAll()
-    // // @ts-ignore
-    // hljs.initLineNumbersOnLoad()
-    // console.log(hljsNumLine, hljs)
   }, [])
 
   return (

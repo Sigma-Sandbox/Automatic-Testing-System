@@ -4,7 +4,7 @@ import cls from './Sidebar.module.scss'
 import {RoutePathCandidate} from 'shared/config/routeConfig/routeConfig'
 import logoImgSrc from 'shared/assets/logo_sidebar.png'
 import {useDispatch, useSelector} from 'react-redux'
-import {getUserAuthData} from 'entities/Candidate/User'
+import {getUserAuthData} from 'entities/User'
 import {useLocation, useNavigate, useParams} from 'react-router-dom'
 import {getTestItemData} from '../model/selectors/getTestItemData'
 import {SidebarItem} from './SidebarItem/SidebarItem'
@@ -28,6 +28,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
     if (!testItem) return null
 
     const goToTask = (newItem: number) => {
+      if (newItem === 0) return
       dispatch(testUserActions.setNewCurrentItem(newItem))
       turnOnSwitching()
     }

@@ -1,0 +1,128 @@
+.userMainCard {
+  height: 180px;
+  border-radius: 10px;
+  padding: 15px;
+  position: relative;
+  background-color: var(--invert-bg-color);
+  box-shadow: var(--shadow-block);
+  color: var(--black-color);
+  display: flex;
+  gap: 0 5px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+.userMainCard:hover {
+  box-shadow: var(--shadow-xl-block);
+  // box-shadow: ;
+  // transform: scale(1.005);
+}
+
+.about {
+  display: flex;
+  flex-direction: column;
+  flex: 45% 0 0;
+  overflow: hidden;
+}
+.vacancies {
+  // margin-bottom: 10px;
+  display: flex;
+  /* flex-direction: column; */
+  gap: 5px;
+  flex-wrap: wrap;
+  max-height: 70px;
+  overflow: auto;
+}
+.vacancy {
+  width: -moz-fit-content;
+  width: fit-content;
+  border-radius: 10px;
+  color: var(--invert-bg-color);
+  background-color: var(--primary-color);
+  padding: 2px 10px;
+  max-width: 100%;
+  height: 31px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  //   margin-bottom: 20px;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: auto 0;
+  // margin-bottom: 15px;
+}
+.name span {
+  //   white-space: nowrap;
+  //   text-overflow: ellipsis;
+  //   overflow: hidden;
+}
+
+.email {
+  // margin-top: auto;
+  transition: all 0.3s ease 0.1s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.userMainCard:hover .email {
+  // margin-bottom: 15px;
+}
+.editCard {
+  // position: absolute;
+  transition: all 0.3s ease;
+  // bottom: 1px;
+  // left: 0px;
+}
+.links {
+  position: absolute;
+  transition: all 0.4s ease;
+  bottom: -100%;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 3px;
+  border-radius: 5px;
+  background-color: rgba(245, 245, 245, 0.8);
+}
+
+// .links svg {
+//   width: 25px;
+//   height: 25px;
+// }
+.userMainCard:hover .editCard {
+  // bottom: 1px;
+}
+.userMainCard:hover .links {
+  bottom: 2px;
+}
+.editCard path {
+  fill: var(--black-color);
+}
+.editCard svg {
+  width: 25px;
+  height: 25px;
+}
+
+.tests {
+  flex: 55% 0 0;
+  background-color: var(--bg-color);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+}
+.testsTitle {
+  text-align: center;
+  margin-top: 5px;
+}
+.testsTitle::after {
+  content: '';
+  width: 100%;
+  height: 3px;
+  background-color: var(--invert-bg-color);
+  display: block;
+}

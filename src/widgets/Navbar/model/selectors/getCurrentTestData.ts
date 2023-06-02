@@ -1,5 +1,5 @@
 import {createSelector} from '@reduxjs/toolkit'
-import {getUserAuthData, getUserNavbar} from 'entities/Candidate/User'
+import {getUserAuthData, getUserNavbar} from 'entities/User'
 import {UserNavbar} from '../../type/navbar'
 import {StateSchema} from 'app/providers/StoreProvider'
 import {TestUserSchema} from 'widgets/Candidate/Test'

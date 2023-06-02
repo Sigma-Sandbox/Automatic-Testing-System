@@ -15,6 +15,7 @@ export enum ColorButton {
   RED_COLOR = 'redColor',
   BACKGROUND_COLOR = 'backgroundColor',
   INVERT_BACKGROUND_COLOR = 'invertBackgroundColor',
+  TRANSPARENT = 'transparent',
 }
 export enum SizeButton {
   M = 'size_m',

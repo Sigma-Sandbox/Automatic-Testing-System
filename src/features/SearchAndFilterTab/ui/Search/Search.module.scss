@@ -1,0 +1,14 @@
+.searchInput {
+  padding: 7px 12px;
+  border-radius: 10px;
+  display: flex;
+  gap: 5px;
+  width: 100%;
+  box-shadow: var(--shadow-block);
+}
+.search {
+  width: 400px;
+}
+.focus {
+  outline: 2px solid var(--primary-color);
+}

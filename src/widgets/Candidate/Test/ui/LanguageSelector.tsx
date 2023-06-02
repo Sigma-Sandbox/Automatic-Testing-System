@@ -17,6 +17,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({languages, onSelectC
       options={options}
       defaultValue={options[0]}
       onChange={(selectedOption) => onSelectChange(selectedOption)}
+      isSearchable={true}
     />
   )
 }

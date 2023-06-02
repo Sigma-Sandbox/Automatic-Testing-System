@@ -21,10 +21,12 @@
   --shadow-color: rgba(0, 0, 0, 0.25);
   --shadow-light-color: rgba(0, 0, 0, 0.2);
   --shadow-deep-color: rgba(0, 0, 0, 0.4);
+  --shadow-max-deep-color: rgba(0, 0, 0, 0.5);
 
   --shadow-min-block: 0px 2px 2px var(--shadow-light-color);
   --shadow-block: 0px 4px 4px var(--shadow-color);
   --shadow-big-block: 0px 4px 4px var(--shadow-deep-color);
+  --shadow-xl-block: 0 5px 5px var(--shadow-max-deep-color);
   --shadow-around-block: 0px 0px 10px var(--shadow-deep-color);
   --shadow-around-min-block: 0px 0px 5px var(--shadow-deep-color);
 
@@ -46,4 +48,11 @@
   // z-index
 
   --zIndex-navbar: 10000;
+
+  --zIndex-modal-cover: 11000;
+  --zIndex-modal-content: 120000;
+
+  // Main card users width
+
+  --main-card-width: 400px;
 }

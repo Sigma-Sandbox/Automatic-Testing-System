@@ -1,0 +1,34 @@
+.cardModalCover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: var(--zIndex-modal-cover);
+}
+.cardModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: var(--zIndex-modal-content);
+  background-color: var(--bg-color);
+  padding: 25px 30px 40px 30px;
+  border-radius: 10px;
+  width: 700px;
+}
+
+.cardModal.fullScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  transform: none;
+  z-index: var(--zIndex-modal-content);
+  background-color: var(--bg-color);
+  padding: 25px 30px 40px 30px;
+  border-radius: 0;
+  width: auto;
+}

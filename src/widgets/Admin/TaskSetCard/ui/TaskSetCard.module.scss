@@ -1,0 +1,55 @@
+.taskSetCard {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: var(--invert-bg-color);
+  box-shadow: var(--shadow-min-block);
+  color: var(--black-color);
+  width: 100%;
+  padding: 7px 20px;
+  border-radius: 15px;
+  position: relative;
+  height: 40px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+.taskSetCard:hover .name {
+  white-space: normal;
+}
+.taskSetCard:hover {
+  height: fit-content;
+  z-index: 10;
+  box-shadow: var(--shadow-big-block);
+}
+
+.taskSetCard:hover .btns {
+  bottom: 50%;
+  transform: translateY(50%);
+  width: fit-content;
+  height: fit-content;
+}
+.btns {
+  position: absolute;
+  bottom: -100%;
+  right: 15px;
+
+  display: flex;
+  gap: 5px;
+  transition: all 0.3s ease;
+  //
+}
+.btn {
+  border-radius: 5px;
+  transition: all 0.3 ease;
+}
+
+.btn:hover img {
+  transform: scale(1.15);
+}
+.editBtn img {
+  width: 22px;
+  transition: all 0.3 ease;
+}
+.delBtn img {
+  width: 26px;
+  transition: all 0.3 ease;
+}

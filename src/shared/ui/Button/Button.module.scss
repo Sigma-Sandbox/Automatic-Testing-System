@@ -34,29 +34,32 @@
 .button.redColor:hover {
   background-color: red;
 }
+.button.transparent {
+  background-color: transparent;
+}
 
 // Size
 
-.button.size_m {
+.size_m {
   height: var(--btn-size-m);
 }
 
-.button.size_l {
+.size_l {
   height: var(--btn-size-l);
 }
 
-.button.size_xl {
+.size_xl {
   height: var(--btn-size-xl);
 }
 
 // Theme
 
-.button.clear {
+.clear {
   padding: 0;
   margin: 0;
   background: none;
 }
 
-.button.outline {
+.outline {
   border: 1px solid var(--font-color);
 }

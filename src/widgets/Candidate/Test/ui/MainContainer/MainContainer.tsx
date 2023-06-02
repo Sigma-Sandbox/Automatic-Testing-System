@@ -36,7 +36,6 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
-    console.log(testItemData, testData)
     if (testItemData.currentItem !== 0) {
       document.body.style.setProperty('--count-main-test-item', `${testItemData.currentItem}`)
       turnOnSwitching()

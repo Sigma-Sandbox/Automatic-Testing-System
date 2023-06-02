@@ -7,10 +7,10 @@ export interface TaskSetPackSchema {
 }
 
 export interface TaskSetPack {
-  id: number
-  name: string
+  id?: number
+  name?: string
   description?: string
-  timeLimits: number
+  timeLimits?: number
   data: TaskSet[]
 }
 
