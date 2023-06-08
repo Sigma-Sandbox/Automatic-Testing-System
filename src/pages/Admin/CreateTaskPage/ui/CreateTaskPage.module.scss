@@ -1,0 +1,18 @@
+.createTaskPage {
+}
+.navbar {
+  height: 150px;
+  width: 100%;
+  margin-bottom: 30px;
+  border: 1px solid #000;
+}
+.tasksWrap {
+  display: flex;
+  gap: 20px;
+}
+.tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 50% 0 0;
+}

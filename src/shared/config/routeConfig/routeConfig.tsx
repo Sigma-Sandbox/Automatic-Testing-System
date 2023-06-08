@@ -1,10 +1,11 @@
-import {LoginPage} from 'pages/LoginPage'
-import {MainPage} from 'pages/Candidate/MainPage'
-import {TestPage} from 'pages/Candidate/TestPage'
-import {Navigate, RouteProps} from 'react-router-dom'
-import {AdminMainPage} from 'pages/Admin/AdminMainPage'
-import {AdminTaskSetsPage} from 'pages/Admin/AdminTaskSetsPage'
-import {VacancyPage} from 'pages/Admin/VacancyPage'
+import { LoginPage } from 'pages/LoginPage'
+import { MainPage } from 'pages/Candidate/MainPage'
+import { TestPage } from 'pages/Candidate/TestPage'
+import { Navigate, RouteProps } from 'react-router-dom'
+import { AdminMainPage } from 'pages/Admin/AdminMainPage'
+import { AdminTaskSetsPage } from 'pages/Admin/AdminTaskSetsPage'
+import { VacancyPage } from 'pages/Admin/VacancyPage'
+import { CreateTaskPage } from 'pages/Admin/CreateTaskPage'
 
 export enum AppRoutesCandidate {
   LOGIN = 'login',
@@ -19,6 +20,7 @@ export enum AppRoutesAdmin {
   DEFAULT = 'default',
   TASK_SET = 'tests',
   VACANCY = 'vacancy',
+  CREATE = 'create',
 }
 
 export const RoutePathCandidate: Record<AppRoutesCandidate, string> = {
@@ -34,6 +36,7 @@ export const RoutePathAdmin: Record<AppRoutesAdmin, string> = {
   [AppRoutesCandidate.DEFAULT]: '*',
   [AppRoutesAdmin.TASK_SET]: '/tests',
   [AppRoutesAdmin.VACANCY]: '/vacancy',
+  [AppRoutesAdmin.CREATE]: '/create',
 }
 
 export const routeConfigCandidate: Record<AppRoutesCandidate, RouteProps> = {
@@ -75,5 +78,9 @@ export const routeConfigAdmin: Record<AppRoutesAdmin, RouteProps> = {
   [AppRoutesAdmin.VACANCY]: {
     path: RoutePathAdmin.vacancy,
     element: <VacancyPage />,
+  },
+  [AppRoutesAdmin.CREATE]: {
+    path: RoutePathAdmin.create,
+    element: <CreateTaskPage />,
   },
 }

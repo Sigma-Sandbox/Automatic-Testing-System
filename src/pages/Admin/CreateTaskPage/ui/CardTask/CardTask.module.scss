@@ -1,0 +1,71 @@
+.cardTask {
+  background-color: var(--invert-bg-color);
+  border-radius: 10px;
+  max-height: 220px;
+  padding: 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.name {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.description {
+  margin-bottom: 5px;
+  overflow: auto;
+  max-height: 55%;
+  text-overflow: ellipsis;
+  font-style: italic;
+}
+.questions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: calc(100% - 15px);
+  overflow: auto;
+}
+.question {
+}
+
+.conds {
+  overflow: hidden;
+  height: auto;
+  margin-top: 10px;
+}
+
+.condName {
+}
+.condBtn {
+  padding: 3px 10px;
+  border-radius: 10px;
+  background-color: var(--bg-color);
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  margin-left: 4px;
+}
+.condBtn.select {
+  background-color: var(--primary-color);
+  color: var(--invert-bg-color);
+}
+.condList {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 25px;
+}
+.cond {
+  height: 100%;
+  transition: all 0.3s ease;
+}
+.typeCard {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background-color: var(--primary-color);
+  color: var(--invert-bg-color);
+  font-size: smaller;
+}
