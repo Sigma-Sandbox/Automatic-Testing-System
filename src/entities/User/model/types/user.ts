@@ -1,4 +1,4 @@
-import {UserRole} from 'core/enums'
+import { UserRole } from 'core/enums'
 import { ResultVacancyTest } from 'core/entities'
 
 export interface User {

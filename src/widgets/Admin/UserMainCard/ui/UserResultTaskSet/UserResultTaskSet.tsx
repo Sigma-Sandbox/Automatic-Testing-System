@@ -1,16 +1,20 @@
-import React, {useCallback, useEffect, useState} from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import React, { useCallback, useEffect, useState } from 'react'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './UserResultTaskSet.module.scss'
-import {TaskSet} from 'entities/Candidate/TestTask'
-import {UserSolution, getTotalScoreTaskSet, usersDataActions} from 'entities/Admin/Users'
-import {getUserDecisionPath} from 'shared/const/queryPath'
+import { TaskSet } from 'entities/Candidate/TestTask'
+import { UserSolution, getTotalScoreTaskSet, usersDataActions } from 'entities/Admin/Users'
+import { getTestTaskPath, getUserDecisionPath } from 'shared/const/queryPath'
 import axios from 'axios'
-import {useDispatch, useSelector} from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Vacancy } from 'entities/Admin/Vacancies'
+import { ResultVacancyTest } from 'core/entities'
+import { getTaskSetsById } from 'entities/Admin/TaskSets'
 
 interface UserResultTaskSetProps {
   className?: string
-  taskSet: TaskSet
+  taskSetId: number
   userId: number
+  decisions: UserSolution[]
 }
 interface IResultTaskSets {
   taskSetName: string | null
@@ -19,10 +23,11 @@ interface IResultTaskSets {
   userScore: number | null
 }
 export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
-  const {className = '', taskSet, userId} = props
+  const { className = '', taskSetId, userId, decisions } = props
   const [loadResults, setLoadResult] = useState<boolean>(false)
   const [errorResults, setErrorResult] = useState<string | null>(null)
-  const totalScoreTaskSet = useSelector(getTotalScoreTaskSet(taskSet.id || -23))
+  const taskSet: TaskSet | undefined = useSelector(getTaskSetsById(taskSetId))
+  const totalScoreTaskSet = useSelector(getTotalScoreTaskSet(taskSetId || -23))
   const [totalScore, setTotalScore] = useState<number | null>(null)
   const [userScoreTaskSet, setUserScoreTaskSet] = useState<number | null>(null)
   const dispatch = useDispatch()
@@ -30,8 +35,8 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
   const newQuery = useCallback(async (body: {}) => {
     const options = {
       method: 'POST',
-      url: getUserDecisionPath,
-      headers: {'Content-Type': 'application/json', token: '', Authorization: 'Basic Og=='},
+      url: getTestTaskPath,
+      headers: { 'Content-Type': 'application/json', token: '', Authorization: 'Basic Og==' },
       data: body,
     }
     try {
@@ -41,7 +46,7 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
       return response.data
     } catch (error) {
       console.log(error)
-      setErrorResult(`Ошибка при получении резултатов тестового задания ${taskSet.name}`)
+      setErrorResult(`Ошибка при получении резултатов тестового задания ${taskSetId}`)
     }
   }, [])
 
@@ -58,38 +63,30 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
       (curSum, testTasks) => (testTasks[0].questions?.length || 0) + curSum,
       0
     )
-    if (taskSet.id) {
-      dispatch(
-        usersDataActions.setScoreTaskSet({taskSetId: taskSet.id, totalScore: totalScoreTaskSetNew})
-      )
+    if (taskSetId) {
+      dispatch(usersDataActions.setScoreTaskSet({ taskSetId: taskSetId, totalScore: totalScoreTaskSetNew }))
     } else {
       console.log('task set ', taskSet.name, 'not id')
     }
     return totalScoreTaskSetNew
   }
   useEffect(() => {
-    if (taskSet.id && userId) {
+    if (taskSet && userId) {
       setLoadResult(true)
-      getInfoResultUser()
+      countInfoResultUser()
       if (totalScoreTaskSet) {
         setTotalScore(totalScoreTaskSet)
       } else {
         countTotalScoreTaskSet()
       }
+    } else {
     }
   }, [userId, taskSet])
 
-  const getInfoResultUser = useCallback(async () => {
-    if (taskSet.id && userId) {
-      const data: UserSolution[] = await newQuery({userId, taskSetId: taskSet.id})
-      const userScore = data?.reduce((curSum, solution) => solution.result + curSum, 0) || 0
-      setUserScoreTaskSet(userScore)
-      if (data) {
-        dispatch(
-          usersDataActions.setUserSolution({userId, taskSetId: taskSet.id, solutionTaskset: data})
-        )
-      }
-    }
+  const countInfoResultUser = useCallback(async () => {
+    const userScore = decisions.reduce((curSum, solution) => solution.result + curSum, 0) || 0
+    setUserScoreTaskSet(userScore)
+    dispatch(usersDataActions.setUserSolution({ userId, taskSetId: taskSetId, solutionTaskset: decisions }))
     setLoadResult(false)
   }, [taskSet, userId])
 

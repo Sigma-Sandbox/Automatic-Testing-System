@@ -1,8 +1,8 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {fetchTaskSetsData} from '../service/fetchTaskSetsData/fetchTaskSetsData'
-import {User} from 'entities/User'
-import {TaskSet} from 'entities/Candidate/TestTask'
-import {TaskSetsSchema} from '../types/taskSetsTypes'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { fetchTaskSetsData } from '../service/fetchTaskSetsData/fetchTaskSetsData'
+import { User } from 'entities/User'
+import { TaskSet } from 'entities/Candidate/TestTask'
+import { TaskSetsSchema } from '../types/taskSetsTypes'
 
 const initialState: TaskSetsSchema = {
   isLoading: false,
@@ -13,7 +13,11 @@ const initialState: TaskSetsSchema = {
 export const taskSetsSlice = createSlice({
   name: 'taskSets',
   initialState,
-  reducers: {},
+  reducers: {
+    setAddTaskSet: (state, action: PayloadAction<TaskSet>) => {
+      state.data.push(action.payload)
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchTaskSetsData.pending, (state) => {
@@ -32,5 +36,5 @@ export const taskSetsSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {actions: taskSetsActions} = taskSetsSlice
-export const {reducer: taskSetsReducer} = taskSetsSlice
+export const { actions: taskSetsActions } = taskSetsSlice
+export const { reducer: taskSetsReducer } = taskSetsSlice
