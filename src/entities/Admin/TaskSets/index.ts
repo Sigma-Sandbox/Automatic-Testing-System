@@ -8,6 +8,7 @@ export { fetchTaskSetsData } from './model/service/fetchTaskSetsData/fetchTaskSe
 export { getTaskSetsName } from './model/selectors/getTaskSetsName/getTaskSetsName'
 
 export { getTaskSetsById } from './model/selectors/getTaskSetsById/getTaskSetsById'
+export { getTaskSets } from './model/selectors/getTaskSets/getTaskSets'
 
 export type { TaskSetsSchema } from './model/types/taskSetsTypes'
 // export { getUserNavbar, getUserAuthData, userReducer, userActions }

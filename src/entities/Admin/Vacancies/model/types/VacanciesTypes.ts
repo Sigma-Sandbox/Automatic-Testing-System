@@ -1,3 +1,5 @@
+import { TaskSet } from 'entities/Candidate/TestTask'
+
 export interface VacanciesSchema {
   isLoading: boolean
   error?: string
@@ -7,5 +9,5 @@ export interface VacanciesSchema {
 export interface Vacancy {
   id: number
   name: string
-  taskSetIds: number[]
+  taskSets: TaskSet[]
 }

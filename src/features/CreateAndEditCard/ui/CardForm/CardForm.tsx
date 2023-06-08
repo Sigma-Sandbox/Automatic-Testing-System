@@ -1,125 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './CardForm.module.scss'
 import { MySelect } from 'shared/ui/Select/Select'
 import { useDispatch, useSelector } from 'react-redux'
-import { getVacanciesName } from 'entities/Admin/Vacancies'
 import { Button, ColorButton, SizeButton, ThemeButton } from 'shared/ui/Button/Button'
 import CopySvg from 'shared/assets/icon/copy.svg'
-import { User } from 'entities/User'
+import { ResultVacancyTest, User } from 'entities/User'
 import { PersonInputs } from './PersonInputs'
 import { sendUsersData } from 'features/CreateAndEditCard/model/service/sendUserData/sendUsersData'
 import { usersDataActions } from 'entities/Admin/Users'
 import { ProgrammingLanguage, UserRole, Vacancy } from 'core/enums'
 import { TaskSet } from 'entities/Candidate/TestTask'
+import { getVacancies } from 'entities/Admin/Vacancies/model/selectors/getVacancies/getVacancies'
 
 interface CardFormProps {
   className?: string
   link?: string
   user: User | null
   closeModal: () => void
-}
-
-const taskSetMock: TaskSet = {
-  id: 2,
-  name: 'name22',
-  description: 'description22',
-  timeLimits: 123,
-  testTasks: [
-    {
-      id: 2,
-      name: 'Имя 2',
-      description: 'Описание второго набора',
-      questions: [
-        {
-          id: 1,
-          description: 'Чему равна единица',
-          points: 1,
-          wrongAnswers: ['2', '3', '4'],
-          correctAnswers: ['1'],
-        },
-        {
-          id: 2,
-          description: 'Чему не равна единица',
-          points: 2,
-          wrongAnswers: ['1'],
-          correctAnswers: ['2', '3', '4'],
-        },
-      ],
-      execTime: 10,
-    },
-    {
-      id: 3,
-      name: 'Имя 3',
-      description: 'Описание третьего набора',
-      questions: [
-        {
-          id: 1,
-          description: 'Чему равна единица',
-          points: 1,
-          wrongAnswers: ['2', '3', '4'],
-          correctAnswers: ['1'],
-        },
-
-        {
-          id: 3,
-          description: 'Чему не равны 5 и 6',
-          points: 3,
-          wrongAnswers: ['5', '6'],
-          correctAnswers: ['3', '4'],
-        },
-      ],
-      execTime: 10,
-    },
-  ],
-  progTasks: [
-    {
-      id: 2,
-      name: 'Name2',
-      description: 'description2',
-      autoTests: ['test3', 'test4'],
-      complexityAssessment: 20,
-      conditions: [
-        {
-          language: ProgrammingLanguage.Java,
-          maxTime: 44444,
-          maxMemory: 4,
-          codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'
-        },
-        {
-          language: ProgrammingLanguage.Java,
-          maxTime: 33333,
-          maxMemory: 3,
-          codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'
-        },
-      ],
-    },
-
-    {
-      id: 3,
-      name: 'Name3',
-      description: 'description3',
-      autoTests: ['test5', 'test6'],
-      complexityAssessment: 30,
-      conditions: [
-        {
-          language: ProgrammingLanguage.Java,
-          maxTime: 66666,
-          maxMemory: 6,
-          codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'
-        },
-        {
-          language: ProgrammingLanguage.Java,
-          maxTime: 55555,
-          maxMemory: 5,
-          codeExample: 'countChange(4, [1,2]) // => 3 \ncountChange(10, [5,2,3]) // => 4 \ncountChange(11, [5,7]) //  => 0'
-        },
-      ],
-    },
-  ],
-  creator: 'Pahan',
-  timeOfCreation: 234,
-  language: [ProgrammingLanguage.Java],
 }
 
 export type PersonState = {
@@ -129,11 +27,11 @@ export type PersonState = {
   email: string
 }
 export const CardForm: React.FC<CardFormProps> = (props) => {
-  const {className = '', link = 'blabla', user, closeModal} = props
-  const vacanciesName = useSelector(getVacanciesName)
+  const { className = '', link = 'blabla', user, closeModal } = props
+  const allVacancies = useSelector(getVacancies)
   const dispatch = useDispatch()
   const [selectedVacancies, setSelectedVacancies] = useState<string[]>(
-    user ? Object.keys(user.vacancies) : []
+    user ? user.vacancies.map((vacancy) => vacancy.vacancyName) : []
   )
   const [personState, setPersonState] = useState<PersonState>({
     surname: user?.surname || '',
@@ -141,7 +39,9 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
     patronymic: user?.patronymic || '',
     email: user?.email || '',
   })
-
+  useEffect(() => {
+    console.log(selectedVacancies, user?.vacancies)
+  }, [])
   const copyLink = () => {
     navigator.clipboard
       .writeText(link)
@@ -155,16 +55,16 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
   const changeState = (newValue: string, typeValue: string) => {
     switch (typeValue) {
       case 'surname':
-        setPersonState((prevState) => ({...prevState, surname: newValue}))
+        setPersonState((prevState) => ({ ...prevState, surname: newValue }))
         break
       case 'name':
-        setPersonState((prevState) => ({...prevState, name: newValue}))
+        setPersonState((prevState) => ({ ...prevState, name: newValue }))
         break
       case 'patronymic':
-        setPersonState((prevState) => ({...prevState, patronymic: newValue}))
+        setPersonState((prevState) => ({ ...prevState, patronymic: newValue }))
         break
       case 'email':
-        setPersonState((prevState) => ({...prevState, email: newValue}))
+        setPersonState((prevState) => ({ ...prevState, email: newValue }))
         break
     }
   }
@@ -175,16 +75,18 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
   const checkAndSendData = async () => {
     validateValue()
     let option: User
+    const vacanciesUser: ResultVacancyTest[] = []
+    selectedVacancies.forEach((vacancyName) => {
+      const vacancyId = allVacancies.find((vac) => vac.name === vacancyName)
+      if (vacancyId) {
+        const userSolutions = user?.vacancies.find((vac) => vac.vacancyId === vacancyId.id)?.userSolutions || []
+        vacanciesUser.push({ vacancyId: vacancyId.id, vacancyName, userSolutions })
+      } else {
+        console.log('вакансия с именем ', vacancyName, ' не найдена')
+      }
+    })
     if (user) {
-      // const vacansiesUpdate: any = {}
-      // selectedVacancies.forEach((vacancy) => {
-      //   if (user.vacancies[vacancy]) {
-      //     vacansiesUpdate[vacancy] = user.vacancies[vacancy]
-      //   } else {
-      //     vacansiesUpdate[vacancy] = {'1': taskSetMock}
-      //   }
-      // })
-      option = {...user, ...personState}
+      option = { ...user, ...personState, vacancies: vacanciesUser }
       const answer = await sendUsersData(option)
       if (answer === 'OK') {
         dispatch(usersDataActions.setUpdateUsers(option))
@@ -193,12 +95,12 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
     } else {
       option = {
         ...personState,
-        id: 4,
+        id: -100,
         accessRights: UserRole.APPLICANT,
         actualLink: 'blablabalbal',
         startLinkTimestamp: '2023-04-30T21:00:00.000Z',
         endLinkTimestamp: '2023-04-30T21:00:00.000Z',
-        vacancies: [{ vacancyId: 1, vacancyName: Vacancy.JAVA_JUNIOR, userSolutions: [] }],
+        vacancies: vacanciesUser,
       }
       const answer = await sendUsersData(option, true)
       if (answer === 'OK') {
@@ -218,11 +120,14 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
           <MySelect
             isMulti={true}
             className={cls.vacanciesSelect}
-            placeHolder='Выберите вакансию'
+            placeHolder="Выберите вакансию"
             changeSelect={(el) => Array.isArray(el) && setSelectedVacancies(el)}
-            selected={selectedVacancies.map((vacancy) => ({value: vacancy, label: vacancy}))}
-            options={vacanciesName.map((vacancy) => {
-              return {label: vacancy, value: vacancy}
+            selected={selectedVacancies.map((vacancy) => ({
+              value: vacancy,
+              label: vacancy,
+            }))}
+            options={allVacancies.map((vacancy) => {
+              return { label: vacancy.name, value: vacancy.name }
             })}
           ></MySelect>
         </div>
@@ -231,7 +136,7 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
         <div className={cls.link}>
           <span>{user?.actualLink}</span>{' '}
           <Button theme={ThemeButton.CLEAR} className={cls.copyBtn} onClick={copyLink}>
-            <img src={CopySvg} alt='copy' />
+            <img src={CopySvg} alt="copy" />
           </Button>
         </div>
       )}

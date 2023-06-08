@@ -30,7 +30,6 @@ export const UserMainCard: React.FC<UserMainCardProps> = (props) => {
   useEffect(() => {
     if (user) {
       setLoadCard(true)
-      console.log(user)
     }
   }, [user])
 

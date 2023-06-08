@@ -11,7 +11,7 @@ import { Loader } from 'shared/ui/Loader/Loader'
 import AddUserSvg from 'shared/assets/icon/account_add.svg'
 import EmptySvg from 'shared/assets/icon/empty.png'
 import { fetchTaskSetsData, getTaskSetsName } from 'entities/Admin/TaskSets'
-import { fetchVacanciesData, getVacanciesName } from 'entities/Admin/Vacancies'
+import { fetchVacanciesData, getVacancies } from 'entities/Admin/Vacancies'
 import { SearchAndFilterTab } from 'features/SearchAndFilterTab'
 import { MySelect } from 'shared/ui/Select/Select'
 import { CreateOrEditCard, cardEditStatus } from 'features/CreateAndEditCard'
@@ -45,6 +45,7 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
   }, [userListInit])
 
   const changeUsersList = (newUsersList: User[]) => {
+    console.log(newUsersList)
     setUserList(newUsersList)
   }
 

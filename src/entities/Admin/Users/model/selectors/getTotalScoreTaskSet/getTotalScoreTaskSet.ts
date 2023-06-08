@@ -1,5 +1,5 @@
-import {StateSchema} from 'app/providers/StoreProvider'
+import { StateSchema } from 'app/providers/StoreProvider'
 
 export const getTotalScoreTaskSet = (taskSetId: number) => (state: StateSchema) => {
-  return state.allUsersData.data.totalScoreTaskSet[taskSetId]
+  return state.allUsersData.data.totalScoreTaskSet[taskSetId] || null
 }

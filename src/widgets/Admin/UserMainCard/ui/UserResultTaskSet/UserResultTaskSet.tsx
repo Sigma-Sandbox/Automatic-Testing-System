@@ -7,8 +7,8 @@ import { getTestTaskPath, getUserDecisionPath } from 'shared/const/queryPath'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { Vacancy } from 'entities/Admin/Vacancies'
-import { ResultVacancyTest } from 'core/entities'
-import { getTaskSetsById } from 'entities/Admin/TaskSets'
+import { fetchTaskSetsData, getTaskSetsById } from 'entities/Admin/TaskSets'
+import { AppDispatch } from 'app/providers/StoreProvider/config/store'
 
 interface UserResultTaskSetProps {
   className?: string
@@ -27,30 +27,12 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
   const [loadResults, setLoadResult] = useState<boolean>(false)
   const [errorResults, setErrorResult] = useState<string | null>(null)
   const taskSet: TaskSet | undefined = useSelector(getTaskSetsById(taskSetId))
-  const totalScoreTaskSet = useSelector(getTotalScoreTaskSet(taskSetId || -23))
+  const totalScoreTaskSet = useSelector(getTotalScoreTaskSet(taskSetId))
   const [totalScore, setTotalScore] = useState<number | null>(null)
   const [userScoreTaskSet, setUserScoreTaskSet] = useState<number | null>(null)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
-  const newQuery = useCallback(async (body: {}) => {
-    const options = {
-      method: 'POST',
-      url: getTestTaskPath,
-      headers: { 'Content-Type': 'application/json', token: '', Authorization: 'Basic Og==' },
-      data: body,
-    }
-    try {
-      const response = await axios.post(options.url, options.data, {
-        headers: options.headers,
-      })
-      return response.data
-    } catch (error) {
-      console.log(error)
-      setErrorResult(`Ошибка при получении резултатов тестового задания ${taskSetId}`)
-    }
-  }, [])
-
-  const countTotalScoreTaskSet = () => {
+  const countTotalScoreTaskSet = (taskSet: TaskSet) => {
     let totalScoreTaskSetNew = taskSet.progTasks.reduce(
       // TODO: get data with wrap array
       // @ts-ignore
@@ -66,22 +48,24 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
     if (taskSetId) {
       dispatch(usersDataActions.setScoreTaskSet({ taskSetId: taskSetId, totalScore: totalScoreTaskSetNew }))
     } else {
-      console.log('task set ', taskSet.name, 'not id')
+      console.log('task set ', taskSet.name, ' not id')
     }
     return totalScoreTaskSetNew
   }
   useEffect(() => {
-    if (taskSet && userId) {
-      setLoadResult(true)
+    setLoadResult(true)
+    if (taskSet) {
       countInfoResultUser()
       if (totalScoreTaskSet) {
         setTotalScore(totalScoreTaskSet)
       } else {
-        countTotalScoreTaskSet()
+        countTotalScoreTaskSet(taskSet)
       }
+      setLoadResult(false)
     } else {
+      dispatch(fetchTaskSetsData({ id: taskSetId }))
     }
-  }, [userId, taskSet])
+  }, [taskSet])
 
   const countInfoResultUser = useCallback(async () => {
     const userScore = decisions.reduce((curSum, solution) => solution.result + curSum, 0) || 0
@@ -93,11 +77,14 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
   if (loadResults) {
     return <div className={classNames(cls.userResultTaskSet, {}, [className, cls.gradient])}></div>
   }
+
   return (
-    <div className={classNames(cls.userResultTaskSet, {}, [className])}>
-      <span className={cls.taskSetName}>{taskSet.name}</span>-
+    <div className={classNames(cls.userResultTaskSet, { [cls.gray]: decisions.length === 0 }, [className])}>
+      <span className={cls.taskSetName}>{taskSet?.name}</span>
+
+      <span>-</span>
       <span className={cls.taskSetScore}>
-        {userScoreTaskSet}/{totalScoreTaskSet || totalScore}
+        {decisions.length > 0 ? userScoreTaskSet : '^'}/{totalScoreTaskSet || totalScore}
       </span>
     </div>
   )

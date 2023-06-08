@@ -1,7 +1,7 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {fetchVacanciesData} from '../service/fetchVacanciesData/fetchVacanciesData'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { fetchVacanciesData } from '../service/fetchVacanciesData/fetchVacanciesData'
 
-import {VacanciesSchema, Vacancy} from '../types/VacanciesTypes'
+import { VacanciesSchema, Vacancy } from '../types/VacanciesTypes'
 
 const initialState: VacanciesSchema = {
   isLoading: false,
@@ -44,5 +44,5 @@ export const VacanciesSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {actions: vacanciesActions} = VacanciesSlice
-export const {reducer: vacanciesReducer} = VacanciesSlice
+export const { actions: vacanciesActions } = VacanciesSlice
+export const { reducer: vacanciesReducer } = VacanciesSlice

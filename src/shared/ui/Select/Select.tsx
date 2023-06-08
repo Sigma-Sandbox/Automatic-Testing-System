@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import React, { useEffect, useState } from 'react'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './Select.module.scss'
-import Select, {MultiValue, SingleValue} from 'react-select'
+import Select, { MultiValue, SingleValue } from 'react-select'
 
 export type SelectOption = {
   value: string
@@ -18,18 +18,8 @@ interface SelectProps {
 }
 
 export const MySelect: React.FC<SelectProps> = (props) => {
-  const {
-    className = '',
-    imgSrc,
-    options,
-    placeHolder,
-    changeSelect,
-    isMulti = false,
-    selected,
-  } = props
-  const [value, setValue] = useState<SelectOption | readonly SelectOption[] | null>(
-    selected ? selected : null
-  )
+  const { className = '', imgSrc, options, placeHolder, changeSelect, isMulti = false, selected } = props
+  const [value, setValue] = useState<SelectOption | readonly SelectOption[] | null>(selected ? selected : null)
 
   const onChange = (newValue: readonly SelectOption[] | SelectOption | null) => {
     setValue(newValue)
@@ -43,7 +33,7 @@ export const MySelect: React.FC<SelectProps> = (props) => {
   }
   return (
     <div className={cls.select}>
-      {imgSrc && <img src={imgSrc} alt='icon select' className={cls.selectImg} />}
+      {imgSrc && <img src={imgSrc} alt="icon select" className={cls.selectImg} />}
       <Select
         styles={{
           control: (baseStyles, state) => ({
@@ -60,10 +50,10 @@ export const MySelect: React.FC<SelectProps> = (props) => {
             zIndex: 100,
           }),
         }}
-        name='colors'
+        name="colors"
         options={options}
         className={classNames(cls.selectOpt, {}, [className])}
-        classNamePrefix='select'
+        classNamePrefix="select"
         placeholder={placeHolder}
         isClearable
         value={value}
