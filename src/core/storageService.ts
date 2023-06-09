@@ -84,7 +84,6 @@ export class StorageService implements IStorageService {
         id SERIAL4 PRIMARY KEY ,
         name VARCHAR(64),
         description TEXT,
-        auto_tests TEXT[],
         complexity_assessment INT,
         conditions JSONB
       );
@@ -201,19 +200,18 @@ export class StorageService implements IStorageService {
   }
 
   async addProgTask(progTask: ProgTask): Promise<void> {
-    const conditions: {[k: string]: [number, number, string]} = {}
+    const conditions: {[k: string]: [number, number, string, string]} = {}
     progTask.conditions.forEach(condition => {
-      conditions[condition.language] = [condition.maxTime, condition.maxMemory, condition.codeExample]
+      conditions[condition.language] = [condition.maxTime, condition.maxMemory, condition.codeExample, condition.autoTests]
     })
 
     try {
       await this.getDB().query(`
         INSERT INTO prog_tasks
-        VALUES(DEFAULT, $1, $2, $3, $4, $5)`,
+        VALUES(DEFAULT, $1, $2, $3, $4)`,
         [
           progTask.name,
           progTask.description,
-          progTask.autoTests,
           progTask.complexityAssessment,
           conditions
         ]
@@ -713,7 +711,6 @@ export class StorageService implements IStorageService {
         id,
         name,
         description,
-        auto_tests,
         complexity_assessment,
         conditions
       FROM prog_tasks` + resultCondition + strConditions.join(' AND '),
@@ -728,7 +725,8 @@ export class StorageService implements IStorageService {
             language: key as ProgrammingLanguage,
             maxTime: row.conditions[key][0],
             maxMemory: row.conditions[key][1],
-            codeExample: row.conditions[key][2]
+            codeExample: row.conditions[key][2],
+            autoTests: row.conditions[key][3]
           })
         }
 
@@ -1011,9 +1009,9 @@ export class StorageService implements IStorageService {
   }
 
   async updateProgTask(progTask: ProgTask): Promise<void> {
-    const conditions: {[k: string]: [number, number, string]} = {}
+    const conditions: {[k: string]: [number, number, string, string]} = {}
     progTask.conditions.forEach(condition => {
-      conditions[condition.language] = [condition.maxTime, condition.maxMemory, condition.codeExample]
+      conditions[condition.language] = [condition.maxTime, condition.maxMemory, condition.codeExample, condition.autoTests]
     })
 
     try {
@@ -1021,15 +1019,13 @@ export class StorageService implements IStorageService {
         UPDATE prog_tasks SET
           name = $2,
           description = $3,
-          auto_tests = $4,
-          complexity_assessment = $5,
-          conditions = $6
+          complexity_assessment = $4,
+          conditions = $5
         WHERE id = $1`,
         [
           progTask.id,
           progTask.name,
           progTask.description,
-          progTask.autoTests,
           progTask.complexityAssessment,
           conditions
         ]

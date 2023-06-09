@@ -68,10 +68,10 @@ export interface Condition {
   maxTime: number
   maxMemory: number
   codeExample: string
+  autoTests: string
 }
 
 export interface ProgTask extends Task {
-  autoTests: string[]
   complexityAssessment: number
   conditions: Condition[]
 }

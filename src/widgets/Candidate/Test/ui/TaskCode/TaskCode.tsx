@@ -24,7 +24,8 @@ export enum ActionTypeCode {
 export const TaskCode: React.FC<TaskCodeProps> = (props) => {
   const className = props.className || ''
   const {id, description, name, conditions, complexityAssessment, numOfTry, vacancyId} = props.dataItem
-  const examples = conditions[0].codeExample
+  const [examples, setExamples] = useState(conditions[0].codeExample)
+  const [autoTests, setAutoTests] = useState(conditions[0].autoTests)
   const [code, setCode] = useState(examples || '')
   const [outputDetails, setOutputDetails]: any = useState(undefined)
   const [language, setLanguage] = useState(
@@ -42,6 +43,8 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
         setMaxTimeExecution(cond.maxTime)
         setMaxMemoryExecution(cond.maxMemory)
         setCode(cond.codeExample)
+        setExamples(cond.codeExample)
+        setAutoTests(cond.autoTests)
       }
     }
   }
@@ -60,7 +63,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
 
   const handleCompile = () => {
     setProcessing(true)
-    const newCode = `${code}`
+    const newCode = `${code}\n\n${autoTests}}`
 
     try {
       btoa(newCode)
