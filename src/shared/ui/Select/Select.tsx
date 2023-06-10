@@ -9,6 +9,7 @@ export type SelectOption = {
 }
 interface SelectProps {
   className?: string
+  wrapClass?: string
   selected?: SelectOption | SelectOption[] | null
   placeHolder?: string
   changeSelect: (newValue: string[] | string | null) => void
@@ -18,7 +19,16 @@ interface SelectProps {
 }
 
 export const MySelect: React.FC<SelectProps> = (props) => {
-  const { className = '', imgSrc, options, placeHolder, changeSelect, isMulti = false, selected } = props
+  const {
+    className = '',
+    wrapClass = '',
+    imgSrc,
+    options,
+    placeHolder,
+    changeSelect,
+    isMulti = false,
+    selected,
+  } = props
   const [value, setValue] = useState<SelectOption | readonly SelectOption[] | null>(selected ? selected : null)
 
   const onChange = (newValue: readonly SelectOption[] | SelectOption | null) => {
@@ -32,7 +42,7 @@ export const MySelect: React.FC<SelectProps> = (props) => {
     }
   }
   return (
-    <div className={cls.select}>
+    <div className={classNames(cls.select, {}, [wrapClass])}>
       {imgSrc && <img src={imgSrc} alt="icon select" className={cls.selectImg} />}
       <Select
         styles={{

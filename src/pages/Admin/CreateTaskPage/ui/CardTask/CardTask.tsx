@@ -17,7 +17,7 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
     if ('conditions' in task) {
       console.log(task.conditions)
     } else {
-      console.log(task.questions)
+      console.log(task)
     }
   }, [])
 
@@ -25,11 +25,11 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
     return (
       <div className={classNames(cls.cardTask, {}, [className])}>
         <div className={classNames(cls.name)}>{task.name}</div>
-        <div className={classNames(cls.description)}>{task.description}</div>
+        <div className={classNames(cls.description, {}, ['custom_scroll'])}>{task.description}</div>
         <span className={classNames(cls.typeCard)}>{task.conditions.map((el) => el.language).join(' | ')}</span>
 
         <div className={classNames(cls.conds)}>
-          <div className={classNames(cls.condName)}>
+          <div className={classNames(cls.condName, {}, ['custom_scroll'])}>
             Ограничения:{' '}
             {task.conditions.map((cond, index) => (
               <span
@@ -43,7 +43,8 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
           <div className={classNames(cls.condList)}>
             {task.conditions.map((el, index) => (
               <div className={classNames(cls.cond)} style={{ transform: `translateY(-${condType * 100}%)` }}>
-                время: {el.maxTime} мс | память: {el.maxMemory} мб
+                время: <span className={classNames('', {}, ['bold'])}> {el.maxTime} мс</span> | память:{' '}
+                <span className={classNames('', {}, ['bold'])}> {el.maxMemory} мб</span>
               </div>
             ))}
           </div>
@@ -54,17 +55,23 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
   return (
     <div className={classNames(cls.cardTask, {}, [className])}>
       <div className={classNames(cls.name)}>{task.name}</div>
-
-      <div className={classNames(cls.questions)}>
-        {task.questions.map((el, index) => (
-          <div className={classNames(cls.question)}>
-            {index + 1}.
-            {
-              // @ts-ignore-start
-              el[0]?.description
-            }
+      <div className={classNames(cls.cardMain)}>
+        <div className={classNames(cls.questions, {}, ['custom_scroll'])}>
+          {task.questions.map((el, index) => (
+            <div className={classNames(cls.question)}>
+              {index + 1}.
+              {
+                // @ts-ignore
+                el[0]?.description
+              }
+            </div>
+          ))}
+        </div>
+        <div className={classNames(cls.info)}>
+          <div className={classNames(cls.testCond)}>
+            Время: <span className={classNames('', {}, ['bold'])}>{task.execTime} сек</span>
           </div>
-        ))}
+        </div>
       </div>
     </div>
   )

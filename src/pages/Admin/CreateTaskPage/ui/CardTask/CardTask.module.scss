@@ -2,48 +2,89 @@
   background-color: var(--invert-bg-color);
   border-radius: 10px;
   max-height: 220px;
-  padding: 15px;
+  padding: 10px 15px 10px 15px;
   overflow: hidden;
   position: relative;
+  max-width: 620px;
+  justify-content: center;
 }
 
 .name {
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .description {
   margin-bottom: 5px;
   overflow: auto;
   max-height: 55%;
-  text-overflow: ellipsis;
+  padding: 0 3px;
   font-style: italic;
+  text-align: justify;
+  line-height: normal;
+  scrollbar-width: 12px;
+  scrollbar-color: #c1c1c1 #f5f5f5;
+}
+.cardMain {
+  display: flex;
+  gap: 10px;
+  height: 100%;
 }
 .questions {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  height: calc(100% - 15px);
+  height: calc(100% - 30px);
   overflow: auto;
+  flex: 65% 0 0;
+  text-align: justify;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 35% 0 0;
+  gap: 10px;
+  justify-content: center;
+  margin-top: -40px;
+}
+.testDescript {
+  display: flex;
+  flex-direction: column;
 }
 .question {
+  line-height: normal;
+}
+.testCond {
 }
 
 .conds {
   overflow: hidden;
   height: auto;
-  margin-top: 10px;
+  margin-top: 5px;
+  font-size: smaller;
 }
 
 .condName {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: auto;
+  gap: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f5f5f5;
 }
+
+.condName::-webkit-scrollbar {
+  height: 7px;
+  background-color: #f5f5f5;
+}
+
 .condBtn {
-  padding: 3px 10px;
+  padding: 0px 10px;
   border-radius: 10px;
   background-color: var(--bg-color);
   transition: all 0.3s ease;
   cursor: pointer;
-
-  margin-left: 4px;
 }
 .condBtn.select {
   background-color: var(--primary-color);
