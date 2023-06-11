@@ -11,7 +11,9 @@ import {
   GetTestQuestionConditions,
   GetTestTaskConditions,
   GetUserConditions,
-  GetUserSolutionConditions, GetVacancyTestConditions
+  GetUserSolutionConditions,
+  GetVacancyTestConditions,
+  UserID
 } from './core/interfaces'
 
 const port = process.env.PORT || 3001
@@ -96,6 +98,10 @@ serverApp.post('/api/update', (req, res) => {
   }
 })
 
+serverApp.post('/api/update_user_link', (req, res) => {
+  storageService.updateUserActualLink(req.body as UserID).then(() => res.send())
+})
+
 serverApp.post('/api/delete/user', (req, res) => {
   storageService.deleteUser(req.body.id).then(() => res.send())
 })
@@ -123,5 +129,6 @@ serverApp.post('/api/delete/test_task', (req, res) => {
 serverApp.post('/api/delete/test_question', (req, res) => {
   storageService.deleteTestQuestion(req.body.id).then(() => res.send())
 })
+
 
 serverApp.listen(port, () => console.log(`Express server listening on port ${port}`))

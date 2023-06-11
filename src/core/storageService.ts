@@ -4,11 +4,14 @@ import {
   GetTestTaskConditions,
   GetUserConditions,
   GetUserSolutionConditions, GetVacancyTestConditions,
-  IStorageService
+  IStorageService,
+  UserID
 } from './interfaces'
-import { Pool } from 'pg'
+import { Pool, QueryResult } from 'pg'
 import { Condition, ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution, VacancyTest } from './entities'
 import { ProgrammingLanguage, Vacancy } from './enums'
+import sha256 from 'fast-sha256'
+import { randomInt } from 'crypto'
 
 export class StorageService implements IStorageService {
   db: Pool | undefined = undefined
@@ -1076,6 +1079,50 @@ export class StorageService implements IStorageService {
       )
     } catch (err) {
       console.log('updateTestQuestion', err)
+    }
+  }
+
+  /**
+   * Функция, вызывающая обновление поля актуальной ссылки авторизации (user.actual_link) в БД
+   *  с использованием библиотеки fast_sha256, проверяя, что нет повторяющейся ссылки
+   * @param user Идентификатор пользователя
+   */
+  async updateUserActualLink(user: UserID): Promise<void> {
+    try {
+      const maxInt: number = 2147483647
+      var linksInUse: { rowCount: any }
+      var actualLink: string
+
+      do {
+        const rawData: Uint8Array = new TextEncoder().encode(
+          user.id.toString() + randomInt(maxInt).toString())
+          
+        const cryptData = sha256(rawData)
+        cryptData.forEach((element, index) => {cryptData[index] = element / 255 * 26 + 97})
+        actualLink = new TextDecoder('utf-8').decode(cryptData)
+
+        linksInUse = await this.getDB().query(`
+          SELECT id
+          FROM users
+          WHERE id = $1 AND actual_link = $2`,
+        [
+          user.id,
+          actualLink
+        ])
+
+      } while (linksInUse.rowCount != 0)
+
+      await this.getDB().query(`
+        UPDATE users SET
+          actual_link = $2
+        WHERE id = $1`,
+        [
+          user.id,
+          actualLink
+        ]
+      )
+    } catch (err) {
+      console.log('updateUserActualLink', err)
     }
   }
 

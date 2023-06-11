@@ -78,6 +78,7 @@ export interface IStorageService {
   updateProgTask(progTask: ProgTask): Promise<void>
   updateTestTask(testTask: TestTask): Promise<void>
   updateTestQuestion(testQuestion: TestQuestion): Promise<void>
+  updateUserActualLink(user: UserID): Promise<void>
 
   deleteUser(id: number): Promise<void>
   deleteUserSolution(id: number): Promise<void>
@@ -102,4 +103,8 @@ export interface IConfigurationService {
   init(): Promise<void>
   getConfiguration(name: string): Promise<any>
   updateConfiguration(module: string, value: any): Promise<void>
+}
+
+export interface UserID {
+  id: number
 }
