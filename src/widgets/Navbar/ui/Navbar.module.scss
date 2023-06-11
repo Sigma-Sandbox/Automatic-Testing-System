@@ -1,5 +1,4 @@
 .navbar {
-  width: 100%;
   height: var(--navbar-height);
   transition: all 0.5s ease;
   display: flex;
@@ -13,11 +12,12 @@
   // load effect
   transition: all 0.5s ease;
   position: fixed;
-  left: 50%;
+  // left: 50%;
   top: 0;
-  width: 100%;
-  transform: translateX(-50%);
+  // transform: translateX(-50%);
   z-index: var(--zIndex-navbar);
+  width: 100vw;
+  max-width: none;
 }
 
 .navbar.collaps {
@@ -72,4 +72,10 @@
 
 .btnExit {
   margin-left: auto;
+}
+
+.navbarContent {
+  max-width: calc(1280px - (2 * var(--sidebar-width)));
+  width: 100%;
+  margin: auto;
 }

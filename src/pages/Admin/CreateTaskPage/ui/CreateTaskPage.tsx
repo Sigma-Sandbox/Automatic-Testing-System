@@ -8,6 +8,13 @@ import { AppDispatch } from 'app/providers/StoreProvider/config/store'
 import { CardTask } from './CardTask/CardTask'
 import { CreateNavbar } from './CreateNavbar/CreateNavbar'
 import { ProgTask, TestTask } from 'entities/Candidate/TestTask'
+import { Button, ColorButton, ThemeButton } from 'shared/ui/Button/Button'
+
+import { ReactComponent as PlusSvg } from 'shared/assets/icon/plus.svg'
+import { ReactComponent as CodeSvg } from 'shared/assets/icon/codeCreate.svg'
+import { ReactComponent as TestSvg } from 'shared/assets/icon/testCreate.svg'
+import { NotFoundElements } from 'shared/ui/NotFoundElements/NotFoundElements'
+import { CreateAndEditCodeTask } from 'features/CreateAndEditCodeTask'
 
 interface CreateTaskPageProps {
   className?: string
@@ -62,19 +69,44 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
   return (
     <div className={classNames(cls.createTaskPage, {}, ['container', className])}>
       <div className={cls.navbar}>
+        <CreateAndEditCodeTask task={null} closeModal={() => console.log('close')}></CreateAndEditCodeTask>
+        <div className={classNames(cls.createBtns)}>
+          <Button
+            className={classNames(cls.createBtn, {}, [cls.createTest])}
+            color={ColorButton.PRIMARY_COLOR}
+            theme={ThemeButton.BACKGROUND}
+          >
+            <TestSvg />
+          </Button>
+          <div className={classNames(cls.plusImg)}>
+            <PlusSvg />
+          </div>
+
+          <Button
+            className={classNames(cls.createBtn, {}, [cls.createCode])}
+            color={ColorButton.PRIMARY_COLOR}
+            theme={ThemeButton.BACKGROUND}
+          >
+            <CodeSvg />
+          </Button>
+        </div>
         <CreateNavbar langs={Object.values(langProg)} changeList={filterTasks} />
       </div>
 
       <div className={cls.tasksWrap}>
         <div className={cls.tasks}>
-          {testTasks.map((testTask) => (
-            <CardTask task={testTask} />
-          ))}
+          {testTasks.length > 0 ? (
+            testTasks.map((testTask) => <CardTask key={testTask.id} task={testTask} />)
+          ) : (
+            <NotFoundElements text="Тесты не найдены" />
+          )}
         </div>
         <div className={cls.tasks}>
-          {progTasks.map((progTask) => (
-            <CardTask task={progTask} />
-          ))}
+          {progTasks.length > 0 ? (
+            progTasks.map((progTask) => <CardTask key={progTask.id} task={progTask} />)
+          ) : (
+            <NotFoundElements text="Задачи не найдены" />
+          )}
         </div>
       </div>
     </div>

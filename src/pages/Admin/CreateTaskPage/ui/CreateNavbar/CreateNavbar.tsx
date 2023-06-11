@@ -68,6 +68,7 @@ export const CreateNavbar: React.FC<CreateNavbarProps> = (props) => {
 
     const newListTest = workListTest?.filter((testTask) => {
       if (!searchValue) return true
+      // TODO: select color search text
       return (
         testTask.name.toLocaleLowerCase().includes(text) ||
         testTask.description.toLocaleLowerCase().includes(text) ||

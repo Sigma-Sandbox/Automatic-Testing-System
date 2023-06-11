@@ -2,10 +2,7 @@ import React, { InputHTMLAttributes, memo, useEffect } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './Input.module.scss'
 
-type HTMLInputProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'value' | 'onChange'
->
+type HTMLInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'>
 
 interface InputProps extends HTMLInputProps {
   className?: string
@@ -17,15 +14,7 @@ interface InputProps extends HTMLInputProps {
 }
 
 export const Input = memo((props: InputProps) => {
-  const {
-    className = '',
-    value,
-    onChange,
-    type = 'text',
-    placeholder,
-    icon,
-    ...otherProps
-  } = props
+  const { className = '', value, onChange, type = 'text', placeholder, icon, ...otherProps } = props
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(e.target.value)
@@ -33,7 +22,7 @@ export const Input = memo((props: InputProps) => {
 
   return (
     <div className={classNames(cls.inputWrapper, {}, [className])}>
-      {icon && <img src={icon} alt='icon input' className={cls.icon} />}
+      {icon && <img src={icon} alt="icon input" className={cls.icon} />}
       <input
         type={type}
         value={value}

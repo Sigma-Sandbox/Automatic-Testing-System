@@ -1,7 +1,7 @@
-import {getCurrentTask} from './model/selectors/currentTestTask'
-import {selectTestTask} from './model/selectors/testTask'
-import {fetchTestTask} from './model/services/fetchTestTask/getTestTask'
-import {testTaskReducer, testTaskActions} from './model/slice/testTaskSlice'
+import { getCurrentTask } from './model/selectors/currentTestTask'
+import { selectTestTask } from './model/selectors/testTask'
+import { fetchTestTask } from './model/services/fetchTestTask/getTestTask'
+import { testTaskReducer, testTaskActions } from './model/slice/testTaskSlice'
 import {
   TaskSetPackSchema,
   TaskSetPack,
@@ -11,6 +11,7 @@ import {
   Task,
   TestQuestion,
   ProgAndTestTask,
+  Condition,
 } from './model/types/testTask'
 
 export type {
@@ -22,6 +23,7 @@ export type {
   Task,
   TestQuestion,
   ProgAndTestTask,
+  Condition,
 }
 
-export {selectTestTask, testTaskReducer, fetchTestTask, getCurrentTask, testTaskActions}
+export { selectTestTask, testTaskReducer, fetchTestTask, getCurrentTask, testTaskActions }

@@ -13,14 +13,6 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
 
   const [condType, setCondType] = useState(0)
 
-  useEffect(() => {
-    if ('conditions' in task) {
-      console.log(task.conditions)
-    } else {
-      console.log(task)
-    }
-  }, [])
-
   if ('conditions' in task) {
     return (
       <div className={classNames(cls.cardTask, {}, [className])}>
@@ -35,6 +27,7 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
               <span
                 className={classNames(cls.condBtn, { [cls.select]: index === condType })}
                 onClick={() => setCondType(index)}
+                key={index}
               >
                 {cond.language}
               </span>
@@ -42,7 +35,11 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
           </div>
           <div className={classNames(cls.condList)}>
             {task.conditions.map((el, index) => (
-              <div className={classNames(cls.cond)} style={{ transform: `translateY(-${condType * 100}%)` }}>
+              <div
+                key={index}
+                className={classNames(cls.cond)}
+                style={{ transform: `translateY(-${condType * 100}%)` }}
+              >
                 время: <span className={classNames('', {}, ['bold'])}> {el.maxTime} мс</span> | память:{' '}
                 <span className={classNames('', {}, ['bold'])}> {el.maxMemory} мб</span>
               </div>
@@ -58,7 +55,7 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
       <div className={classNames(cls.cardMain)}>
         <div className={classNames(cls.questions, {}, ['custom_scroll'])}>
           {task.questions.map((el, index) => (
-            <div className={classNames(cls.question)}>
+            <div key={el.id} className={classNames(cls.question)}>
               {index + 1}.
               {
                 // @ts-ignore

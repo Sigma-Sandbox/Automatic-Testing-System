@@ -16,6 +16,7 @@ interface SelectProps {
   imgSrc?: string
   options: SelectOption[]
   isMulti?: boolean
+  isClearable?: boolean
 }
 
 export const MySelect: React.FC<SelectProps> = (props) => {
@@ -28,6 +29,7 @@ export const MySelect: React.FC<SelectProps> = (props) => {
     changeSelect,
     isMulti = false,
     selected,
+    isClearable = true,
   } = props
   const [value, setValue] = useState<SelectOption | readonly SelectOption[] | null>(selected ? selected : null)
 
@@ -65,7 +67,7 @@ export const MySelect: React.FC<SelectProps> = (props) => {
         className={classNames(cls.selectOpt, {}, [className])}
         classNamePrefix="select"
         placeholder={placeHolder}
-        isClearable
+        isClearable={isClearable}
         value={value}
         onChange={onChange}
         isMulti={isMulti}
