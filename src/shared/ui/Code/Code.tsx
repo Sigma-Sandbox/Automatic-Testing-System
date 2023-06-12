@@ -1,14 +1,11 @@
 import React, {useEffect} from 'react'
 import hljs from 'highlight.js'
-import hljsNumLine from 'highlightjs-line-numbers.js'
 import javascript from 'highlight.js/lib/languages/javascript'
 import java from 'highlight.js/lib/languages/java'
 
 import 'highlight.js/styles/github.css'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './Code.module.scss'
-
-import {Editor} from '@monaco-editor/react'
 
 interface CodeProps {
   code: string

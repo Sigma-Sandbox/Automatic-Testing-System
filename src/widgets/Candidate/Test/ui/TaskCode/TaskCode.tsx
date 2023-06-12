@@ -61,7 +61,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
     }
   }
 
-  const handleCompile = () => {
+  const handleCompile = (sendData: boolean) => {
     setProcessing(true)
     const newCode = `${code}\n\n${autoTests}}`
 
@@ -94,7 +94,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
       .request(options)
       .then((response) => {
         const token = response.data.token
-        checkStatus(token)
+        checkStatus(token, sendData)
       })
       .catch((err) => {
         let error = err.response ? err.response.data : err
@@ -105,7 +105,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
       })
   }
 
-  const checkStatus = async (token: any) => {
+  const checkStatus = async (token: any, sendData: boolean) => {
     const options = {
       method: 'GET',
       url: 'http://localhost:2358/submissions/' + token,
@@ -134,7 +134,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
 
       if (statusId === 1 || statusId === 2) {
         setTimeout(() => {
-          checkStatus(token)
+          checkStatus(token, sendData)
         }, 2000)
         return
       } else {
@@ -144,14 +144,18 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
         }
         setOutputDetails(response.data)
         console.log('response.data', response.data)
-        postUserSolutionProg(userSolution)
+        if (sendData) {
+          postUserSolutionProg(userSolution)
+        }
         setProcessing(false)
         return
       }
     } catch (err) {
       console.log('err', err)
       setProcessing(false)
-      postUserSolutionProg(userSolution)
+      if (sendData) {
+        postUserSolutionProg(userSolution)
+      }
     }
   }
 
@@ -228,7 +232,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
               theme={ThemeButton.BACKGROUND}
               color={ColorButton.PRIMARY_COLOR}
               size={SizeButton.L}
-              onClick={handleCompile}
+              onClick={() => handleCompile(false)}
             >
               {processing ? 'Processing...' : 'Проверить'}
             </Button>
@@ -236,7 +240,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
               theme={ThemeButton.BACKGROUND}
               color={ColorButton.SECONDARY_COLOR}
               size={SizeButton.L}
-              onClick={handleCompile}
+              onClick={() => handleCompile(true)}
             >
               {processing ? 'Processing...' : 'Отправить'}
             </Button>
