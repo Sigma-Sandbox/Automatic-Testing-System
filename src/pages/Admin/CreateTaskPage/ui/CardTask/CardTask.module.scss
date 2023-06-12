@@ -46,7 +46,7 @@
   flex: 35% 0 0;
   gap: 10px;
   justify-content: center;
-  margin-top: -40px;
+  margin-top: -10%;
 }
 .testDescript {
   display: flex;
@@ -109,4 +109,36 @@
   background-color: var(--primary-color);
   color: var(--invert-bg-color);
   font-size: smaller;
+}
+
+.cardSet {
+  position: absolute;
+  bottom: -100%;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  transition: all 0.3s ease;
+  background-color: inherit;
+  border-radius: 10px;
+  padding: 5px;
+  z-index: 100;
+}
+.cardTask:hover .cardSet {
+  bottom: 0;
+}
+.editCard:hover,
+.trashCard:hover {
+  box-shadow: var(--shadow-around-min-block);
+}
+.editCard,
+.trashCard {
+  width: 30px;
+  height: 30px;
+  transition: all 0.3s ease;
+}
+.editCard img {
+  width: 20px;
+}
+.trashCard img {
+  width: 25px;
 }

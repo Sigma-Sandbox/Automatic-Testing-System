@@ -1,21 +1,47 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './CardTask.module.scss'
 import { ProgTask, TestTask } from 'entities/Candidate/TestTask'
+import { Button, ColorButton, ThemeButton } from 'shared/ui/Button/Button'
+import editSvg from 'shared/assets/icon/edit_main_card.svg'
+import trashSvg from 'shared/assets/icon/trash.svg'
 
 interface cardTaskProps {
   className?: string
   task: ProgTask | TestTask
+  editTask: (task: ProgTask | TestTask) => void
 }
 
 export const CardTask: React.FC<cardTaskProps> = (props) => {
-  const { className = '', task } = props
+  const { className = '', task, editTask } = props
 
   const [condType, setCondType] = useState(0)
+
+  const startEditTask = useCallback(() => {
+    editTask(task)
+  }, [editTask])
 
   if ('conditions' in task) {
     return (
       <div className={classNames(cls.cardTask, {}, [className])}>
+        <div className={cls.cardSet}>
+          <Button
+            onClick={startEditTask}
+            theme={ThemeButton.CLEAR}
+            color={ColorButton.TRANSPARENT}
+            className={cls.editCard}
+          >
+            <img src={editSvg} alt="edit card" />
+          </Button>
+          <Button
+            onClick={startEditTask}
+            theme={ThemeButton.CLEAR}
+            color={ColorButton.TRANSPARENT}
+            className={cls.trashCard}
+          >
+            <img src={trashSvg} alt="delete" />
+          </Button>
+        </div>
         <div className={classNames(cls.name)}>{task.name}</div>
         <div className={classNames(cls.description, {}, ['custom_scroll'])}>{task.description}</div>
         <span className={classNames(cls.typeCard)}>{task.conditions.map((el) => el.language).join(' | ')}</span>
@@ -51,15 +77,30 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
   }
   return (
     <div className={classNames(cls.cardTask, {}, [className])}>
+      <div className={cls.cardSet}>
+        <Button
+          onClick={startEditTask}
+          theme={ThemeButton.CLEAR}
+          color={ColorButton.TRANSPARENT}
+          className={cls.editCard}
+        >
+          <img src={editSvg} alt="edit card" />
+        </Button>
+        <Button
+          onClick={startEditTask}
+          theme={ThemeButton.CLEAR}
+          color={ColorButton.TRANSPARENT}
+          className={cls.trashCard}
+        >
+          <img src={trashSvg} alt="delete" />
+        </Button>
+      </div>
       <div className={classNames(cls.name)}>{task.name}</div>
       <div className={classNames(cls.cardMain)}>
         <div className={classNames(cls.questions, {}, ['custom_scroll'])}>
           {task.questions.map((el, index) => (
             <div key={el.id} className={classNames(cls.question)}>
-              {index + 1}.
-              {
-                el.description
-              }
+              {index + 1}.{el.description}
             </div>
           ))}
         </div>

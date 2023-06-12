@@ -7,16 +7,27 @@
   background-color: rgba(0, 0, 0, 0.4);
   z-index: var(--zIndex-modal-cover);
 }
+
 .cardModal {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(0.1);
   z-index: var(--zIndex-modal-content);
   background-color: var(--bg-color);
   padding: 25px 30px 40px 30px;
   border-radius: 10px;
   width: 700px;
+  animation: scaleModal 0.5s ease 0.05s 1 forwards;
+}
+
+@keyframes scaleModal {
+  0% {
+    transform: translate(-50%, -50%) scale(0.1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .cardModal.fullScreen {

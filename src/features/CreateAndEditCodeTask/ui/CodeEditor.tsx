@@ -17,7 +17,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
   const [value, setValue] = useState(code)
 
   const handleEditorChange = (value: string | undefined) => {
-    if (value) {
+    if (value !== undefined) {
       setValue(value)
       onChange(value)
     }

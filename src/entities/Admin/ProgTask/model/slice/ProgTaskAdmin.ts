@@ -1,7 +1,7 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {fetchProgTaskList} from '../service/fetchProgTaskList/fetchProgTaskList'
-import {ProgTask, TaskSet, TestTask} from 'entities/Candidate/TestTask'
-import {ProgTaskSchema} from '../type/progTaskSlice'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { fetchProgTaskList } from '../service/fetchProgTaskList/fetchProgTaskList'
+import { ProgTask, TaskSet, TestTask } from 'entities/Candidate/TestTask'
+import { ProgTaskSchema } from '../type/progTaskSlice'
 
 const initialState: ProgTaskSchema = {
   isLoading: false,
@@ -12,7 +12,20 @@ const initialState: ProgTaskSchema = {
 export const ProgTaskAdminSlice = createSlice({
   name: 'taskSets',
   initialState,
-  reducers: {},
+  reducers: {
+    setAddProgTask: (state, action: PayloadAction<ProgTask>) => {
+      state.data.push(action.payload)
+    },
+    setUpdateProgTask: (state, action: PayloadAction<ProgTask>) => {
+      state.data = state.data.map((progTask) => {
+        if (progTask.id === action.payload.id) {
+          return action.payload
+        } else {
+          return progTask
+        }
+      })
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProgTaskList.pending, (state) => {
@@ -31,5 +44,5 @@ export const ProgTaskAdminSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {actions: progTaskAdminActions} = ProgTaskAdminSlice
-export const {reducer: progTaskAdminReducer} = ProgTaskAdminSlice
+export const { actions: progTaskAdminActions } = ProgTaskAdminSlice
+export const { reducer: progTaskAdminReducer } = ProgTaskAdminSlice

@@ -1,5 +1,5 @@
 import React from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './Modal.module.scss'
 
 interface ModalProps {
@@ -10,12 +10,12 @@ interface ModalProps {
 }
 
 export const Modal: React.FC<ModalProps> = (props) => {
-  const {className = '', children, closeModal, fullScreen = false} = props
+  const { className = '', children, closeModal, fullScreen = false } = props
 
   return (
     <div className={cls.cardModalCover} onClick={closeModal}>
       <div
-        className={classNames(cls.cardModal, {[cls.fullScreen]: fullScreen}, [className])}
+        className={classNames(cls.cardModal, { [cls.fullScreen]: fullScreen }, [className])}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

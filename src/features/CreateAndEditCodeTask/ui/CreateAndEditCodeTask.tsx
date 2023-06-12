@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './CreateAndEditCodeTask.module.scss'
 import { Modal } from 'shared/ui/Modal/Modal'
@@ -9,6 +9,10 @@ import { MySelect } from 'shared/ui/Select/Select'
 import { CodeEditor } from './CodeEditor'
 import { Button, ColorButton, SizeButton, ThemeButton } from 'shared/ui/Button/Button'
 import checkSvg from 'shared/assets/icon/check.svg'
+import { fetchCodeData } from '../model/sevice/fetchCodeData'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'app/providers/StoreProvider/config/store'
+import { progTaskAdminActions } from 'entities/Admin/ProgTask'
 
 interface CreateAndEditCodeTaskProps {
   className?: string
@@ -36,24 +40,26 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
       language: ProgrammingLanguage.Java,
       maxTime: 0,
       maxMemory: 0,
-      codeExample: '',
+      codeExample: 'initial java',
       autoTests: '',
     },
     [ProgrammingLanguage.JavaScript]: {
       language: ProgrammingLanguage.JavaScript,
       maxTime: 0,
       maxMemory: 0,
-      codeExample: '',
+      codeExample: 'initial javascri[',
       autoTests: '',
     },
   })
+
   const [currentLang, setCurrentLang] = useState<ProgrammingLanguage>(ProgrammingLanguage.JavaScript)
+  const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
     const condObject: { [key in ProgrammingLanguage]: Condition } = conditions
     if (task) {
       task.conditions.forEach((cond) => (condObject[cond.language] = cond))
-      setConditions(condObject)
+      setConditions({ ...condObject })
     }
   }, [])
 
@@ -62,6 +68,7 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
       return false
     }
     const currentCond = conditions[currentLang]
+
     if (currentCond.autoTests.trim() === '' || currentCond.codeExample.trim() === '') {
       return false
     }
@@ -85,6 +92,10 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
       setCurrentLang(newValue as ProgrammingLanguage)
     }
   }
+
+  const conditionMemo = useMemo(() => {
+    return conditions[currentLang]
+  }, [conditions, currentLang])
 
   const changeCond = (action: ActionCondType, value: string | number) => {
     switch (action) {
@@ -114,8 +125,31 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
         break
     }
   }
+
+  const sendNewCodeTask = async () => {
+    const newConditions = Object.values(conditions).filter((cond) => cond.autoTests !== '')
+    const newCodeTask: ProgTask = {
+      id: task?.id || +new Date(),
+      name: nameTask,
+      description: descriptTask,
+      complexityAssessment: +complexity,
+      conditions: newConditions,
+    }
+    const isAddCodeTask = task ? false : true
+    const responseFetchStatus = await fetchCodeData(newCodeTask, isAddCodeTask)
+    if (responseFetchStatus === 'OK') {
+      if (isAddCodeTask) {
+        // TODO: response id for local state
+        dispatch(progTaskAdminActions.setAddProgTask(newCodeTask))
+      } else {
+        dispatch(progTaskAdminActions.setUpdateProgTask(newCodeTask))
+      }
+    }
+    closeModal()
+  }
+
   return (
-    <Modal closeModal={closeModal} className={cls.modal}>
+    <Modal closeModal={closeModal} className={classNames(cls.modal, {}, [cls.modalSpec])}>
       <div className={classNames(cls.createAndEditCodeTask, {}, [className])}>
         <Input className={cls.name} value={nameTask} onChange={changeNameTask} placeholder="Название задачи" />
         <div className={cls.descript}>
@@ -146,7 +180,7 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
           <CodeEditor
             onChange={(data: string) => changeCond(ActionCondType.codeExample, data)}
             language={currentLang}
-            code={conditions[currentLang].codeExample}
+            code={conditionMemo.codeExample}
             defaultValue="Пример работы кода"
           ></CodeEditor>
         </div>
@@ -159,7 +193,7 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
                 Время:{' '}
                 <Input
                   className={classNames('', {}, [cls.condNumbersInp])}
-                  value={conditions[currentLang].maxTime + ''}
+                  value={conditionMemo.maxTime + ''}
                   type="number"
                   onChange={(data: string) => changeCond(ActionCondType.maxTime, data)}
                   placeholder=""
@@ -170,7 +204,7 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
                 Память:{' '}
                 <Input
                   className={classNames('', {}, [cls.condNumbersInp])}
-                  value={conditions[currentLang].maxMemory + ''}
+                  value={conditionMemo.maxMemory + ''}
                   type="number"
                   onChange={(data: string) => changeCond(ActionCondType.maxMemory, data)}
                   placeholder=""
@@ -193,10 +227,11 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
         <div className={cls.autoTest}>
           Тестовые решения:
           <CodeEditor
-            onChange={(data: string) => changeCond(ActionCondType.autoTests, data)}
+            onChange={(data: string) => {
+              changeCond(ActionCondType.autoTests, data)
+            }}
             language={currentLang}
-            code={conditions[currentLang].autoTests}
-            defaultValue=""
+            code={conditionMemo.autoTests}
           ></CodeEditor>
         </div>
 
@@ -205,7 +240,7 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
           size={SizeButton.L}
           theme={ThemeButton.BACKGROUND}
           color={ColorButton.SECONDARY_COLOR}
-          onClick={closeModal}
+          onClick={sendNewCodeTask}
         >
           Сохранить
         </Button>
