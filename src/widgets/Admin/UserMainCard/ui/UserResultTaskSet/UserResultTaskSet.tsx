@@ -34,15 +34,11 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
 
   const countTotalScoreTaskSet = (taskSet: TaskSet) => {
     let totalScoreTaskSetNew = taskSet.progTasks.reduce(
-      // TODO: get data with wrap array
-      // @ts-ignore
-      (curSum, progTask) => progTask[0].complexityAssessment + curSum,
+      (curSum, progTask) => progTask.complexityAssessment + curSum,
       0
     )
     totalScoreTaskSetNew += taskSet.testTasks.reduce(
-      // TODO: get data with wrap array
-      // @ts-ignore
-      (curSum, testTasks) => (testTasks[0].questions?.length || 0) + curSum,
+      (curSum, testTasks) => (testTasks.questions?.length || 0) + curSum,
       0
     )
     if (taskSetId) {

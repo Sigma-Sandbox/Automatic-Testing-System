@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, { useEffect, useState } from 'react'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './OneTask.module.scss'
 import {ProgTask, TestTask} from 'entities/Candidate/TestTask'
@@ -9,20 +9,20 @@ interface OneTaskProps {
   select?: boolean | null
   changeTaskSelect: (elem: ProgTask | TestTask, index: number) => void
   index: number
+  handleBorder: (select: TestTask | ProgTask) => void
 }
 
 export const OneTask: React.FC<OneTaskProps> = (props) => {
-  const {className = '', select = false, task, changeTaskSelect, index} = props
-
-  useEffect(() => {
-    console.log(task)
-  }, [])
+  const {className = '', select = false, task, changeTaskSelect, index, handleBorder} = props
 
   if ('questions' in task)
     return (
       <div
         className={classNames(cls.oneTask, {[cls.select]: select ? true : false}, [className])}
-        onClick={() => changeTaskSelect(task, index)}
+        onClick={() => {
+          changeTaskSelect(task, index)
+          handleBorder(task)
+        }}
       >
         <div className={cls.side}>
           <div className={cls.name}>{task.name}</div>
@@ -35,11 +35,8 @@ export const OneTask: React.FC<OneTaskProps> = (props) => {
           <div className={cls.name}>Вопросы</div>
           <div className={cls.questions}>
             {task.questions.map((el) => {
-              console.log(el)
-              // @ts-ignore
-              if (el[0]) {
-                // @ts-ignore
-                return <div className={cls.question}>{el[0].description}</div>
+              if (el) {
+                return <div className={cls.question}>{el.description}</div>
               } else {
                 return ''
               }
@@ -49,7 +46,12 @@ export const OneTask: React.FC<OneTaskProps> = (props) => {
       </div>
     )
   return (
-    <div className={classNames(cls.oneTask, {[cls.select]: select ? true : false}, [className])}>
+    <div className={classNames(cls.oneTask, {[cls.select]: select ? true : false}, [className])}
+         onClick={() => {
+           changeTaskSelect(task, index)
+           handleBorder(task)
+         }}
+    >
       <div className={cls.side}>
         <div className={cls.name}>{task.name}</div>
 

@@ -1,9 +1,6 @@
 import React from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
-import cls from './CreateAndEditTaskSet.module.scss'
 import {TaskSet} from 'entities/Candidate/TestTask'
 import {Modal} from 'shared/ui/Modal/Modal'
-import {StartEdit} from './StartEdit/StartEdit'
 import {MainEditTaskSet} from './MainEditTaskSet/MainEditTaskSet'
 
 interface CreateAndEditTaskSetProps {
@@ -17,7 +14,7 @@ export const CreateAndEditTaskSet: React.FC<CreateAndEditTaskSetProps> = (props)
 
   return (
     <Modal fullScreen={true} closeModal={finishEditTaskSet}>
-      <MainEditTaskSet></MainEditTaskSet>
+      <MainEditTaskSet taskSet={taskSet} closeModal={finishEditTaskSet}></MainEditTaskSet>
     </Modal>
   )
 }

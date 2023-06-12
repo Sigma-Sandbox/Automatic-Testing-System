@@ -58,8 +58,7 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
             <div key={el.id} className={classNames(cls.question)}>
               {index + 1}.
               {
-                // @ts-ignore
-                el[0]?.description
+                el.description
               }
             </div>
           ))}

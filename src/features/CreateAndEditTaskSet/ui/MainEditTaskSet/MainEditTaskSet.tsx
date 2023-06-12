@@ -1,34 +1,47 @@
-import React, {useEffect, useMemo, useState} from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import React, { useEffect, useMemo, useState } from 'react'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './MainEditTaskSet.module.scss'
-import {NavbarEditTaskSet} from '../NavbarEditTaskSet/NavbarEditTaskSet'
-import {ProgTask} from 'entities/Candidate/TestTask'
-import {TestTask} from 'entities/Candidate/TestTask'
-import {StartEdit} from '../StartEdit/StartEdit'
-import {useSelector} from 'react-redux'
-import {StateSchema} from 'app/providers/StoreProvider'
-import {EditTaskSlide} from '../EditTaskSlide/EditTaskSlide'
+import { NavbarEditTaskSet } from '../NavbarEditTaskSet/NavbarEditTaskSet'
+import { ProgTask, TaskSet, TestTask } from 'entities/Candidate/TestTask'
+import { StartEdit } from '../StartEdit/StartEdit'
+import { useSelector } from 'react-redux'
+import { EditTaskSlide } from '../EditTaskSlide/EditTaskSlide'
+import { Button, SizeButton } from 'shared/ui/Button/Button'
+import { ProgrammingLanguage } from 'core/enums'
+import { getAllProgTask } from 'entities/Admin/ProgTask'
+import { getAllTestTask } from 'entities/Admin/TestTask'
 
 interface MainEditTaskSetProps {
   className?: string
+  taskSet: TaskSet | null
+  closeModal: () => void
 }
-export type typeTaskInEdit = ProgTask | TestTask | null | {name: string; time: string}
+
+export interface CommonTask {
+  name: string
+  time: number
+  languages: ProgrammingLanguage[]
+  description: string
+}
+
+export type TypeTaskInEdit = ProgTask | TestTask | null | CommonTask
+
 export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
-  const {className = ''} = props
+  const {className = '', taskSet, closeModal} = props
   const [currentTask, setCurrentTask] = useState<number>(1)
   const [isEditableCard, setIsEditableCard] = useState<boolean>(true)
-  const protTaskListInit = useSelector((state: StateSchema) => state.progTasksAdmin.data)
-  const testTaskListInit = useSelector((state: StateSchema) => state.testTasksAdmin.data)
+  const progTaskListInit = useSelector(getAllProgTask)
+  const testTaskListInit = useSelector(getAllTestTask)
 
-  const [createdTask, setCreatedTask] = useState<typeTaskInEdit[]>([{name: '', time: ''}])
+  const [createdTask, setCreatedTask] = useState<TypeTaskInEdit[]>(
+      taskSet ?
+      [{name: taskSet.name, time: taskSet.timeLimits, languages: taskSet.language, description: taskSet.description}, ...taskSet.progTasks, ...taskSet.testTasks] :
+      [{name: '', time: 0, languages: [], description: ''}]
+  )
 
   const validateAddTask = () => {
     return true
   }
-
-  useEffect(() => {
-    console.log(protTaskListInit, testTaskListInit)
-  }, [protTaskListInit, testTaskListInit])
 
   useEffect(() => {
     const haveEditableCard = createdTask.some((el) => el === null)
@@ -42,18 +55,15 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
     }
   }, [createdTask])
 
-  const changeCurrentTask = (newValue?: number) => {
-    console.log(newValue, currentTask)
-
+  const changeCurrentTask = (newValue?: number, next?: boolean) => {
     if (newValue) {
       setCurrentTask(newValue)
     } else {
-      if (!isEditableCard) setCurrentTask(createdTask.length + 1)
+      if (!isEditableCard || next) setCurrentTask(createdTask.length + 1)
     }
   }
 
   const taskSetList = useMemo(() => {
-    console.log(createdTask, currentTask)
     if (currentTask > createdTask.length) {
       if (!validateAddTask()) {
         // Notify
@@ -66,20 +76,30 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
   const changeTaskSelect = (elem: ProgTask | TestTask, index: number) => {
     const newCreated = createdTask
     newCreated[index] = elem
-    console.log('chag')
+    console.log('chag', elem, index)
     setCreatedTask(newCreated)
+    if (createdTask[createdTask.length - 1] !== undefined) {
+      setIsEditableCard(false)
+    }
+  }
+
+  const handleNext = (commonTask: CommonTask) => {
+    changeCurrentTask(createdTask.length > 1 ? 2 : undefined, true)
+    const newCreatedTask = createdTask
+    newCreatedTask[0] = commonTask
+    setCreatedTask(newCreatedTask)
   }
 
   const renderTaskList = useMemo(() => {
     return createdTask.map((el, i) => {
       if (i + 1 === 1 && el && 'time' in el) {
-        return <StartEdit data={el}></StartEdit>
+        return <StartEdit data={el} next={handleNext}></StartEdit>
       } else {
         return (
           <EditTaskSlide
             task={el}
             changeTaskSelect={changeTaskSelect}
-            progTaskListInit={protTaskListInit}
+            progTaskListInit={progTaskListInit}
             testTaskListInit={testTaskListInit}
             index={i}
           ></EditTaskSlide>
@@ -87,6 +107,63 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
       }
     })
   }, [createdTask])
+
+  const handleSaveEdit = async () => {
+    const progTasks: ProgTask[] = []
+    const testTasks: TestTask[] = []
+
+    createdTask.forEach(task => {
+      if (task && 'complexityAssessment' in task) {
+        progTasks.push(task)
+      } else if (task && 'questions' in task) {
+        testTasks.push(task)
+      }
+    })
+
+    if (taskSet !== null) {
+      const updateTaskSet: TaskSet = {
+        ...taskSet,
+        description: (createdTask[0]! as CommonTask).description,
+        name: (createdTask[0]! as CommonTask).name,
+        progTasks: progTasks,
+        testTasks: testTasks,
+        language: (createdTask[0]! as CommonTask).languages,
+        timeLimits: (createdTask[0]! as CommonTask).time
+      }
+      const response = await fetch('api/update', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(updateTaskSet),
+      })
+      if (response.status === 200) {
+        closeModal()
+      } else {
+        console.log('Не удалось обновить Task Set')
+      }
+    } else {
+      const addTaskSet: TaskSet = {
+        name: (createdTask[0]! as CommonTask).name,
+        description: (createdTask[0]! as CommonTask).description,
+        progTasks: progTasks,
+        testTasks: testTasks,
+        creator: 'Кто-то',   // FIXME: откуда достать создателя?
+        language: (createdTask[0]! as CommonTask).languages,
+        timeLimits: (createdTask[0]! as CommonTask).time,
+        timeOfCreation: Date.now()
+      }
+      const response = await fetch('api/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(addTaskSet),
+      })
+      if (response.status === 200) {
+        closeModal()
+      } else {
+        console.log('Не удалось добавить Task Set')
+      }
+    }
+  }
+
   return (
     <div className={classNames(cls.mainEditTaskSet, {}, [className])}>
       <NavbarEditTaskSet
@@ -94,7 +171,13 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
         totalTask={createdTask}
         currentTask={currentTask}
         isEditableCard={isEditableCard}
+        saveEdit={handleSaveEdit}
       ></NavbarEditTaskSet>
+      <div style={{marginTop: 30}}>
+        <Button size={SizeButton.XL} onClick={closeModal}>
+          {'Вернуться в меню Task Set'}
+        </Button>
+      </div>
       <div className={cls.content}>
         <div
           className={cls.slider}

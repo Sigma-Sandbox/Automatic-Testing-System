@@ -98,8 +98,9 @@ serverApp.post('/api/update', (req, res) => {
   }
 })
 
-serverApp.post('/api/update_user_link', (req, res) => {
-  storageService.updateUserActualLink(req.body as UserID).then(() => res.send())
+serverApp.post('/api/update_user_link', async (req, res) => {
+  const actualLink = await storageService.updateUserActualLink(req.body as UserID)
+  res.send(actualLink)
 })
 
 serverApp.post('/api/delete/user', (req, res) => {

@@ -73,8 +73,7 @@ export const CreateNavbar: React.FC<CreateNavbarProps> = (props) => {
         testTask.name.toLocaleLowerCase().includes(text) ||
         testTask.description.toLocaleLowerCase().includes(text) ||
         testTask.questions.find((question) => {
-          // @ts-ignore
-          return question[0]?.description.toLocaleLowerCase().includes(text)
+          return question.description.toLocaleLowerCase().includes(text)
         })
       )
     })

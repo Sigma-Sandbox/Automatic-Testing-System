@@ -10,18 +10,23 @@ import {TaskSet} from 'entities/Candidate/TestTask'
 interface TaskSetCardProps {
   className?: string
   taskSet: TaskSet
-  deleteVacancy?: (id: number) => void
   startEdit?: (taskSet: TaskSet) => void
+  afterDelete: () => void
 }
 
 export const TaskSetCard: React.FC<TaskSetCardProps> = (props) => {
-  const {className = '', taskSet, deleteVacancy, startEdit} = props
+  const {className = '', taskSet, startEdit, afterDelete} = props
 
   const editCard = () => {
     startEdit && startEdit(taskSet)
   }
-  const deleteCard = () => {
-    deleteVacancy && deleteVacancy(taskSet.id || 99)
+  const deleteCard = async () => {
+    await fetch('api/delete/task_set', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({id: taskSet.id}),
+    })
+    afterDelete()
   }
 
   return (

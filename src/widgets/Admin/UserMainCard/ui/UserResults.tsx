@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { classNames } from 'shared/lib/classNames/classNames'
-import cls from './UserMainCard.module.scss'
 import { UserResultTaskSet } from './UserResultTaskSet/UserResultTaskSet'
 import { UserSolution } from 'entities/Admin/Users'
 import { ResultVacancyTest } from 'entities/User'
@@ -27,8 +25,7 @@ export const UserResults: React.FC<UserResultsProps> = (props) => {
     resultVacancies.forEach((vac) => {
       const vacancyWithTaskSets = allVacancy.find((el) => el.id === vac.vacancyId)
       if (vacancyWithTaskSets) {
-        // @ts-ignore
-        vacancyWithTaskSets.taskSets.forEach((el) => (taskSets[el[0].id] = []))
+        vacancyWithTaskSets.taskSets.forEach((el) => (taskSets[el.id!] = []))
       }
     })
 

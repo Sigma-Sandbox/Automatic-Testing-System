@@ -5,17 +5,16 @@ import { MySelect } from 'shared/ui/Select/Select'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, ColorButton, SizeButton, ThemeButton } from 'shared/ui/Button/Button'
 import CopySvg from 'shared/assets/icon/copy.svg'
+import PlusSvg from 'shared/assets/icon/plus.svg'
 import { ResultVacancyTest, User } from 'entities/User'
 import { PersonInputs } from './PersonInputs'
 import { sendUsersData } from 'features/CreateAndEditCard/model/service/sendUserData/sendUsersData'
 import { usersDataActions } from 'entities/Admin/Users'
-import { ProgrammingLanguage, UserRole, Vacancy } from 'core/enums'
-import { TaskSet } from 'entities/Candidate/TestTask'
+import { UserRole } from 'core/enums'
 import { getVacancies } from 'entities/Admin/Vacancies/model/selectors/getVacancies/getVacancies'
 
 interface CardFormProps {
   className?: string
-  link?: string
   user: User | null
   closeModal: () => void
 }
@@ -25,9 +24,10 @@ export type PersonState = {
   name: string
   patronymic?: string
   email: string
+  actualLink: string
 }
 export const CardForm: React.FC<CardFormProps> = (props) => {
-  const { className = '', link = 'blabla', user, closeModal } = props
+  const { className = '', user, closeModal } = props
   const allVacancies = useSelector(getVacancies)
   const dispatch = useDispatch()
   const [selectedVacancies, setSelectedVacancies] = useState<string[]>(
@@ -38,13 +38,16 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
     name: user?.name || '',
     patronymic: user?.patronymic || '',
     email: user?.email || '',
+    actualLink: user?.actualLink || ''
   })
+
   useEffect(() => {
     console.log(selectedVacancies, user?.vacancies)
   }, [])
+
   const copyLink = () => {
     navigator.clipboard
-      .writeText(link)
+      .writeText(personState.actualLink)
       .then(() => {
         console.log('Ссылка скопирована')
       })
@@ -52,6 +55,7 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
         console.log('Не удалось скопировать', err)
       })
   }
+
   const changeState = (newValue: string, typeValue: string) => {
     switch (typeValue) {
       case 'surname':
@@ -69,11 +73,29 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
     }
   }
 
-  const validateValue = () => {
-    // TODO
+  const generateActualLink = async (id?: number) => {
+    if (id) {
+      const newLink = await fetch('api/update_user_link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({id: id}),
+      })
+      const actualLink = await newLink.json()
+      setPersonState({ ...personState, actualLink: actualLink.actualLink })
+      await navigator.clipboard.writeText(actualLink.actualLink)
+    }
   }
+
+  const validateValue = () => {
+    return (personState.name !== '' && personState.surname !== '' && personState.email !== '' && selectedVacancies.length > 0)
+  }
+
   const checkAndSendData = async () => {
-    validateValue()
+    const validate = validateValue()
+    if (!validate) {
+      return
+    }
+
     let option: User
     const vacanciesUser: ResultVacancyTest[] = []
     selectedVacancies.forEach((vacancyName) => {
@@ -82,11 +104,11 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
         const userSolutions = user?.vacancies.find((vac) => vac.vacancyId === vacancyId.id)?.userSolutions || []
         vacanciesUser.push({ vacancyId: vacancyId.id, vacancyName, userSolutions })
       } else {
-        console.log('вакансия с именем ', vacancyName, ' не найдена')
+        console.log('Вакансия с именем ', vacancyName, ' не найдена')
       }
     })
     if (user) {
-      option = { ...user, ...personState, vacancies: vacanciesUser }
+      option = {...user, ...personState, vacancies: vacanciesUser}
       const answer = await sendUsersData(option)
       if (answer === 'OK') {
         dispatch(usersDataActions.setUpdateUsers(option))
@@ -132,14 +154,18 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
           ></MySelect>
         </div>
       </div>
-      {user?.actualLink && (
-        <div className={cls.link}>
-          <span>{user?.actualLink}</span>{' '}
+      {<div className={cls.link}>
+        <span>{personState.actualLink}</span>{' '}
+        <div style={{display: 'inline-flex', gap: 5}}>
+          <Button theme={ThemeButton.CLEAR} className={cls.copyBtn}  onClick={() => generateActualLink(user?.id)}>
+            <img src={PlusSvg} alt="copy" />
+          </Button>
           <Button theme={ThemeButton.CLEAR} className={cls.copyBtn} onClick={copyLink}>
             <img src={CopySvg} alt="copy" />
           </Button>
         </div>
-      )}
+      </div>
+      }
       <Button
         onClick={checkAndSendData}
         color={ColorButton.SECONDARY_COLOR}

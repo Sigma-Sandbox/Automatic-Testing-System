@@ -72,7 +72,7 @@ export const UserMainCard: React.FC<UserMainCardProps> = (props) => {
         </div>
       </div>
       <div className={classNames(cls.tests)}>
-        <div className={classNames(cls.testsTitle)}>Резултаты тестов</div>
+        <div className={classNames(cls.testsTitle)}>Результаты тестов</div>
         {loadCard && <UserResults resultVacancies={user.vacancies} userId={user.id} />}
       </div>
     </div>

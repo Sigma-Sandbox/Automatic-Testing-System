@@ -1,19 +1,20 @@
 import React from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './NavbarEditTaskSet.module.scss'
-import {Button, ColorButton, ThemeButton} from 'shared/ui/Button/Button'
-import {typeTaskInEdit} from '../MainEditTaskSet/MainEditTaskSet'
+import { Button, ColorButton, SizeButton } from 'shared/ui/Button/Button'
+import { TypeTaskInEdit } from '../MainEditTaskSet/MainEditTaskSet'
 
 interface NavbarEditTaskSetProps {
   className?: string
   changeCurrentTask: (value?: number) => void
-  totalTask: typeTaskInEdit[]
+  totalTask: TypeTaskInEdit[]
   currentTask: number
   isEditableCard: boolean
+  saveEdit: () => void
 }
 
 export const NavbarEditTaskSet: React.FC<NavbarEditTaskSetProps> = (props) => {
-  const {className = '', changeCurrentTask, totalTask, currentTask, isEditableCard} = props
+  const {className = '', changeCurrentTask, totalTask, currentTask, isEditableCard, saveEdit} = props
 
   return (
     <div className={classNames(cls.navbarEditTaskSet, {}, [className])}>
@@ -30,12 +31,17 @@ export const NavbarEditTaskSet: React.FC<NavbarEditTaskSetProps> = (props) => {
         </div>
       ))}
       <Button
-        className={classNames(cls.btn, {[cls.disable]: isEditableCard})}
+        className={classNames(cls.btn, {[cls.disable]: isEditableCard || totalTask.length === 1})}
         color={ColorButton.PRIMARY_COLOR}
         onClick={() => changeCurrentTask()}
       >
         +
       </Button>
+      <div style={{ position: 'absolute', right: 40 }}>
+        <Button onClick={saveEdit} color={ColorButton.SECONDARY_COLOR} size={SizeButton.XL}>
+          Сохранить и выйти
+        </Button>
+      </div>
     </div>
   )
 }

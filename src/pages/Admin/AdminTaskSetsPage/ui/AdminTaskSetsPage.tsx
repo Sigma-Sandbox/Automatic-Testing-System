@@ -3,15 +3,12 @@ import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './AdminTaskSetsPage.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { StateSchema } from 'app/providers/StoreProvider'
-import { Vacancy, fetchVacanciesData } from 'entities/Admin/Vacancies'
 import { cardEditStatus } from 'features/CreateAndEditCard'
 import { AppDispatch } from 'app/providers/StoreProvider/config/store'
 import { SearchField } from 'features/SearchAndFilterTab'
 import { Button, SizeButton } from 'shared/ui/Button/Button'
 import { Loader } from 'shared/ui/Loader/Loader'
-import { CreateOrEditVacancy } from 'features/CreateAndEditVacancy'
-import { VacancyCard } from 'widgets/Admin/VacancyCard'
-import { fetchTaskSetsData } from 'entities/Admin/TaskSets'
+import { fetchTaskSetsData, getTaskSets } from 'entities/Admin/TaskSets'
 import { TaskSet } from 'entities/Candidate/TestTask'
 import { TaskSetCard } from 'widgets/Admin/TaskSetCard/ui/TaskSetCard'
 import { CreateAndEditTaskSet } from 'features/CreateAndEditTaskSet'
@@ -24,7 +21,7 @@ interface AdminTaskSetsPageProps {
 
 export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
   const { className = '' } = props
-  const taskSetsListInit = useSelector((state: StateSchema) => state.taskSets.data)
+  const taskSetsListInit = useSelector(getTaskSets)
   const taskSetsLoader = useSelector((state: StateSchema) => state.taskSets.isLoading)
   const [taskSetsList, setTaskSetsList] = useState<TaskSet[]>([])
   const [createAndEdit, setCreateAndEdit] = useState<{
@@ -47,6 +44,15 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
     }
   }, [taskSetsListInit])
 
+  const setTaskSets = async () => {
+    const response = await fetch('api/get/task_set', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'}
+    })
+    const taskSets: TaskSet[] = await response.json()
+    setTaskSetsList(taskSets)
+  }
+
   const startEditTaskSet = (taskSet: TaskSet) => {
     setCreateAndEdit({ status: cardEditStatus.EDIT, editCard: taskSet })
   }
@@ -54,12 +60,13 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
     setCreateAndEdit({ status: cardEditStatus.CREATE, editCard: null })
   }
   const finishEditTaskSet = () => {
+    setTaskSets()
     setCreateAndEdit({ status: cardEditStatus.CLOSE, editCard: null })
   }
 
   const taskSetsListMemo = useMemo(() => {
     return taskSetsList.map((taskSet) => (
-      <TaskSetCard key={taskSet.id} className={cls.taskSet} taskSet={taskSet} startEdit={startEditTaskSet} />
+      <TaskSetCard key={taskSet.id} className={cls.taskSet} taskSet={taskSet} startEdit={startEditTaskSet} afterDelete={setTaskSets} />
     ))
   }, [taskSetsList])
 
@@ -75,7 +82,10 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
         {taskSetsLoader && <Loader></Loader>}
         {taskSetsListMemo}
         {createAndEdit.status !== cardEditStatus.CLOSE && (
-          <CreateAndEditTaskSet taskSet={createAndEdit.editCard} finishEditTaskSet={finishEditTaskSet} />
+          <CreateAndEditTaskSet
+            taskSet={createAndEdit.editCard}
+            finishEditTaskSet={finishEditTaskSet}
+          />
         )}
       </div>
     </div>

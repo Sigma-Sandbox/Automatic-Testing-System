@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './VacancyForm.module.scss'
 import { Input } from 'shared/ui/Input/Input'
@@ -7,8 +7,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Vacancy, vacanciesActions } from 'entities/Admin/Vacancies'
 import { Button, ColorButton, SizeButton } from 'shared/ui/Button/Button'
 import { sendVacancyData } from 'features/CreateAndEditVacancy/model/service/sendVacancyData/sendVacancyData'
-import { StateSchema } from 'app/providers/StoreProvider'
 import { TaskSet } from 'entities/Candidate/TestTask'
+import { getTaskSets } from 'entities/Admin/TaskSets'
+
 interface VacancyFormProps {
   className?: string
   vacancy: Vacancy | null
@@ -17,22 +18,26 @@ interface VacancyFormProps {
 
 export const VacancyForm: React.FC<VacancyFormProps> = (props) => {
   const { className = '', vacancy, closeModal } = props
-  const taskSets = useSelector((state: StateSchema) => state.taskSets.data)
-  const dispatch = useDispatch()
+  const taskSets = useSelector(getTaskSets)
   const [selectedTaskSets, setSelectedTaskSets] = useState<string[]>(
-    vacancy ? vacancy?.taskSets.map((taskSet) => taskSet.name || 'not name') : []
+    vacancy ? vacancy.taskSets.map((ts: TaskSet) => ts.name) : []
   )
   const [vacancyName, setVacancyName] = useState<string>(vacancy?.name || '')
+  const dispatch = useDispatch()
 
   const changeState = (newValue: string) => {
     setVacancyName(newValue)
   }
 
   const validateValue = () => {
-    // TODO
+    return vacancyName !== '' && selectedTaskSets.length > 0
   }
+
   const checkAndSendData = async () => {
-    validateValue()
+    const validate = validateValue()
+    if (!validate) {
+      return
+    }
     let newVacancy: Vacancy
     const tasksSetIds: TaskSet[] = []
     selectedTaskSets.forEach((name) => {
@@ -75,9 +80,15 @@ export const VacancyForm: React.FC<VacancyFormProps> = (props) => {
           className={cls.vacanciesSelect}
           placeHolder="Выбрать тестовые наборы"
           changeSelect={(el) => Array.isArray(el) && setSelectedTaskSets(el)}
-          selected={selectedTaskSets.map((taskSetId) => ({ value: taskSetId, label: taskSetId }))}
+          selected={selectedTaskSets.map((taskSetName) => ({
+            value: taskSetName,
+            label: taskSetName
+          }))}
           options={taskSets.map((taskSet) => {
-            return { label: taskSet.name, value: taskSet.name }
+            return {
+              label: taskSet.name,
+              value: taskSet.name
+            }
           })}
         ></MySelect>
       </div>

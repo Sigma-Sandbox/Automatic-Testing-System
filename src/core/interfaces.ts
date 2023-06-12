@@ -78,7 +78,7 @@ export interface IStorageService {
   updateProgTask(progTask: ProgTask): Promise<void>
   updateTestTask(testTask: TestTask): Promise<void>
   updateTestQuestion(testQuestion: TestQuestion): Promise<void>
-  updateUserActualLink(user: UserID): Promise<void>
+  updateUserActualLink(user: UserID): Promise<{ actualLink: string }>
 
   deleteUser(id: number): Promise<void>
   deleteUserSolution(id: number): Promise<void>

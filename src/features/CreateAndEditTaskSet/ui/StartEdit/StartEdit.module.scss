@@ -10,8 +10,8 @@
 .startEdit {
   background-color: var(--invert-bg-color);
   width: fit-content;
-  width: 400px;
-  height: 250px;
+  width: 500px;
+  height: 300px;
   border-radius: 20px;
   margin: auto;
   display: flex;
@@ -30,4 +30,8 @@
 
 .btn {
   margin-top: 30px;
+}
+
+.languagesSelect {
+  min-width: 350px;
 }

@@ -6,7 +6,7 @@ import { Button, SizeButton } from 'shared/ui/Button/Button'
 import { useDispatch, useSelector } from 'react-redux'
 import { StateSchema } from 'app/providers/StoreProvider'
 import { Loader } from 'shared/ui/Loader/Loader'
-import { fetchVacanciesData, vacanciesActions } from 'entities/Admin/Vacancies'
+import { fetchVacanciesData, getVacancies } from 'entities/Admin/Vacancies'
 import { AppDispatch } from 'app/providers/StoreProvider/config/store'
 import { Vacancy } from 'entities/Admin/Vacancies'
 import { VacancyCard } from 'widgets/Admin/VacancyCard'
@@ -20,7 +20,7 @@ interface VacancyPageProps {
 
 export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
   const { className = '' } = props
-  const vacanciesListInit = useSelector((state: StateSchema) => state.vacancies.data)
+  const vacanciesListInit = useSelector(getVacancies)
   const vacanciesListLoader = useSelector((state: StateSchema) => state.vacancies.isLoading)
   const check = useSelector((state: StateSchema) => state)
 
@@ -37,9 +37,18 @@ export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
       dispatch(fetchVacanciesData({}))
       dispatch(fetchTaskSetsData({}))
     } else {
-      setVacanciesList(vacanciesListInit)
+      setVacancies()
     }
   }, [vacanciesListInit])
+
+  const setVacancies = async () => {
+    const response = await fetch('api/get/vacancy_test', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'}
+    })
+    const vacancies: Vacancy[] = await response.json()
+    setVacanciesList(vacancies)
+  }
 
   const startEditVacancy = (vacancy: Vacancy) => {
     setCreateAndEdit({ status: cardEditStatus.EDIT, editCard: vacancy })
@@ -48,12 +57,19 @@ export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
     setCreateAndEdit({ status: cardEditStatus.CREATE, editCard: null })
   }
   const finishEditVacancy = () => {
+    setVacancies()
     setCreateAndEdit({ status: cardEditStatus.CLOSE, editCard: null })
   }
 
   const vacanciesListMemo = useMemo(() => {
     return vacanciesList.map((vacancy) => (
-      <VacancyCard key={vacancy.id} className={cls.vacancy} vacancy={vacancy} startEdit={startEditVacancy} />
+      <VacancyCard
+        key={vacancy.id}
+        className={cls.vacancy}
+        vacancy={vacancy}
+        startEdit={startEditVacancy}
+        afterDelete={setVacancies}
+      />
     ))
   }, [vacanciesList])
 

@@ -53,6 +53,7 @@ export interface TaskSet {
   testTasks: TestTask[]
   progTasks: ProgTask[]
   creator: string
+  timeLimits: number,
   timeOfCreation: number
   language: ProgrammingLanguage[]
 }

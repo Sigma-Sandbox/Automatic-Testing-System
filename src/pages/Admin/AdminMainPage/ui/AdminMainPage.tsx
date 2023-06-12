@@ -1,19 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './AdminMainPage.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { User, getUserRole } from 'entities/User'
+import { User } from 'entities/User'
 import { fetchUsersData, getUsersList } from 'entities/Admin/Users'
 import { AppDispatch } from 'app/providers/StoreProvider/config/store'
 import { StateSchema } from 'app/providers/StoreProvider'
 import { UserMainCard } from 'widgets/Admin/UserMainCard'
 import { Loader } from 'shared/ui/Loader/Loader'
 import AddUserSvg from 'shared/assets/icon/account_add.svg'
-import EmptySvg from 'shared/assets/icon/empty.png'
-import { fetchTaskSetsData, getTaskSetsName } from 'entities/Admin/TaskSets'
-import { fetchVacanciesData, getVacancies } from 'entities/Admin/Vacancies'
+import { fetchTaskSetsData } from 'entities/Admin/TaskSets'
+import { fetchVacanciesData } from 'entities/Admin/Vacancies'
 import { SearchAndFilterTab } from 'features/SearchAndFilterTab'
-import { MySelect } from 'shared/ui/Select/Select'
 import { CreateOrEditCard, cardEditStatus } from 'features/CreateAndEditCard'
 import { Button, SizeButton } from 'shared/ui/Button/Button'
 import { NotFoundElements } from 'shared/ui/NotFoundElements/NotFoundElements'
@@ -45,7 +43,6 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
   }, [userListInit])
 
   const changeUsersList = (newUsersList: User[]) => {
-    console.log(newUsersList)
     setUserList(newUsersList)
   }
 
@@ -61,7 +58,7 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
 
   const cardListUsers = useMemo(() => {
     if (usersList)
-      return usersList?.map((user) => <UserMainCard startEditCard={startEditCard} key={user.id} user={user} />)
+      return usersList.map((user) => <UserMainCard startEditCard={startEditCard} key={user.id} user={user} />)
   }, [usersList])
 
   return (

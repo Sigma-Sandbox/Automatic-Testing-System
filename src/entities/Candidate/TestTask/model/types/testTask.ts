@@ -44,7 +44,6 @@ export interface Condition {
 }
 
 export interface ProgTask extends Task {
-  autoTests: string[]
   complexityAssessment: number
   conditions: Condition[]
 }

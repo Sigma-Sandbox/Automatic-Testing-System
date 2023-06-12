@@ -7,7 +7,7 @@ import {
   IStorageService,
   UserID
 } from './interfaces'
-import { Pool, QueryResult } from 'pg'
+import { Pool } from 'pg'
 import { Condition, ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution, VacancyTest } from './entities'
 import { ProgrammingLanguage, Vacancy } from './enums'
 import sha256 from 'fast-sha256'
@@ -78,6 +78,7 @@ export class StorageService implements IStorageService {
         ids_test_task INT[],
         ids_prog_task INT[],
         creator VARCHAR(64),
+        time_limits SMALLINT,
         time_of_creation TIMESTAMPTZ,
         language TEXT[] NULL
       );
@@ -186,13 +187,14 @@ export class StorageService implements IStorageService {
     try {
       await this.getDB().query(`
         INSERT INTO task_sets
-        VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7)`,
+        VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8)`,
         [
           taskSet.name,
           taskSet.description,
           idsTestTask,
           idsProgTask,
           taskSet.creator,
+          taskSet.timeLimits,
           new Date(taskSet.timeOfCreation),
           taskSet.language
         ]
@@ -363,10 +365,18 @@ export class StorageService implements IStorageService {
         const user = answer.find(t => t.id === userId)
         if (user) {
           const index = answer.indexOf(user)
-          answer[index].vacancies.push({ vacancyId: vacId, vacancyName: vacName![0].name as Vacancy, userSolutions: userSolution! })
+          answer[index].vacancies.push({
+            vacancyId: vacId,
+            vacancyName: vacName![0].name as Vacancy,
+            userSolutions: userSolution!
+          })
         } else {
           const user = temp.find(t => t.id === userId)!
-          user.vacancies.push({ vacancyId: vacId, vacancyName: vacName![0].name as Vacancy, userSolutions: userSolution! })
+          user.vacancies.push({
+            vacancyId: vacId,
+            vacancyName: vacName![0].name as Vacancy,
+            userSolutions: userSolution!
+          })
           answer.push(user)
         }
       }
@@ -534,10 +544,14 @@ export class StorageService implements IStorageService {
         const vacancyTask = answer.find(t => t.id === id)
         if (vacancyTask) {
           const index = answer.indexOf(vacancyTask)
-          answer[index].taskSets.push(taskSet as unknown as TaskSet)
+          if (taskSet) {
+            answer[index].taskSets.push(taskSet[0])
+          }
         } else {
           const vacancyTask = temp.find(t => t.id === id)!
-          vacancyTask.taskSets.push(taskSet as unknown as TaskSet)
+          if (taskSet) {
+            vacancyTask.taskSets.push(taskSet[0])
+          }
           answer.push(vacancyTask)
         }
       }
@@ -602,6 +616,7 @@ export class StorageService implements IStorageService {
         ids_test_task,
         ids_prog_task,
         creator,
+        time_limits,
         time_of_creation,
         language
       FROM task_sets` + resultCondition + strConditions.join(' AND '),
@@ -637,6 +652,7 @@ export class StorageService implements IStorageService {
           testTasks: [],
           progTasks: [],
           creator: row.creator,
+          timeLimits: row.time_limits,
           timeOfCreation: row.time_of_creation,
           language: row.language
         }
@@ -651,14 +667,26 @@ export class StorageService implements IStorageService {
       for (let i = 0; i < idsTT.length; i++) {
         const id = idsTT[i]
         const testTask = a[i]
-        const taskSet = answer_temp.find(t => t.id === id)
+        const taskSet = answer.find(t => t.id === id)
         if (taskSet) {
-          const index = answer_temp.indexOf(taskSet)
-          answer_temp[index].testTasks.push(testTask as unknown as TestTask)
+          const index = answer.indexOf(taskSet)
+          if (testTask) {
+            answer[index].testTasks.push(testTask[0])
+          }
         } else {
-          const taskSet = temp.find(t => t.id === id)!
-          taskSet.testTasks.push(testTask as unknown as TestTask)
-          answer_temp.push(taskSet)
+          const taskSet = answer_temp.find(t => t.id === id)
+          if (taskSet) {
+            if (testTask) {
+              taskSet.testTasks.push(testTask[0])
+            }
+            answer.push(taskSet)
+          } else {
+            const taskSet = temp.find(t => t.id === id)!
+            if (testTask) {
+              taskSet.testTasks.push(testTask[0])
+            }
+            answer.push(taskSet)
+          }
         }
       }
       for (let i = 0; i < idsPT.length; i++) {
@@ -667,11 +695,23 @@ export class StorageService implements IStorageService {
         const taskSet = answer.find(t => t.id === id)
         if (taskSet) {
           const index = answer.indexOf(taskSet)
-          answer[index].progTasks.push(progTask as unknown as ProgTask)
+          if (progTask) {
+            answer[index].progTasks.push(progTask[0])
+          }
         } else {
-          const taskSet = answer_temp.find(t => t.id === id)!
-          taskSet.progTasks.push(progTask as unknown as ProgTask)
-          answer.push(taskSet)
+          const taskSet = answer_temp.find(t => t.id === id)
+          if (taskSet) {
+            if (progTask) {
+              taskSet.progTasks.push(progTask[0])
+            }
+            answer.push(taskSet)
+          } else {
+            const taskSet = temp.find(t => t.id === id)!
+            if (progTask) {
+              taskSet.progTasks.push(progTask[0])
+            }
+            answer.push(taskSet)
+          }
         }
       }
 
@@ -737,7 +777,6 @@ export class StorageService implements IStorageService {
           id: row.id,
           name: row.name,
           description: row.description,
-          autoTests: row.auto_tests,
           complexityAssessment: row.complexity_assessment,
           conditions: conditions
         }
@@ -816,10 +855,14 @@ export class StorageService implements IStorageService {
         const testTask = answer.find(t => t.id === id)
         if (testTask) {
           const index = answer.indexOf(testTask)
-          answer[index].questions.push(question as unknown as TestQuestion)
+          if (question) {
+            answer[index].questions.push(question[0])
+          }
         } else {
           const testTask = temp.find(t => t.id === id)!
-          testTask.questions.push(question as unknown as TestQuestion)
+          if (question) {
+            testTask.questions.push(question[0])
+          }
           answer.push(testTask)
         }
       }
@@ -993,7 +1036,8 @@ export class StorageService implements IStorageService {
           ids_prog_task = $5,
           creator = $6,
           time_of_creation = $7,
-          language = $8
+          language = $8,
+          time_limits = $9
         WHERE id = $1`,
         [
           taskSet.id,
@@ -1003,7 +1047,8 @@ export class StorageService implements IStorageService {
           idsProgTask,
           taskSet.creator,
           new Date(taskSet.timeOfCreation),
-          taskSet.language
+          taskSet.language,
+          taskSet.timeLimits
         ]
       )
     } catch (err) {
@@ -1087,16 +1132,14 @@ export class StorageService implements IStorageService {
    *  с использованием библиотеки fast_sha256, проверяя, что нет повторяющейся ссылки
    * @param user Идентификатор пользователя
    */
-  async updateUserActualLink(user: UserID): Promise<void> {
+  async updateUserActualLink(user: UserID): Promise<{ actualLink: string }> {
     try {
       const maxInt: number = 2147483647
-      var linksInUse: { rowCount: any }
-      var actualLink: string
+      let linksInUse: { rowCount: any }
+      let actualLink: string = ''
 
       do {
-        const rawData: Uint8Array = new TextEncoder().encode(
-          user.id.toString() + randomInt(maxInt).toString())
-          
+        const rawData: Uint8Array = new TextEncoder().encode(user.id.toString() + randomInt(maxInt).toString())
         const cryptData = sha256(rawData)
         cryptData.forEach((element, index) => {cryptData[index] = element / 255 * 26 + 97})
         actualLink = new TextDecoder('utf-8').decode(cryptData)
@@ -1121,8 +1164,11 @@ export class StorageService implements IStorageService {
           actualLink
         ]
       )
+
+      return { actualLink: actualLink }
     } catch (err) {
       console.log('updateUserActualLink', err)
+      return { actualLink: '' }
     }
   }
 
