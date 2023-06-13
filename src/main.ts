@@ -13,7 +13,8 @@ import {
   GetUserConditions,
   GetUserSolutionConditions,
   GetVacancyTestConditions,
-  UserID
+  UserID,
+  UserLink
 } from './core/interfaces'
 
 const port = process.env.PORT || 3001
@@ -78,6 +79,11 @@ serverApp.post('/api/get/test_task', async (req, res) => {
 serverApp.post('/api/get/test_question', async (req, res) => {
   const dbRows = await storageService.getTestQuestion(req.body as GetTestQuestionConditions)
   res.send(dbRows)
+})
+
+serverApp.post('/api/get/applicant', async (req, res) => {
+  const actualLink = await storageService.getApplicant(req.body as UserLink)
+  res.send(actualLink)
 })
 
 serverApp.post('/api/update', (req, res) => {
