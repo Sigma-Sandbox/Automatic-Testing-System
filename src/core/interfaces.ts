@@ -4,6 +4,7 @@ import { ProgrammingLanguage, TaskType } from './enums'
 export interface GetUserConditions {
   id?: number
   email?: string
+  password?: string
   surname?: string
   name?: string
   patronymic?: string

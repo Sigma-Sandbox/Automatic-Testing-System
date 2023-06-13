@@ -277,6 +277,11 @@ export class StorageService implements IStorageService {
         params.push(conditions.email)
         index++
       }
+      if (conditions.password) {
+        strConditions.push(`password = $${index}`)
+        params.push(conditions.password)
+        index++
+      }
       if (conditions.surname) {
         strConditions.push(`surname = $${index}`)
         params.push(conditions.surname)
