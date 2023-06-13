@@ -14,7 +14,7 @@ import { TaskSetCard } from 'widgets/Admin/TaskSetCard/ui/TaskSetCard'
 import { CreateAndEditTaskSet } from 'features/CreateAndEditTaskSet'
 import { fetchTestTaskList } from 'entities/Admin/TestTask'
 import { fetchProgTaskList } from 'entities/Admin/ProgTask'
-
+import plusImg from 'shared/assets/icon/plusWhite2.png'
 interface AdminTaskSetsPageProps {
   className?: string
 }
@@ -47,7 +47,7 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
   const setTaskSets = async () => {
     const response = await fetch('api/get/task_set', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'}
+      headers: { 'Content-Type': 'application/json' },
     })
     const taskSets: TaskSet[] = await response.json()
     setTaskSetsList(taskSets)
@@ -66,7 +66,13 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
 
   const taskSetsListMemo = useMemo(() => {
     return taskSetsList.map((taskSet) => (
-      <TaskSetCard key={taskSet.id} className={cls.taskSet} taskSet={taskSet} startEdit={startEditTaskSet} afterDelete={setTaskSets} />
+      <TaskSetCard
+        key={taskSet.id}
+        className={cls.taskSet}
+        taskSet={taskSet}
+        startEdit={startEditTaskSet}
+        afterDelete={setTaskSets}
+      />
     ))
   }, [taskSetsList])
 
@@ -74,18 +80,16 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
     <div className={classNames(cls.adminTaskSetsPage, {}, [className])}>
       <div className={cls.headerTab}>
         <SearchField value="" onChange={(text) => console.log(text)}></SearchField>
-        <Button size={SizeButton.L} onClick={startCreateTaskSet}>
+        <Button className={cls.addTaskSets} size={SizeButton.L} onClick={startCreateTaskSet}>
           Добавить набор заданий
+          <img src={plusImg} className={cls.plus} alt="plus" />
         </Button>
       </div>
       <div className={cls.vacancies}>
         {taskSetsLoader && <Loader></Loader>}
         {taskSetsListMemo}
         {createAndEdit.status !== cardEditStatus.CLOSE && (
-          <CreateAndEditTaskSet
-            taskSet={createAndEdit.editCard}
-            finishEditTaskSet={finishEditTaskSet}
-          />
+          <CreateAndEditTaskSet taskSet={createAndEdit.editCard} finishEditTaskSet={finishEditTaskSet} />
         )}
       </div>
     </div>

@@ -13,6 +13,8 @@ import { VacancyCard } from 'widgets/Admin/VacancyCard'
 import { cardEditStatus } from 'features/CreateAndEditCard'
 import { CreateOrEditVacancy } from 'features/CreateAndEditVacancy'
 import { fetchTaskSetsData } from 'entities/Admin/TaskSets'
+import suitImg from 'shared/assets/icon/businessWhite.png'
+import plusImg from 'shared/assets/icon/plusWhite2.png'
 
 interface VacancyPageProps {
   className?: string
@@ -44,7 +46,7 @@ export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
   const setVacancies = async () => {
     const response = await fetch('api/get/vacancy_test', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'}
+      headers: { 'Content-Type': 'application/json' },
     })
     const vacancies: Vacancy[] = await response.json()
     setVacanciesList(vacancies)
@@ -77,8 +79,10 @@ export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
     <div className={classNames(cls.vacancyPage, {}, [className])}>
       <div className={cls.headerTab}>
         <SearchField value="" onChange={(text) => console.log(text)}></SearchField>
-        <Button size={SizeButton.L} onClick={startCreateVacancy}>
+        <Button className={classNames(cls.addVacancy)} size={SizeButton.L} onClick={startCreateVacancy}>
+          {/* <img src={suitImg} className={cls.suit} alt="add vacancy" /> */}
           Добавить вакансию
+          <img src={plusImg} className={cls.plus} alt="plus" />
         </Button>
       </div>
       <div className={cls.vacancies}>

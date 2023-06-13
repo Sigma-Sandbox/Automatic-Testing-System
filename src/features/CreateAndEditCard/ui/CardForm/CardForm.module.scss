@@ -65,7 +65,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.copyBtn:hover {
+  transform: scale(1.05);
+}
 .copyBtn {
+  transition: all 0.3s ease;
 }
 .copyBtn img {
   width: 30px;

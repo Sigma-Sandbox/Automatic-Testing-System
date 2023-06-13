@@ -13,6 +13,7 @@ import { fetchCodeData } from '../model/sevice/fetchCodeData'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'app/providers/StoreProvider/config/store'
 import { progTaskAdminActions } from 'entities/Admin/ProgTask'
+import { toast } from 'react-toastify'
 
 interface CreateAndEditCodeTaskProps {
   className?: string
@@ -40,14 +41,14 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
       language: ProgrammingLanguage.Java,
       maxTime: 0,
       maxMemory: 0,
-      codeExample: 'initial java',
+      codeExample: '',
       autoTests: '',
     },
     [ProgrammingLanguage.JavaScript]: {
       language: ProgrammingLanguage.JavaScript,
       maxTime: 0,
       maxMemory: 0,
-      codeExample: 'initial javascri[',
+      codeExample: '',
       autoTests: '',
     },
   })
@@ -126,6 +127,7 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
     }
   }
 
+  const notify = (text: string) => toast(text)
   const sendNewCodeTask = async () => {
     const newConditions = Object.values(conditions).filter((cond) => cond.autoTests !== '')
     const newCodeTask: ProgTask = {
@@ -140,10 +142,14 @@ export const CreateAndEditCodeTask: React.FC<CreateAndEditCodeTaskProps> = (prop
     if (responseFetchStatus === 'OK') {
       if (isAddCodeTask) {
         // TODO: response id for local state
+        notify('Задача добавлен')
         dispatch(progTaskAdminActions.setAddProgTask(newCodeTask))
       } else {
+        notify('Задача обновлена')
         dispatch(progTaskAdminActions.setUpdateProgTask(newCodeTask))
       }
+    } else {
+      notify('Произошла ошибка')
     }
     closeModal()
   }

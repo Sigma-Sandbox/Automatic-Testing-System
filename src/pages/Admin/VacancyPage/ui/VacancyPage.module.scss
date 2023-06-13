@@ -28,3 +28,22 @@
   width: 100%;
   height: fit-content;
 }
+
+.addVacancy {
+  position: relative;
+  height: 45px;
+  width: 220px;
+  padding: 5px 10px;
+}
+.plus {
+  // right: 0px;
+  // bottom: 5px;
+  // position: absolute;
+  width: 25px;
+  // z-index: 10;
+}
+.suit {
+  width: 45px;
+  position: relative;
+  z-index: 5;
+}

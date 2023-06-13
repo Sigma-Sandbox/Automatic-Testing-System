@@ -1,9 +1,10 @@
 import React from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './CreateOrEditCard.module.scss'
-import {Modal} from 'shared/ui/Modal/Modal'
-import {User} from 'entities/User'
-import {CardForm} from './CardForm/CardForm'
+import { Modal } from 'shared/ui/Modal/Modal'
+import { User } from 'entities/User'
+import { CardForm } from './CardForm/CardForm'
+import { ToastContainer } from 'react-toastify'
 
 interface CreateOrEditCardProps {
   className?: string
@@ -12,7 +13,7 @@ interface CreateOrEditCardProps {
 }
 
 export const CreateOrEditCard: React.FC<CreateOrEditCardProps> = (props) => {
-  const {className = '', user, finishEditCard} = props
+  const { className = '', user, finishEditCard } = props
 
   return (
     <Modal closeModal={finishEditCard}>

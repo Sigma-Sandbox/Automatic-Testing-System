@@ -33,9 +33,12 @@
 }
 
 .name {
-  margin-left: 50px;
+  margin-left: auto;
   display: flex;
   flex-direction: column;
+  transition: none;
+  transition: all 0.3s ease;
+  // transform: translateY(-300%);
 }
 
 .testData {
@@ -44,6 +47,7 @@
   margin-left: auto;
   align-items: center;
   transition: all 0.3s ease;
+  justify-content: end;
   overflow: hidden;
   padding: 10px;
 }
@@ -71,11 +75,26 @@
 // APPLICANT
 
 .btnExit {
-  margin-left: auto;
+  // margin-left: auto;
+  height: 36px;
 }
 
 .navbarContent {
   max-width: calc(1280px - (2 * var(--sidebar-width)));
   width: 100%;
   margin: auto;
+}
+.name.close {
+  transform: translateY(-300%);
+}
+
+.navbarContent.navbarAdmin {
+  display: flex;
+  justify-content: end;
+  gap: 30px;
+  align-items: center;
+}
+
+.navbar.navbarSticky {
+  position: sticky;
 }

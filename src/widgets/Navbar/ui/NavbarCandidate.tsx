@@ -1,23 +1,23 @@
-import React, {useEffect} from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import React, { useEffect } from 'react'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './Navbar.module.scss'
-import {useSelector} from 'react-redux'
-import {getUserData} from '../model/selectors/getUserData'
-import {Route, useLocation, useNavigate} from 'react-router-dom'
-import {RoutePathCandidate} from 'shared/config/routeConfig/routeConfig'
-import {getCurrentTestData} from '../model/selectors/getCurrentTestData'
-import {TimeType, useTimer} from 'shared/lib/hooks/useTimer/useTimer'
-import {Button, ColorButton, SizeButton} from 'shared/ui/Button/Button'
+import { useSelector } from 'react-redux'
+import { getUserData } from '../model/selectors/getUserData'
+import { Route, useLocation, useNavigate } from 'react-router-dom'
+import { RoutePathCandidate } from 'shared/config/routeConfig/routeConfig'
+import { getCurrentTestData } from '../model/selectors/getCurrentTestData'
+import { TimeType, useTimer } from 'shared/lib/hooks/useTimer/useTimer'
+import { Button, ColorButton, SizeButton } from 'shared/ui/Button/Button'
 
 interface NavabarCandidateProps {
   className?: string
 }
 
 export const NavbarCandidate: React.FC<NavabarCandidateProps> = (props) => {
-  const {className = ''} = props
+  const { className = '' } = props
   const userData = useSelector(getUserData)
   const currentTestData = useSelector(getCurrentTestData)
-  const {pathname} = useLocation()
+  const { pathname } = useLocation()
   const [timeLimits, optionTimeLimits] = useTimer(currentTestData.timeLimits || 0)
   const navigate = useNavigate()
 
@@ -34,20 +34,13 @@ export const NavbarCandidate: React.FC<NavabarCandidateProps> = (props) => {
 
   return (
     <>
-      <span className={classNames(cls.position, {[cls.collaps]: !!userData}, ['Box_invert_bg'])}>
-        {userData?.position}
-      </span>
-      {currentTestData && (
+      {pathname.includes(RoutePathCandidate.test) && (
         <div className={classNames(cls.testData, {}, [])}>
-          <div className={classNames(cls.time, {[cls.show]: +currentTestData.currentItem > 0}, [])}>
+          <div className={classNames(cls.time, { [cls.show]: +currentTestData.currentItem > 0 }, [])}>
             {optionTimeLimits.getTime(TimeType.MM_SS)}
           </div>
           <Button
-            className={classNames(
-              cls.btnCancel,
-              {[cls.show]: +currentTestData.currentItem > 0},
-              []
-            )}
+            className={classNames(cls.btnCancel, { [cls.show]: +currentTestData.currentItem > 0 }, [])}
             color={ColorButton.RED_COLOR}
             size={SizeButton.L}
             onClick={finishTask}
@@ -56,7 +49,10 @@ export const NavbarCandidate: React.FC<NavabarCandidateProps> = (props) => {
           </Button>
         </div>
       )}
-      <div className={classNames(cls.name, {}, ['Box_invert_bg'])}>
+
+      <div
+        className={classNames(cls.name, { [cls.close]: pathname.includes(RoutePathCandidate.test) }, ['Box_invert_bg'])}
+      >
         <span>{userData?.firstname}</span>
         <span>{userData?.lastname}</span>
       </div>

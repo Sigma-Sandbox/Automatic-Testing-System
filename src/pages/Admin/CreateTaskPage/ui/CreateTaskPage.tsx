@@ -16,6 +16,7 @@ import { ReactComponent as TestSvg } from 'shared/assets/icon/testCreate.svg'
 import { NotFoundElements } from 'shared/ui/NotFoundElements/NotFoundElements'
 import { CreateAndEditCodeTask } from 'features/CreateAndEditCodeTask'
 import { type } from 'os'
+import { ToastContainer } from 'react-toastify'
 
 interface CreateTaskPageProps {
   className?: string
@@ -143,6 +144,18 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
             <NotFoundElements text="Тесты не найдены" />
           )}
         </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={1000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <div className={cls.tasks}>
           {progTasks.length > 0 ? (
             progTasks.map((progTask) => (

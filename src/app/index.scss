@@ -37,9 +37,9 @@ html {
   max-width: calc(1280px + 2 * var(--sidebar-width));
   width: 100%;
   margin: 0 auto;
-  padding: 0 var(--sidebar-width);
+  padding: 0 calc(5px + var(--sidebar-width));
   height: 100%;
-  padding-top: 100px;
+  padding-top: 120px;
   padding-bottom: 10px;
 }
 

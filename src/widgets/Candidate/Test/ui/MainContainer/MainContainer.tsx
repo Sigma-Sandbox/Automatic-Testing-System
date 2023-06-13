@@ -1,17 +1,17 @@
-import React, {useEffect, useMemo, useState} from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import React, { useEffect, useMemo, useState } from 'react'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './MainContainer.module.scss'
-import {Start} from '../Start/Start'
-import {getCurrentTask} from 'entities/Candidate/TestTask'
-import {useLocation} from 'react-router-dom'
-import {useDispatch, useSelector} from 'react-redux'
-import {TaskCode} from '../TaskCode/TaskCode'
-import {TaskTest} from '../TaskTest/TaskTest'
-import {testUserActions} from 'widgets/Candidate/Test/model/slice/TestSlice'
-import {getTestItemData} from '../../model/selectors/getTest'
-import {useSwitching} from 'shared/lib/hooks/useSwitching/useSwitching'
-import {AppDispatch} from 'app/providers/StoreProvider/config/store'
-import {Button, ThemeButton} from 'shared/ui/Button/Button'
+import { Start } from '../Start/Start'
+import { getCurrentTask } from 'entities/Candidate/TestTask'
+import { useLocation } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { TaskCode } from '../TaskCode/TaskCode'
+import { TaskTest } from '../TaskTest/TaskTest'
+import { testUserActions } from 'widgets/Candidate/Test/model/slice/TestSlice'
+import { getTestItemData } from '../../model/selectors/getTest'
+import { useSwitching } from 'shared/lib/hooks/useSwitching/useSwitching'
+import { AppDispatch } from 'app/providers/StoreProvider/config/store'
+import { Button, ColorButton, ThemeButton } from 'shared/ui/Button/Button'
 import upPageSrc from 'shared/assets/icon/up_page.svg'
 import downPageSrc from 'shared/assets/icon/down_page.svg'
 
@@ -27,7 +27,7 @@ enum SwitcherItemType {
 }
 
 export const MainContainer: React.FC<MainContainerProps> = (props) => {
-  const {className = ''} = props
+  const { className = '' } = props
   const location = useLocation()
   const testData = useSelector(getCurrentTask(location.state?.testId || 1))
   const testItemData = useSelector(getTestItemData)
@@ -70,7 +70,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
       taskItemList.push(
         <Start
           key={'start task test'}
-          className={classNames(cls.mainItem, {[cls.animate]: isSwitchPage}, [])}
+          className={classNames(cls.mainItem, { [cls.animate]: isSwitchPage }, [])}
           timeLimits={testData.timeLimits}
           taskCount={testItemData.allCountItem}
           name={testData.name}
@@ -84,7 +84,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
           taskItemList.push(
             <TaskTest
               key={el.id}
-              className={classNames(cls.mainItem, {[cls.animate]: isSwitchPage}, [])}
+              className={classNames(cls.mainItem, { [cls.animate]: isSwitchPage }, [])}
               dataItem={{ ...el, numOfTry: testData.numOfTry, vacancyId: testData.vacancyId }}
               isStartedTest={changeStartedTest}
             ></TaskTest>
@@ -93,7 +93,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
           taskItemList.push(
             <TaskCode
               key={el.id}
-              className={classNames(cls.mainItem, {[cls.animate]: isSwitchPage}, [])}
+              className={classNames(cls.mainItem, { [cls.animate]: isSwitchPage }, [])}
               dataItem={{ ...el, numOfTry: testData.numOfTry, vacancyId: testData.vacancyId }}
             ></TaskCode>
           )
@@ -104,8 +104,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
   }, [testData, testItemData, isSwitchPage])
 
   const switcherTaskState = useMemo<SwitcherItemType>(() => {
-    if (testItemData.currentItem === 0 || testItemData.allCountItem === 1)
-      return SwitcherItemType.HIDE
+    if (testItemData.currentItem === 0 || testItemData.allCountItem === 1) return SwitcherItemType.HIDE
     // if (startedTest) return SwitcherItemType.DISABLE
     if (testItemData.currentItem === 1) return SwitcherItemType.DISABLE_UP
     if (testItemData.currentItem === taskItem.length - 1) return SwitcherItemType.DISABLE_DOWN
@@ -119,13 +118,13 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
     <div className={classNames(cls.mainContainer, {}, [className])}>
       <Button
         theme={ThemeButton.CLEAR}
+        color={ColorButton.TRANSPARENT}
         onClick={() => goToTask(+testItemData.currentItem - 1)}
         className={classNames(
           cls.toggleTask,
           {
             [cls.disable]:
-              switcherTaskState === SwitcherItemType.DISABLE ||
-              switcherTaskState === SwitcherItemType.DISABLE_UP,
+              switcherTaskState === SwitcherItemType.DISABLE || switcherTaskState === SwitcherItemType.DISABLE_UP,
             [cls.hide]: switcherTaskState === SwitcherItemType.HIDE,
           },
           [cls.toggleUp]
@@ -136,13 +135,13 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
       {taskItem}
       <Button
         theme={ThemeButton.CLEAR}
+        color={ColorButton.TRANSPARENT}
         onClick={() => goToTask(+testItemData.currentItem + 1)}
         className={classNames(
           cls.toggleTask,
           {
             [cls.disable]:
-              switcherTaskState === SwitcherItemType.DISABLE ||
-              switcherTaskState === SwitcherItemType.DISABLE_DOWN,
+              switcherTaskState === SwitcherItemType.DISABLE || switcherTaskState === SwitcherItemType.DISABLE_DOWN,
             [cls.hide]: switcherTaskState === SwitcherItemType.HIDE,
           },
           [cls.toggleDown]

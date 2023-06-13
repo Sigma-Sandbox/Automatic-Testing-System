@@ -27,16 +27,33 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
     console.log(userRole)
   }, [userRole])
 
+  if (userRole === UserRole.APPLICANT) {
+    return (
+      <div
+        className={classNames(cls.navbar, { [cls.collaps]: pathname === RoutePathCandidate.login }, [
+          className,
+          'container',
+        ])}
+      >
+        <div className={classNames(cls.navbarContent)}>
+          <NavbarCandidate />
+        </div>
+      </div>
+    )
+  }
   return (
     <div
       className={classNames(cls.navbar, { [cls.collaps]: pathname === RoutePathCandidate.login }, [
         className,
+        cls.navbarSticky,
         'container',
       ])}
     >
-      <div className={classNames(cls.navbarContent)}>
-        {userRole === UserRole.APPLICANT && <NavbarCandidate />}
-
+      <div className={classNames(cls.navbarContent, {}, [cls.navbarAdmin])}>
+        <div className={classNames(cls.name, {}, ['Box_invert_bg'])}>
+          <span>{userData?.firstname}</span>
+          <span>{userData?.lastname}</span>
+        </div>
         <Button className={cls.btnExit}>Выйти</Button>
       </div>
     </div>

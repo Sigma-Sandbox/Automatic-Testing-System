@@ -12,6 +12,8 @@ import { sendUsersData } from 'features/CreateAndEditCard/model/service/sendUser
 import { usersDataActions } from 'entities/Admin/Users'
 import { UserRole } from 'core/enums'
 import { getVacancies } from 'entities/Admin/Vacancies/model/selectors/getVacancies/getVacancies'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface CardFormProps {
   className?: string
@@ -38,18 +40,20 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
     name: user?.name || '',
     patronymic: user?.patronymic || '',
     email: user?.email || '',
-    actualLink: user?.actualLink || ''
+    actualLink: user?.actualLink || '',
   })
 
   useEffect(() => {
     console.log(selectedVacancies, user?.vacancies)
   }, [])
 
+  const notify = (text: string) => toast(text)
   const copyLink = () => {
     navigator.clipboard
       .writeText(personState.actualLink)
       .then(() => {
         console.log('Ссылка скопирована')
+        notify('Ссылка скопирована')
       })
       .catch((err) => {
         console.log('Не удалось скопировать', err)
@@ -78,7 +82,7 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
       const newLink = await fetch('api/update_user_link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({id: id}),
+        body: JSON.stringify({ id: id }),
       })
       const actualLink = await newLink.json()
       setPersonState({ ...personState, actualLink: actualLink.actualLink })
@@ -87,7 +91,9 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
   }
 
   const validateValue = () => {
-    return (personState.name !== '' && personState.surname !== '' && personState.email !== '' && selectedVacancies.length > 0)
+    return (
+      personState.name !== '' && personState.surname !== '' && personState.email !== '' && selectedVacancies.length > 0
+    )
   }
 
   const checkAndSendData = async () => {
@@ -108,7 +114,7 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
       }
     })
     if (user) {
-      option = {...user, ...personState, vacancies: vacanciesUser}
+      option = { ...user, ...personState, vacancies: vacanciesUser }
       const answer = await sendUsersData(option)
       if (answer === 'OK') {
         dispatch(usersDataActions.setUpdateUsers(option))
@@ -154,18 +160,30 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
           ></MySelect>
         </div>
       </div>
-      {<div className={cls.link}>
-        <span>{personState.actualLink}</span>{' '}
-        <div style={{display: 'inline-flex', gap: 5}}>
-          <Button theme={ThemeButton.CLEAR} className={cls.copyBtn}  onClick={() => generateActualLink(user?.id)}>
-            <img src={PlusSvg} alt="copy" />
-          </Button>
-          <Button theme={ThemeButton.CLEAR} className={cls.copyBtn} onClick={copyLink}>
-            <img src={CopySvg} alt="copy" />
-          </Button>
+      {user && (
+        <div className={cls.link}>
+          <span>{personState.actualLink}</span>{' '}
+          <div style={{ display: 'inline-flex', gap: 5 }}>
+            <Button
+              color={ColorButton.TRANSPARENT}
+              theme={ThemeButton.CLEAR}
+              className={cls.copyBtn}
+              onClick={() => generateActualLink(user?.id)}
+            >
+              <img src={PlusSvg} alt="copy" />
+            </Button>
+            <Button
+              color={ColorButton.TRANSPARENT}
+              theme={ThemeButton.CLEAR}
+              className={cls.copyBtn}
+              onClick={copyLink}
+            >
+              <img src={CopySvg} alt="copy" />
+            </Button>
+          </div>
         </div>
-      </div>
-      }
+      )}
+
       <Button
         onClick={checkAndSendData}
         color={ColorButton.SECONDARY_COLOR}

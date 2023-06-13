@@ -20,13 +20,8 @@ export const LoginModal: React.FC<LoginModalProps> = (props) => {
   }
   return (
     <div className={classNames(cls.loginModal, {}, [])}>
-      <img src={LogoIcon} alt='' className={cls.logo} />
+      <img src={LogoIcon} alt="" className={cls.logo} />
 
-      <Toggle_ios
-        onChange={changeLoginUser}
-        isUser={loginUser}
-        className={cls.toggle}
-      />
       <LoginForm onSuccess={onSuccess} />
     </div>
   )
