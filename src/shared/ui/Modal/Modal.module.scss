@@ -31,15 +31,12 @@
 }
 
 .cardModal.fullScreen {
-  position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   transform: none;
-  z-index: var(--zIndex-modal-content);
-  background-color: var(--bg-color);
-  padding: 25px 30px 40px 30px;
   border-radius: 0;
   width: auto;
+  animation: false;
 }

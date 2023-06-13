@@ -39,7 +39,9 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
   }, [])
 
   useEffect(() => {
-    setUserList(userListInit)
+    if (usersList === null || (usersList && usersList.length === 0) || (userListInit && userListInit?.length > 0)) {
+      setUserList(userListInit)
+    }
   }, [userListInit])
 
   const changeUsersList = (newUsersList: User[]) => {

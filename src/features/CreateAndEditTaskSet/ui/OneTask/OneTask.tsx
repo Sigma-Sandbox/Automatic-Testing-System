@@ -54,15 +54,13 @@ export const OneTask: React.FC<OneTaskProps> = (props) => {
     >
       <div className={cls.side}>
         <div className={cls.name}>{task.name}</div>
-
-        <div className={cls.descipt}>{task.description}</div>
         <div className={cls.descipt}>Сложность: {task.complexityAssessment}</div>
-        {/* <div className={cls.descipt}>Сложность: {task.}</div> */}
+        <div className={cls.descipt}>Языки программирования: {task.conditions.map(c => c.language).join(', ')}</div>
       </div>
 
       <div className={cls.sideQuest}>
         <div className={cls.name}> Задание</div>
-        <div className={cls.descip}> {task.description}</div>
+        <div className={cls.descipt}> {task.description}</div>
       </div>
     </div>
   )

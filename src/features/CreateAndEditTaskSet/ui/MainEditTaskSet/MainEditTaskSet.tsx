@@ -76,11 +76,22 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
   const changeTaskSelect = (elem: ProgTask | TestTask, index: number) => {
     const newCreated = createdTask
     newCreated[index] = elem
-    console.log('chag', elem, index)
     setCreatedTask(newCreated)
-    if (createdTask[createdTask.length - 1] !== undefined) {
+    if (createdTask[createdTask.length - 1] !== null) {
       setIsEditableCard(false)
     }
+  }
+
+  const handleDeleteTask = (index: number) => {
+    const newCreated: TypeTaskInEdit[] = []
+    createdTask.forEach((task, i) => {
+      if (i < index) {
+        newCreated[i] = task
+      } else if (i > index) {
+        newCreated[i - 1] = task
+      }
+    })
+    setCreatedTask(newCreated)
   }
 
   const handleNext = (commonTask: CommonTask) => {
@@ -102,13 +113,14 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
             progTaskListInit={progTaskListInit}
             testTaskListInit={testTaskListInit}
             index={i}
+            handleDeleteTask={handleDeleteTask}
           ></EditTaskSlide>
         )
       }
     })
-  }, [createdTask])
+  }, [createdTask, createdTask.length])
 
-  const handleSaveEdit = async () => {
+  const editTask2TaskSet = (): TaskSet => {
     const progTasks: ProgTask[] = []
     const testTasks: TestTask[] = []
 
@@ -121,7 +133,7 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
     })
 
     if (taskSet !== null) {
-      const updateTaskSet: TaskSet = {
+      return {
         ...taskSet,
         description: (createdTask[0]! as CommonTask).description,
         name: (createdTask[0]! as CommonTask).name,
@@ -130,18 +142,8 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
         language: (createdTask[0]! as CommonTask).languages,
         timeLimits: (createdTask[0]! as CommonTask).time
       }
-      const response = await fetch('api/update', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(updateTaskSet),
-      })
-      if (response.status === 200) {
-        closeModal()
-      } else {
-        console.log('Не удалось обновить Task Set')
-      }
     } else {
-      const addTaskSet: TaskSet = {
+      return {
         name: (createdTask[0]! as CommonTask).name,
         description: (createdTask[0]! as CommonTask).description,
         progTasks: progTasks,
@@ -151,10 +153,27 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
         timeLimits: (createdTask[0]! as CommonTask).time,
         timeOfCreation: Date.now()
       }
+    }
+  }
+
+  const handleSaveEdit = async () => {
+    if (taskSet !== null) {
+      const response = await fetch('api/update', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(editTask2TaskSet()),
+      })
+      if (response.status === 200) {
+        closeModal()
+      } else {
+        console.log('Не удалось обновить Task Set')
+      }
+    } else {
+
       const response = await fetch('api/add', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(addTaskSet),
+        body: JSON.stringify(editTask2TaskSet()),
       })
       if (response.status === 200) {
         closeModal()
