@@ -1,13 +1,12 @@
 import React, {useCallback, useEffect} from 'react'
 import {classNames} from 'shared/lib/classNames/classNames'
 import cls from './MainPage.module.scss'
-import {fetchTestTask} from 'entities/Candidate/TestTask'
 import {useDispatch, useSelector} from 'react-redux'
-import {getUserAuthData, userActions} from 'entities/User'
+import {getUserAuthData} from 'entities/User'
 import {AppDispatch} from 'app/providers/StoreProvider/config/store'
 import {TestTaskPack} from 'widgets/Candidate/TestTaskPack'
 import {useNavigate} from 'react-router-dom'
-import {RoutePathCandidate} from 'shared/config/routeConfig/routeConfig'
+import {RoutePath} from 'shared/config/routeConfig/routeConfig'
 
 interface MainProps {
   className?: string
@@ -21,12 +20,12 @@ export const MainPage: React.FC<MainProps> = (props) => {
 
   useEffect(() => {
     if (!authData) {
-      navigate(RoutePathCandidate.login)
+      navigate(RoutePath.login)
     }
   }, [])
 
   const goTestPage = useCallback((idTest: string) => {
-    navigate(RoutePathCandidate.test, {state: {idTest: idTest}})
+    navigate(RoutePath.test, {state: {idTest: idTest}})
   }, [])
 
   return (

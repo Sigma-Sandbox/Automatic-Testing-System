@@ -56,6 +56,7 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
     setCreateAndEdit({ status: cardEditStatus.CREATE, editCard: null })
   }
   const finishEditCard = () => {
+    dispatch(fetchUsersData({}))
     setCreateAndEdit({ status: cardEditStatus.CLOSE, editCard: null })
   }
 

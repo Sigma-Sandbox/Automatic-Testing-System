@@ -7,80 +7,59 @@ import { AdminTaskSetsPage } from 'pages/Admin/AdminTaskSetsPage'
 import { VacancyPage } from 'pages/Admin/VacancyPage'
 import { CreateTaskPage } from 'pages/Admin/CreateTaskPage'
 
-export enum AppRoutesCandidate {
-  LOGIN = 'login',
-  CANDIDATE_MAIN = 'main',
-  DEFAULT = 'default',
-  CANDIDATE_TEST = 'test',
-}
-
-export enum AppRoutesAdmin {
+export enum AppRoutes {
   LOGIN = 'login',
   MAIN = 'main',
   DEFAULT = 'default',
   TASK_SET = 'tests',
-  VACANCY = 'vacancy',
+  VACANCY = 'vaca',
   CREATE = 'create',
+  CANDIDATE_VACANCY = 'vacancy',
+  CANDIDATE_TEST = 'test',
 }
 
-export const RoutePathCandidate: Record<AppRoutesCandidate, string> = {
-  [AppRoutesCandidate.CANDIDATE_MAIN]: '/main',
-  [AppRoutesCandidate.LOGIN]: '/login',
-  [AppRoutesCandidate.DEFAULT]: '*',
-  [AppRoutesCandidate.CANDIDATE_TEST]: '/test',
+export const RoutePath: Record<AppRoutes, string> = {
+  [AppRoutes.MAIN]: '/main',
+  [AppRoutes.LOGIN]: '/login',
+  [AppRoutes.DEFAULT]: '*',
+  [AppRoutes.TASK_SET]: '/tests',
+  [AppRoutes.VACANCY]: '/vaca',
+  [AppRoutes.CREATE]: '/create',
+  [AppRoutes.CANDIDATE_VACANCY]: '/vacancy',
+  [AppRoutes.CANDIDATE_TEST]: '/test',
 }
 
-export const RoutePathAdmin: Record<AppRoutesAdmin, string> = {
-  [AppRoutesAdmin.MAIN]: '/main',
-  [AppRoutesCandidate.LOGIN]: '/login',
-  [AppRoutesCandidate.DEFAULT]: '*',
-  [AppRoutesAdmin.TASK_SET]: '/tests',
-  [AppRoutesAdmin.VACANCY]: '/vacancy',
-  [AppRoutesAdmin.CREATE]: '/create',
-}
-
-export const routeConfigCandidate: Record<AppRoutesCandidate, RouteProps> = {
-  [AppRoutesCandidate.CANDIDATE_MAIN]: {
-    path: RoutePathCandidate.main,
-    element: <MainPage />,
-  },
-  [AppRoutesCandidate.LOGIN]: {
-    path: RoutePathCandidate.login,
-    element: <LoginPage />,
-  },
-  [AppRoutesCandidate.CANDIDATE_TEST]: {
-    path: RoutePathCandidate.test,
-    element: <TestPage />,
-  },
-  [AppRoutesCandidate.DEFAULT]: {
-    path: RoutePathCandidate.default,
-    element: <Navigate to={RoutePathCandidate.login} replace />,
-  },
-}
-
-export const routeConfigAdmin: Record<AppRoutesAdmin, RouteProps> = {
-  [AppRoutesAdmin.MAIN]: {
-    path: RoutePathAdmin.main,
+export const routeConfig: Record<AppRoutes, RouteProps> = {
+  [AppRoutes.MAIN]: {
+    path: RoutePath.main,
     element: <AdminMainPage />,
   },
-  [AppRoutesAdmin.LOGIN]: {
-    path: RoutePathCandidate.login,
+  [AppRoutes.LOGIN]: {
+    path: RoutePath.login,
     element: <LoginPage />,
   },
-  [AppRoutesAdmin.DEFAULT]: {
-    path: RoutePathCandidate.default,
-    element: <Navigate to={RoutePathCandidate.login} replace />,
+  [AppRoutes.DEFAULT]: {
+    path: RoutePath.default,
+    element: <Navigate to={RoutePath.login} replace />,
   },
-  [AppRoutesAdmin.TASK_SET]: {
-    path: RoutePathAdmin.tests,
+  [AppRoutes.TASK_SET]: {
+    path: RoutePath.tests,
     element: <AdminTaskSetsPage />,
   },
-  [AppRoutesAdmin.VACANCY]: {
-    path: RoutePathAdmin.vacancy,
+  [AppRoutes.VACANCY]: {
+    path: RoutePath.vaca,
     element: <VacancyPage />,
   },
-  [AppRoutesAdmin.CREATE]: {
-    path: RoutePathAdmin.create,
+  [AppRoutes.CREATE]: {
+    path: RoutePath.create,
     element: <CreateTaskPage />,
+  },
+  [AppRoutes.CANDIDATE_VACANCY]: {
+    path: RoutePath.vacancy,
+    element: <MainPage />,
+  },
+  [AppRoutes.CANDIDATE_TEST]: {
+    path: RoutePath.test,
+    element: <TestPage />,
   },
 }

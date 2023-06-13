@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './Sidebar.module.scss'
-import { AppRoutesAdmin, RoutePathAdmin, RoutePathCandidate } from 'shared/config/routeConfig/routeConfig'
+import { AppRoutes, RoutePath } from 'shared/config/routeConfig/routeConfig'
 import logoImgSrc from 'shared/assets/logo_sidebar.png'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserAuthData, getUserRole } from 'entities/User'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { getTestItemData } from '../model/selectors/getTestItemData'
 import { SidebarItem } from './SidebarItem/SidebarItem'
 import { testUserActions } from 'widgets/Candidate/Test'
@@ -61,7 +61,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   }, [testItem, testItem?.currentItem, testItem.statusItem])
 
   return (
-    <div className={classNames(cls.sidebar, { [cls.collaps]: pathname === RoutePathCandidate.login }, [className])}>
+    <div className={classNames(cls.sidebar, { [cls.collaps]: pathname === RoutePath.login }, [className])}>
       <img className={cls.logo} src={logoImgSrc} alt="logo" />
 
       <div className={cls.itemsWrap}>
@@ -69,34 +69,34 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         {(userRole === UserRole.ADMIN || userRole === UserRole.EMPLOYEE) && (
           <div className={cls.itemsAdmin}>
             <Button
-              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutesAdmin.MAIN) }, [])}
+              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.MAIN) }, [])}
               theme={ThemeButton.CLEAR}
               color={ColorButton.TRANSPARENT}
-              onClick={() => navigate(RoutePathAdmin.main)}
+              onClick={() => navigate(RoutePath.main)}
             >
               <img src={usersImg} alt="Img7" />
             </Button>
             <Button
-              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutesAdmin.VACANCY) }, [])}
+              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.VACANCY) }, [])}
               theme={ThemeButton.CLEAR}
               color={ColorButton.TRANSPARENT}
-              onClick={() => navigate(RoutePathAdmin.vacancy)}
+              onClick={() => navigate(RoutePath.vaca)}
             >
               <img src={vacancyImg} alt="Img8" />
             </Button>
             <Button
-              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutesAdmin.TASK_SET) }, [])}
+              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.TASK_SET) }, [])}
               theme={ThemeButton.CLEAR}
               color={ColorButton.TRANSPARENT}
-              onClick={() => navigate(RoutePathAdmin.tests)}
+              onClick={() => navigate(RoutePath.tests)}
             >
               <img src={testsImg} alt="Img1" />
             </Button>
             <Button
-              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutesAdmin.CREATE) }, [])}
+              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.CREATE) }, [])}
               theme={ThemeButton.CLEAR}
               color={ColorButton.TRANSPARENT}
-              onClick={() => navigate(RoutePathAdmin.create)}
+              onClick={() => navigate(RoutePath.create)}
             >
               <img src={createImg} alt="Img6" />
             </Button>
