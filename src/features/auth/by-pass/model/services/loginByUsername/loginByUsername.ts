@@ -10,30 +10,25 @@ interface LoginByUsernameProps {
   password: string
 }
 
-export const loginByUsername = createAsyncThunk<User, LoginByUsernameProps, { rejectValue: string }>(
+export const loginByUsername = createAsyncThunk<User[], LoginByUsernameProps, {rejectValue: string}>(
   'login/loginByUsername',
   async (authData, thunkAPI) => {
     try {
-      const response = await axios.get<User>('https://jsonplaceholder.typicode.com/users')
+      //const response = await axios.get<User>('https://jsonplaceholder.typicode.com/users')
 
-      // if (!response.data) {
-      //     throw new Error();
-      // }
+      const payload = { 'email': authData.username, 'password': authData.password }
+      const response = await axios.post<User[]>('http://localhost:3000/api/get/user', payload)
 
-      // Mock data
+      /*
+      if (!response.data) {
+        throw new Error();
+      }
+      */
+
       thunkAPI.dispatch(
-        userActions.setAuthData({
-          id: 0,
-          name: 'Иван',
-          surname: 'Иванов',
-          accessRights: UserRole.EMPLOYEE,
-          vacancies: [{ vacancyId: 1, vacancyName: Vacancy.JAVA_JUNIOR, userSolutions: [] }],
-          email: 'dkjfa@gmail.com',
-          password: 'dalkjfa',
-          startLinkTimestamp: 1234,
-          endLinkTimestamp: 1234,
-          actualLink: 'dzc',
-        })
+        userActions.setAuthData(
+          response.data[0]
+        )
       )
       thunkAPI.dispatch(testTaskActions.setTestTaskData(testTaskDataExample))
 
