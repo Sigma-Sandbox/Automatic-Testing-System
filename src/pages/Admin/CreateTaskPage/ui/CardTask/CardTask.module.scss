@@ -1,12 +1,13 @@
 .cardTask {
   background-color: var(--invert-bg-color);
   border-radius: 10px;
-  max-height: 220px;
+  max-height: 223px;
   padding: 10px 15px 10px 15px;
   overflow: hidden;
   position: relative;
-  max-width: 620px;
+  max-width: 630px;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .name {
@@ -36,7 +37,7 @@
   height: calc(100% - 30px);
   overflow: auto;
   flex: 65% 0 0;
-  text-align: justify;
+  padding-bottom: 1px;
 }
 
 .info {
@@ -54,6 +55,9 @@
 }
 .question {
   line-height: normal;
+  border-radius: 5px;
+  box-shadow: var(--shadow-min-block);
+  padding: 5px 8px;
 }
 .testCond {
 }

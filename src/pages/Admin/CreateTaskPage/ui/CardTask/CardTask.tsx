@@ -106,7 +106,10 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
         </div>
         <div className={classNames(cls.info)}>
           <div className={classNames(cls.testCond)}>
-            Время: <span className={classNames('', {}, ['bold'])}>{task.execTime} сек</span>
+            Время:{' '}
+            <span className={classNames('', {}, ['bold'])}>
+              {task.execTime === 0 ? 'не ограничено' : `${task.execTime}сек`}
+            </span>
           </div>
         </div>
       </div>

@@ -1,4 +1,6 @@
 .createTaskPage {
+  max-height: 100vh;
+  padding-top: 85px;
 }
 .navbar {
   // height: 150px;
@@ -11,14 +13,19 @@
 }
 .tasksWrap {
   display: flex;
-  gap: 20px;
+  gap: 3px;
+  overflow: hidden;
+  // max-height: 85%;
+  max-height: calc(100vh - 240px);
 }
 .tasks {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
   flex: 50% 0 0;
   min-height: 250px;
+  overflow: auto;
+  padding-right: 5px;
 }
 
 .createBtns {

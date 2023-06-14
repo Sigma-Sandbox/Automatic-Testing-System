@@ -4,6 +4,7 @@ import { testTaskActions } from 'entities/Candidate/TestTask/'
 import { User, userActions } from 'entities/User'
 import { UserRole, Vacancy } from 'core/enums'
 import { testTaskDataExample } from 'entities/Candidate/TestTask/model/consts/testTaskConsts'
+import { getUsersPath } from 'shared/const/queryPath'
 
 interface LoginByUsernameProps {
   username: string
@@ -14,12 +15,12 @@ export const loginByUsername = createAsyncThunk<User, LoginByUsernameProps, { re
   'login/loginByUsername',
   async (authData, thunkAPI) => {
     try {
-      const response = await axios.get<User>('https://jsonplaceholder.typicode.com/users')
+      const response = await axios.post<User>(getUsersPath)
 
       // if (!response.data) {
       //     throw new Error();
       // }
-
+      console.log(response)
       // Mock data
       thunkAPI.dispatch(
         userActions.setAuthData({

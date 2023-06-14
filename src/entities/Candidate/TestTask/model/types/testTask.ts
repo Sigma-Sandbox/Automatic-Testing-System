@@ -1,4 +1,4 @@
-import {ProgrammingLanguage} from 'core/enums'
+import { ProgrammingLanguage } from 'core/enums'
 
 export interface TaskSetPackSchema {
   isLoading: boolean

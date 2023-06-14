@@ -20,6 +20,28 @@
   max-width: none;
 }
 
+.navbarStick {
+  height: var(--navbar-height);
+  transition: all 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  opacity: 1;
+
+  // opacity: 1;
+
+  // load effect
+  transition: all 0.5s ease;
+  position: absolute;
+  // left: 50%;
+  top: 0;
+  // transform: translateX(-50%);
+  z-index: var(--zIndex-navbar);
+  width: 100%;
+  max-width: none;
+}
+
 .navbar.collaps {
   // width: 0;
   height: 0;

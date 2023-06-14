@@ -17,6 +17,7 @@ import { NotFoundElements } from 'shared/ui/NotFoundElements/NotFoundElements'
 import { CreateAndEditCodeTask } from 'features/CreateAndEditCodeTask'
 import { type } from 'os'
 import { ToastContainer } from 'react-toastify'
+import { CreateAndEditTestTask, QuestionCreator } from 'features/CreateAndEditTestTask'
 
 interface CreateTaskPageProps {
   className?: string
@@ -93,8 +94,8 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
         }
         break
       case typeTaskPopup.TEST:
-        if (statusPopup.prop === null || 'qustions' in statusPopup.prop) {
-          return 'Popup qustions'
+        if (statusPopup.prop === null || 'questions' in statusPopup.prop) {
+          return <CreateAndEditTestTask closeModal={finishTaskCreate} test={statusPopup.prop} />
         }
         break
       default:
@@ -111,12 +112,14 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
             className={classNames(cls.createBtn, {}, [cls.createTest])}
             color={ColorButton.PRIMARY_COLOR}
             theme={ThemeButton.BACKGROUND}
+            onClick={() => startTaskCreate(typeTaskPopup.TEST, null)}
           >
             <TestSvg />
           </Button>
           <div className={classNames(cls.plusImg)}>
             <PlusSvg />
           </div>
+          <QuestionCreator closeModal={() => {}}></QuestionCreator>
 
           <Button
             className={classNames(cls.createBtn, {}, [cls.createCode])}
@@ -129,9 +132,8 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
         </div>
         <CreateNavbar langs={Object.values(langProg)} changeList={filterTasks} />
       </div>
-
       <div className={cls.tasksWrap}>
-        <div className={cls.tasks}>
+        <div className={classNames(cls.tasks, {}, ['custom_scroll'])}>
           {testTasks.length > 0 ? (
             testTasks.map((testTask) => (
               <CardTask
@@ -156,7 +158,7 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
           pauseOnHover
           theme="light"
         />
-        <div className={cls.tasks}>
+        <div className={classNames(cls.tasks, {}, ['custom_scroll'])}>
           {progTasks.length > 0 ? (
             progTasks.map((progTask) => (
               <CardTask

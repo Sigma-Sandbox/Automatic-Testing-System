@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { CSSProperties, useEffect, useState } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './Select.module.scss'
 import Select, { MultiValue, SingleValue } from 'react-select'
@@ -17,6 +17,8 @@ interface SelectProps {
   options: SelectOption[]
   isMulti?: boolean
   isClearable?: boolean
+  styleSingleValue?: CSSProperties
+  styleMenuList?: CSSProperties
 }
 
 export const MySelect: React.FC<SelectProps> = (props) => {
@@ -30,6 +32,8 @@ export const MySelect: React.FC<SelectProps> = (props) => {
     isMulti = false,
     selected,
     isClearable = true,
+    styleSingleValue = {},
+    styleMenuList = {},
   } = props
   const [value, setValue] = useState<SelectOption | readonly SelectOption[] | null>(selected ? selected : null)
 
@@ -56,11 +60,24 @@ export const MySelect: React.FC<SelectProps> = (props) => {
             borderRadius: '10px',
             boxShadow: 'var(--shadow-block)',
             overflow: 'auto',
+            height: '100%',
           }),
           menu: (baseStyles, state) => ({
             ...baseStyles,
-            zIndex: 100,
+            zIndex: 100000000000,
           }),
+          singleValue(base, props) {
+            return {
+              ...base,
+              ...styleSingleValue,
+            }
+          },
+          menuList(base, props) {
+            return {
+              ...base,
+              ...styleMenuList,
+            }
+          },
         }}
         name="colors"
         options={options}

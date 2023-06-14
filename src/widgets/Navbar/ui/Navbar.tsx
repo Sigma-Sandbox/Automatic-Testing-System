@@ -43,7 +43,7 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
   }
   return (
     <div
-      className={classNames(cls.navbar, { [cls.collaps]: pathname === RoutePathCandidate.login }, [
+      className={classNames(cls.navbarStick, { [cls.collaps]: pathname === RoutePathCandidate.login }, [
         className,
         cls.navbarSticky,
         'container',
