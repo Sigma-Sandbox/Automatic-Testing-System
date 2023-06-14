@@ -119,7 +119,7 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
           <div className={classNames(cls.plusImg)}>
             <PlusSvg />
           </div>
-          <QuestionCreator closeModal={() => {}}></QuestionCreator>
+          {/* <QuestionCreator closeModal={() => {}}></QuestionCreator> */}
 
           <Button
             className={classNames(cls.createBtn, {}, [cls.createCode])}
