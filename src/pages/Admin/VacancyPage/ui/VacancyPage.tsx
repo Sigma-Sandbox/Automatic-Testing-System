@@ -79,7 +79,7 @@ export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
     <div className={classNames(cls.vacancyPage, {}, [className])}>
       <div className={cls.headerTab}>
         <SearchField value="" onChange={(text) => console.log(text)}></SearchField>
-        <Button className={classNames(cls.addVacancy)} size={SizeButton.L} onClick={startCreateVacancy}>
+        <Button className={classNames(cls.addVacancy)} size={SizeButton.L} onClick={startCreateVacancy} style={{gap: 5}}>
           {/* <img src={suitImg} className={cls.suit} alt="add vacancy" /> */}
           Добавить вакансию
           <img src={plusImg} className={cls.plus} alt="plus" />

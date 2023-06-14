@@ -157,11 +157,12 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
   }
 
   const handleSaveEdit = async () => {
+    const ts = editTask2TaskSet()
     if (taskSet !== null) {
       const response = await fetch('api/update', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(editTask2TaskSet()),
+        body: JSON.stringify(ts),
       })
       if (response.status === 200) {
         closeModal()
@@ -169,11 +170,10 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
         console.log('Не удалось обновить Task Set')
       }
     } else {
-
       const response = await fetch('api/add', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(editTask2TaskSet()),
+        body: JSON.stringify(ts),
       })
       if (response.status === 200) {
         closeModal()

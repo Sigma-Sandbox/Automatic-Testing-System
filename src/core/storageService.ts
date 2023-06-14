@@ -1,11 +1,13 @@
 import {
+  ApplicantData,
   GetProgTaskConditions,
   GetTaskSetConditions, GetTestQuestionConditions,
   GetTestTaskConditions,
   GetUserConditions,
   GetUserSolutionConditions, GetVacancyTestConditions,
   IStorageService,
-  UserID
+  UserID,
+  UserLink
 } from './interfaces'
 import { Pool } from 'pg'
 import { Condition, ProgTask, TaskSet, TestQuestion, TestTask, User, UserSolution, VacancyTest } from './entities'
@@ -923,6 +925,89 @@ export class StorageService implements IStorageService {
       })
     } else {
       console.log('Не найдено ни одного тестового вопроса с такими параметрами!')
+      return undefined
+    }
+  }
+
+  /**
+   * Функция, возвращающая информацию о пользователе по предоставленной части ссылки
+   * Требуемой частью ссылки считается то, что следует после символа "/"
+   * @param userLink Структура, содержащая ссылку
+   * @returns ApplicantData Информация о пользователе
+   */
+  async getApplicant(userLink: UserLink): Promise<ApplicantData[] | undefined > {
+    try {
+      const linkSearchResult = await this.getDB().query(`
+        SELECT id,
+        access_rights,
+        surname,
+        name,
+        vacancies
+        FROM users
+        WHERE actual_link = $1`,
+      [
+        userLink.link
+      ])
+
+      
+      if (linkSearchResult.rows) {
+        const userSolutionsPromises: Promise<UserSolution[] | undefined>[] = []
+        const vacNamePromises: Promise<VacancyTest[] | undefined>[] = []
+        const vacIds: number[] = []
+        const userIds: number[] = []
+        const temp: ApplicantData[] = linkSearchResult.rows.map(row => {
+          for (const vacId of row.vacancies) {
+            const userSolutions = this.getUserSolution({userId: row.id, vacancyId: vacId})
+            const vacName = this.getVacancyTest({id: vacId})
+            userSolutionsPromises.push(userSolutions)
+            vacNamePromises.push(vacName)
+            vacIds.push(vacId)
+            userIds.push(row.id)
+          }
+
+          return {
+            id: row.id,
+            accessRights: row.access_rights,
+            surname: row.surname,
+            name: row.name,
+            vacancies: []
+          }
+        })
+
+        const userSolutions = await Promise.all(userSolutionsPromises)
+        const vacNames = await Promise.all(vacNamePromises)
+        const answer: ApplicantData[] = []
+
+        for (let i = 0; i < userIds.length; i++) {
+          const userId = userIds[i]
+          const vacId = vacIds[i]
+          const vacName = vacNames[i]
+          const userSolution = userSolutions[i]
+          const user = answer.find(t => t.id === userId)
+          if (user) {
+            const index = answer.indexOf(user)
+            answer[index].vacancies.push({
+              vacancyId: vacId,
+              vacancyName: vacName![0].name as Vacancy,
+              userSolutions: userSolution!
+            })
+          } else {
+            const user = temp.find(t => t.id === userId)!
+            user.vacancies.push({
+              vacancyId: vacId,
+              vacancyName: vacName![0].name as Vacancy,
+              userSolutions: userSolution!
+            })
+            answer.push(user)
+          }
+        }
+        return answer
+      } else {
+        console.log('Не найдено ни одного пользователя с такими параметрами!')
+        return undefined
+      }
+    } catch (err) {
+      console.log('updateUserActualLink', err)
       return undefined
     }
   }

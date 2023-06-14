@@ -4,10 +4,8 @@ import cls from './Navbar.module.scss'
 import { useSelector } from 'react-redux'
 import { getUserData } from '../model/selectors/getUserData'
 import { Route, useLocation, useNavigate } from 'react-router-dom'
-import { RoutePathCandidate } from 'shared/config/routeConfig/routeConfig'
-import { getCurrentTestData } from '../model/selectors/getCurrentTestData'
-import { TimeType, useTimer } from 'shared/lib/hooks/useTimer/useTimer'
-import { Button, ColorButton, SizeButton } from 'shared/ui/Button/Button'
+import { RoutePath } from 'shared/config/routeConfig/routeConfig'
+import { Button } from 'shared/ui/Button/Button'
 import { StateSchema } from 'app/providers/StoreProvider'
 import { UserRole } from 'core/enums'
 import { NavbarCandidate } from './NavbarCandidate'
@@ -30,10 +28,7 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
   if (userRole === UserRole.APPLICANT) {
     return (
       <div
-        className={classNames(cls.navbar, { [cls.collaps]: pathname === RoutePathCandidate.login }, [
-          className,
-          'container',
-        ])}
+        className={classNames(cls.navbar, { [cls.collaps]: pathname === RoutePath.login }, [className, 'container'])}
       >
         <div className={classNames(cls.navbarContent)}>
           <NavbarCandidate />
@@ -43,7 +38,7 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
   }
   return (
     <div
-      className={classNames(cls.navbarStick, { [cls.collaps]: pathname === RoutePathCandidate.login }, [
+      className={classNames(cls.navbar, { [cls.collaps]: pathname === RoutePath.login }, [
         className,
         cls.navbarSticky,
         'container',

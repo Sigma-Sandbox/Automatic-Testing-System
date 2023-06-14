@@ -4,7 +4,7 @@ import cls from './Navbar.module.scss'
 import { useSelector } from 'react-redux'
 import { getUserData } from '../model/selectors/getUserData'
 import { Route, useLocation, useNavigate } from 'react-router-dom'
-import { RoutePathCandidate } from 'shared/config/routeConfig/routeConfig'
+import { RoutePath } from 'shared/config/routeConfig/routeConfig'
 import { getCurrentTestData } from '../model/selectors/getCurrentTestData'
 import { TimeType, useTimer } from 'shared/lib/hooks/useTimer/useTimer'
 import { Button, ColorButton, SizeButton } from 'shared/ui/Button/Button'
@@ -29,12 +29,12 @@ export const NavbarCandidate: React.FC<NavabarCandidateProps> = (props) => {
 
   const finishTask = () => {
     optionTimeLimits.stopTimer()
-    navigate(RoutePathCandidate.main)
+    navigate(RoutePath.main)
   }
 
   return (
     <>
-      {pathname.includes(RoutePathCandidate.test) && (
+      {pathname.includes(RoutePath.test) && (
         <div className={classNames(cls.testData, {}, [])}>
           <div className={classNames(cls.time, { [cls.show]: +currentTestData.currentItem > 0 }, [])}>
             {optionTimeLimits.getTime(TimeType.MM_SS)}
@@ -51,7 +51,7 @@ export const NavbarCandidate: React.FC<NavabarCandidateProps> = (props) => {
       )}
 
       <div
-        className={classNames(cls.name, { [cls.close]: pathname.includes(RoutePathCandidate.test) }, ['Box_invert_bg'])}
+        className={classNames(cls.name, { [cls.close]: pathname.includes(RoutePath.test) }, ['Box_invert_bg'])}
       >
         <span>{userData?.firstname}</span>
         <span>{userData?.lastname}</span>

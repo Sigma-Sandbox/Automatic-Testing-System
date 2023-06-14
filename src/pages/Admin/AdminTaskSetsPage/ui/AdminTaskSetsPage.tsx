@@ -80,7 +80,7 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
     <div className={classNames(cls.adminTaskSetsPage, {}, [className])}>
       <div className={cls.headerTab}>
         <SearchField value="" onChange={(text) => console.log(text)}></SearchField>
-        <Button className={cls.addTaskSets} size={SizeButton.L} onClick={startCreateTaskSet}>
+        <Button className={cls.addTaskSets} size={SizeButton.L} onClick={startCreateTaskSet} style={{gap: 5}}>
           Добавить набор заданий
           <img src={plusImg} className={cls.plus} alt="plus" />
         </Button>

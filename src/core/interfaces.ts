@@ -1,9 +1,10 @@
-import { ProgTask, Task, TaskSet, TestQuestion, TestTask, User, UserSolution, VacancyTest } from './entities'
+import { ProgTask, ResultVacancyTest, Task, TaskSet, TestQuestion, TestTask, User, UserSolution, VacancyTest } from './entities'
 import { ProgrammingLanguage, TaskType } from './enums'
 
 export interface GetUserConditions {
   id?: number
   email?: string
+  password?: string
   surname?: string
   name?: string
   patronymic?: string
@@ -107,4 +108,15 @@ export interface IConfigurationService {
 
 export interface UserID {
   id: number
+}
+
+export interface UserLink {
+  link: string
+}
+
+export interface ApplicantData {
+  id: number
+  name: string
+  surname: string
+  vacancies: ResultVacancyTest[]
 }
