@@ -107,7 +107,7 @@ export class StorageService implements IStorageService {
       (
         id SERIAL4 PRIMARY KEY ,
         description TEXT,
-        points SMALLINT,
+        points SMALLINT DEFAULT 1,
         wrong_answers TEXT[],
         correct_answers TEXT[]
       );`
@@ -269,36 +269,41 @@ export class StorageService implements IStorageService {
     let index = 1
 
     if (conditions) {
-      if (conditions.id) {
+      if (conditions.id !== undefined) {
         strConditions.push(`id = $${index}`)
         params.push(conditions.id)
         index++
       }
-      if (conditions.email) {
+      if (conditions.email !== undefined) {
         strConditions.push(`email = $${index}`)
         params.push(conditions.email)
         index++
       }
-      if (conditions.surname) {
+      if (conditions.surname !== undefined) {
         strConditions.push(`surname = $${index}`)
         params.push(conditions.surname)
         index++
       }
-      if (conditions.name) {
+      if (conditions.password !== undefined) {
+        strConditions.push(`password = $${index}`)
+        params.push(conditions.password)
+        index++
+      }
+      if (conditions.name !== undefined) {
         strConditions.push(`name = $${index}`)
         params.push(conditions.name)
         index++
       }
-      if (conditions.patronymic) {
+      if (conditions.patronymic !== undefined) {
         strConditions.push(`patronymic = $${index}`)
         params.push(conditions.patronymic)
         index++
       }
-      if (conditions.actualLink) {
+      if (conditions.actualLink !== undefined) {
         strConditions.push(`actual_link = $${index}`)
         params.push(conditions.actualLink)
       }
-      if (conditions.vacancyId) {
+      if (conditions.vacancyId !== undefined) {
         strConditions.push(`$${index} = ANY (vacancies)`)
         params.push(conditions.vacancyId)
       }
@@ -370,14 +375,16 @@ export class StorageService implements IStorageService {
           answer[index].vacancies.push({
             vacancyId: vacId,
             vacancyName: vacName![0].name as Vacancy,
-            userSolutions: userSolution!
+            userSolutions: userSolution!,
+            numOfTry: 0
           })
         } else {
           const user = temp.find(t => t.id === userId)!
           user.vacancies.push({
             vacancyId: vacId,
             vacancyName: vacName![0].name as Vacancy,
-            userSolutions: userSolution!
+            userSolutions: userSolution!,
+            numOfTry: 0
           })
           answer.push(user)
         }
@@ -396,22 +403,22 @@ export class StorageService implements IStorageService {
     let index = 1
 
     if (conditions) {
-      if (conditions.id) {
+      if (conditions.id !== undefined) {
         strConditions.push(`id = $${index}`)
         params.push(conditions.id)
         index++
       }
-      if (conditions.numOfTry) {
+      if (conditions.numOfTry !== undefined) {
         strConditions.push(`num_of_try = $${index}`)
         params.push(conditions.numOfTry)
         index++
       }
-      if (conditions.userId) {
+      if (conditions.userId !== undefined) {
         strConditions.push(`user_id = $${index}`)
         params.push(conditions.userId)
         index++
       }
-      if (conditions.vacancyId) {
+      if (conditions.vacancyId !== undefined) {
         strConditions.push(`vacancy_id = $${index}`)
         params.push(conditions.vacancyId)
         index++
@@ -421,12 +428,12 @@ export class StorageService implements IStorageService {
         params.push(conditions.taskType)
         index++
       }
-      if (conditions.taskId) {
+      if (conditions.taskId !== undefined) {
         strConditions.push(`task_id = $${index}`)
         params.push(conditions.taskId)
         index++
       }
-      if (conditions.taskSetId) {
+      if (conditions.taskSetId !== undefined) {
         strConditions.push(`task_set_id = $${index}`)
         params.push(conditions.taskSetId)
       }
@@ -488,17 +495,17 @@ export class StorageService implements IStorageService {
     let index = 1
 
     if (conditions) {
-      if (conditions.id) {
+      if (conditions.id !== undefined) {
         strConditions.push(`id = $${index}`)
         params.push(conditions.id)
         index++
       }
-      if (conditions.name) {
+      if (conditions.name !== undefined) {
         strConditions.push(`name = $${index}`)
         params.push(conditions.name)
         index++
       }
-      if (conditions.taskSetId) {
+      if (conditions.taskSetId !== undefined) {
         strConditions.push(`$${index} = ANY (ids_task_set)`)
         params.push(conditions.taskSetId)
         index++
@@ -571,17 +578,17 @@ export class StorageService implements IStorageService {
     let index = 1
 
     if (conditions) {
-      if (conditions.id) {
+      if (conditions.id !== undefined) {
         strConditions.push(`id = $${index}`)
         params.push(conditions.id)
         index++
       }
-      if (conditions.name) {
+      if (conditions.name !== undefined) {
         strConditions.push(`name = $${index}`)
         params.push(conditions.name)
         index++
       }
-      if (conditions.task) {
+      if (conditions.task !== undefined) {
         if ('questions' in conditions.task) {
           strConditions.push(`$${index} = ANY (ids_test_task)`)
         } else {
@@ -731,17 +738,17 @@ export class StorageService implements IStorageService {
     let index = 1
 
     if (conditions) {
-      if (conditions.id) {
+      if (conditions.id !== undefined) {
         strConditions.push(`id = $${index}`)
         params.push(conditions.id)
         index++
       }
-      if (conditions.name) {
+      if (conditions.name !== undefined) {
         strConditions.push(`name = $${index}`)
         params.push(conditions.name)
         index++
       }
-      if (conditions.complexityAssessment) {
+      if (conditions.complexityAssessment !== undefined) {
         strConditions.push(`complexity_assessment = $${index}`)
         params.push(conditions.complexityAssessment)
       }
@@ -796,17 +803,17 @@ export class StorageService implements IStorageService {
     let index = 1
 
     if (conditions) {
-      if (conditions.id) {
+      if (conditions.id !== undefined) {
         strConditions.push(`id = $${index}`)
         params.push(conditions.id)
         index++
       }
-      if (conditions.name) {
+      if (conditions.name !== undefined) {
         strConditions.push(`name = $${index}`)
         params.push(conditions.name)
         index++
       }
-      if (conditions.testQuestion) {
+      if (conditions.testQuestion !== undefined) {
         strConditions.push(`$${index} = ANY (ids_question)`)
         params.push(conditions.testQuestion)
       }
@@ -882,17 +889,17 @@ export class StorageService implements IStorageService {
     let index = 1
 
     if (conditions) {
-      if (conditions.id) {
+      if (conditions.id !== undefined) {
         strConditions.push(`id = $${index}`)
         params.push(conditions.id)
         index++
       }
-      if (conditions.description) {
+      if (conditions.description !== undefined) {
         strConditions.push(`description = $${index}`)
         params.push(conditions.description)
         index++
       }
-      if (conditions.points) {
+      if (conditions.points !== undefined) {
         strConditions.push(`points = $${index}`)
         params.push(conditions.points)
       }
@@ -955,14 +962,17 @@ export class StorageService implements IStorageService {
         const vacNamePromises: Promise<VacancyTest[] | undefined>[] = []
         const vacIds: number[] = []
         const userIds: number[] = []
+        const numOfTries: Promise<number>[] = []
         const temp: ApplicantData[] = linkSearchResult.rows.map(row => {
           for (const vacId of row.vacancies) {
             const userSolutions = this.getUserSolution({userId: row.id, vacancyId: vacId})
             const vacName = this.getVacancyTest({id: vacId})
+            const numOfTry = this.getNumOfTry(row.id, undefined, vacId)
             userSolutionsPromises.push(userSolutions)
             vacNamePromises.push(vacName)
             vacIds.push(vacId)
             userIds.push(row.id)
+            numOfTries.push(numOfTry)
           }
 
           return {
@@ -976,6 +986,7 @@ export class StorageService implements IStorageService {
 
         const userSolutions = await Promise.all(userSolutionsPromises)
         const vacNames = await Promise.all(vacNamePromises)
+        const nTries = await Promise.all(numOfTries)
         const answer: ApplicantData[] = []
 
         for (let i = 0; i < userIds.length; i++) {
@@ -983,22 +994,27 @@ export class StorageService implements IStorageService {
           const vacId = vacIds[i]
           const vacName = vacNames[i]
           const userSolution = userSolutions[i]
-          const user = answer.find(t => t.id === userId)
-          if (user) {
-            const index = answer.indexOf(user)
-            answer[index].vacancies.push({
-              vacancyId: vacId,
-              vacancyName: vacName![0].name as Vacancy,
-              userSolutions: userSolution!
-            })
-          } else {
-            const user = temp.find(t => t.id === userId)!
-            user.vacancies.push({
-              vacancyId: vacId,
-              vacancyName: vacName![0].name as Vacancy,
-              userSolutions: userSolution!
-            })
-            answer.push(user)
+          const numOfTry = nTries[i]
+          if (userSolution && userSolution.length === 0) {
+            const user = answer.find(t => t.id === userId)
+            if (user) {
+              const index = answer.indexOf(user)
+              answer[index].vacancies.push({
+                vacancyId: vacId,
+                vacancyName: vacName![0].name as Vacancy,
+                userSolutions: userSolution!,
+                numOfTry: numOfTry
+              })
+            } else {
+              const user = temp.find(t => t.id === userId)!
+              user.vacancies.push({
+                vacancyId: vacId,
+                vacancyName: vacName![0].name as Vacancy,
+                userSolutions: userSolution!,
+                numOfTry: numOfTry
+              })
+              answer.push(user)
+            }
           }
         }
         return answer
@@ -1355,15 +1371,17 @@ export class StorageService implements IStorageService {
     }
   }
 
-  async getNumOfTry(userId: number, vacancy: Vacancy): Promise<number | undefined> {
+  async getNumOfTry(userId: number, vacName?: Vacancy, vacId?: number): Promise<number> {
     const user = await this.getUser({ id: userId })
     if (user && user.length > 0) {
-      const resultVacancyTest = user[0].vacancies.find(v => v.vacancyName === vacancy)
+      const resultVacancyTest = user[0].vacancies.find(v => v.vacancyName === vacName || vacId === v.vacancyId)
       if (resultVacancyTest && resultVacancyTest.userSolutions.length > 0) {
         return Math.max(...resultVacancyTest.userSolutions.map(uS => uS.numOfTry))
       } else {
-        return undefined
+        return 0
       }
+    } else {
+      throw new Error('Пользователя с таким userID не существует')
     }
   }
 

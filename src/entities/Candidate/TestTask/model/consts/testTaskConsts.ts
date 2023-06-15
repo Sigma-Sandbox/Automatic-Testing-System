@@ -3,25 +3,25 @@ import {ProgrammingLanguage} from 'core/enums'
 
 export const testTaskDataExample: TaskSetPack = {
   id: 1,
-  name: 'Java',
+  name: 'JAVA_JUNIOR',
   timeLimits: 10800,
   description: '',
   numOfTry: 1,
   data: [
     {
-      description: 'Cool Task',
+      description: '',
       timeLimits: 7200,
-      name: 'Java padavan',
+      name: 'Java_1',
       id: 1,
-      creator: 'p',
+      creator: 'Admin',
       timeOfCreation: 1233,
-      language: [ProgrammingLanguage.JavaScript],
+      language: [ProgrammingLanguage.JavaScript, ProgrammingLanguage.Java],
       testTasks: [
         {
-          name: 'Тест на знание JS',
+          name: 'Тест на базовые знания JS/Java',
           id: 3,
           execTime: 600,
-          description: 'blalbal',
+          description: '',
           questions: [
             {
               id: 1,
@@ -68,24 +68,24 @@ export const testTaskDataExample: TaskSetPack = {
         {
           id: 1,
           description:
-            'Напишите функцию, которая подсчитывает, сколькими различными способами вы можете внести сдачу на определенное количество денег, учитывая массив номиналов монет. Например, есть 3 способа дать сдачу на 4, если у вас есть монеты номиналом 1 и 2.',
-          name: 'Сложная функция',
-          complexityAssessment: 5,
+            'Даны три числа. Напишите функцию, возвращающую сумму трех чисел.',
+          name: 'Сумма трёх чисел',
+          complexityAssessment: 30,
           conditions: [
-            {language: ProgrammingLanguage.JavaScript, maxTime: 10, maxMemory: 256, codeExample: 'function reverse(n) {\n\t//(4, [1,2]) => 3 \n\t//(10, [5,2,3]) => 4 \n\t//(11, [5,7]) => 0\n\tconst result = 0\n\treturn result\n}', autoTests: "function result(input, answer) {\nconst res = reverse(input)\nif (res !== answer) {\nthrow new Error(`Input: ${input}, Current Output: ${res}, Expected Output: ${answer}`)\n}\n}\n\nresult(5, [5, 4, 3, 2, 1])\nresult(4, [4, 3, 2, 1])\nresult(3, [3, 2, 1])\nresult(2, [2, 1])\n\nconsole.log(`All tests done!`)"},
-            {language: ProgrammingLanguage.Java, maxTime: 5, maxMemory: 128, codeExample: 'public class Sequence {\n\tpublic static int[] reverse(int n) {\n\t\t//your code\n\t\treturn new int[];\n\t}\n}', autoTests: "class Test {\npublic static boolean result(int n, int[] trueResult) {\nSequence tmp = new Sequence();\nint[] res = tmp.reverse(n);\nif (res != trueResult) {\nthrow new Error(\"Input: \" + n + \"Current Output: \" + res + \"Expected Output: \" + trueResult);\n}\n}\n}\n\nclass Main {\npublic static void main(String[] args) {\nTest test = new Test();\ntest.result(5, {5, 4, 3, 2, 1});\ntest.result(4, {4, 3, 2, 1});\ntest.result(3, {3, 2, 1});\ntest.result(2, {2, 1});\nSystem.out.println(\"All tests done!\");\n}\n}"},
+            {language: ProgrammingLanguage.JavaScript, maxTime: 500, maxMemory: 2, codeExample: 'function summ(n) {\n\tconst result = 0\n\tn.forEach(i => result += i)\n\treturn result\n}', autoTests: "function result(input, answer) {\n\tconst res = summ(input)\n\tif (res !== answer) {\n\t\tthrow new Error(`Input: ${input}, Current Output: ${res}, Expected Output: ${answer}`)\n\t}\n}\n\nresult([1, 2, 3], 6)\nresult([2, 3, 4], 9)\nresult([3, 4, 5], 12)\nresult([4, 5, 6], 15)\n\nconsole.log(`All tests done!`)"},
+            {language: ProgrammingLanguage.Java, maxTime: 500, maxMemory: 2, codeExample: 'public class Sum {\n\tpublic static int sum(int[] n) {\n\t\tprivate int answer;\n\t\t\n\t\tfor (int i : n) {\n\t\t\tanswer += i;\n\t\t}\n\t\treturn answer;\n\t}\n}', autoTests: "class Test {\n\tpublic static boolean result(int[] n, int trueResult) {\n\tSum tmp = new Sum();\n\t\tint res = tmp.sum(n);\n\t\tif (res != trueResult) {\n\t\t\tthrow new Exception(String.format(\"Input: [%d, %d, %d], Current Output: %d, Expected Output: %d\", n[0], n[1], n[2], res, trueResult));\n\t\t}\n\t}\n}\n\nclass Main {\n\tpublic static void main(String[] args) {\n\t\tTest test = new Test();\n\t\ttest.result({1, 2, 3}, 6);\n\t\ttest.result({2, 3, 4}, 9);\n\t\ttest.result({3, 4, 5}, 12);\n\t\ttest.result({4, 5, 6}, 15);\n\t\tSystem.out.println(\"All tests done!\");\n\t}\n}"},
           ],
         },
       ],
     },
     {
-      description: 'Cool Task',
-      timeLimits: 1800,
+      description: '',
+      timeLimits: 600,
       name: 'Soft skills',
       id: 2,
-      creator: 'p',
+      creator: 'Admin',
       timeOfCreation: 1233,
-      language: [ProgrammingLanguage.JavaScript],
+      language: [],
       testTasks: [
         {
           name: 'Тест на знание JS',
@@ -134,19 +134,7 @@ export const testTaskDataExample: TaskSetPack = {
           ],
         },
       ],
-      progTasks: [
-        {
-          id: 1,
-          description:
-            'Напишите функцию, которая подсчитывает, сколькими различными способами вы можете внести сдачу на определенное количество денег, учитывая массив номиналов монет. Например, есть 3 способа дать сдачу на 4, если у вас есть монеты номиналом 1 и 2.',
-          name: 'Сложная функция',
-          complexityAssessment: 5,
-          conditions: [
-            {language: ProgrammingLanguage.JavaScript, maxTime: 10, maxMemory: 256, codeExample: 'function reverse(n) {\n//(4, [1,2]) => 3 \n//(10, [5,2,3]) => 4 \n//(11, [5,7]) => 0\nconst result = 0\nreturn result\n}', autoTests: "function result(input, answer) {\nconst res = reverse(input)\nif (res !== answer) {\nthrow new Error(`Input: ${input}, Current Output: ${res}, Expected Output: ${answer}`)\n}\n}\n\nresult(5, [5, 4, 3, 2, 1])\nresult(4, [4, 3, 2, 1])\nresult(3, [3, 2, 1])\nresult(2, [2, 1])\n\nconsole.log(`All tests done!`)"},
-            {language: ProgrammingLanguage.Java, maxTime: 5, maxMemory: 128, codeExample: 'public class Sequence {\npublic static int[] reverse(int n) {\n//your code\nreturn new int[];\n}\n}', autoTests: "class Test {\npublic static boolean result(int n, int[] trueResult) {\nSequence tmp = new Sequence();\nint[] res = tmp.reverse(n);\nif (res != trueResult) {\nthrow new Error(\"Input: \" + n + \"Current Output: \" + res + \"Expected Output: \" + trueResult);\n}\n}\n}\n\nclass Main {\npublic static void main(String[] args) {\nTest test = new Test();\ntest.result(5, {5, 4, 3, 2, 1});\ntest.result(4, {4, 3, 2, 1});\ntest.result(3, {3, 2, 1});\ntest.result(2, {2, 1});\nSystem.out.println(\"All tests done!\");\n}\n}"},
-          ],
-        },
-      ],
+      progTasks: [],
     },
   ],
 }

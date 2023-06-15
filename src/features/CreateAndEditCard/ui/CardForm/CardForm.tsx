@@ -43,10 +43,6 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
     actualLink: user?.actualLink || '',
   })
 
-  useEffect(() => {
-    console.log(selectedVacancies, user?.vacancies)
-  }, [])
-
   const notify = (text: string) => toast(text)
   const copyLink = () => {
     navigator.clipboard

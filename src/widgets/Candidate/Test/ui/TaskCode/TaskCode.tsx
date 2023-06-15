@@ -143,7 +143,6 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
           result: TaskResult.DONE,
         }
         setOutputDetails(response.data)
-        console.log('response.data', response.data)
         if (sendData) {
           postUserSolutionProg(userSolution)
         }
@@ -207,8 +206,8 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
             <div className={classNames(cls.descripCond, {}, [])}>
               Ограничения:
               <ul className={classNames(cls.descripCondList, {}, [])}>
-                <li>{`Ограничение по времени: ${maxTimeExecution} с`}</li>
-                <li>{`Ограничение по памяти: ${maxMemoryExecution} МБ`}</li>
+                <li>{`Ограничение по времени: ${maxTimeExecution} мс`}</li>
+                <li>{`Ограничение по памяти: ${maxMemoryExecution} мб`}</li>
               </ul>
             </div>
           </div>

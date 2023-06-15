@@ -7,6 +7,7 @@ export interface ResultVacancyTest {
   vacancyId: number
   vacancyName: Vacancy
   userSolutions: UserSolution[]
+  numOfTry: number
 }
 
 export interface User {

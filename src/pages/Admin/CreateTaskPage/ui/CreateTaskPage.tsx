@@ -140,6 +140,10 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
                 key={testTask.id}
                 editTask={(task: ProgTask | TestTask) => startTaskCreate(typeTaskPopup.TEST, task)}
                 task={testTask}
+                afterDelete={() => {
+                  dispatch(fetchProgTaskList({}))
+                  dispatch(fetchTestTaskList({}))
+                }}
               />
             ))
           ) : (
@@ -165,6 +169,10 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
                 key={progTask.id}
                 editTask={(task: ProgTask | TestTask) => startTaskCreate(typeTaskPopup.PROG, task)}
                 task={progTask}
+                afterDelete={() => {
+                  dispatch(fetchProgTaskList({}))
+                  dispatch(fetchTestTaskList({}))
+                }}
               />
             ))
           ) : (

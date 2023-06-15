@@ -10,6 +10,7 @@ import {loginActions} from '../../model/slice/loginSlice'
 import {getLoginState} from '../../model/selectors/getLoginState/getLoginState'
 import {loginByUsername} from '../../model/services/loginByUsername/loginByUsername'
 import {AppDispatch} from 'app/providers/StoreProvider/config/store'
+import { toast } from 'react-toastify'
 
 interface LoginFormProps {
   className?: string
@@ -21,6 +22,7 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
 
   const dispatch = useDispatch<AppDispatch>()
   const {username, password, error, isLoading} = useSelector(getLoginState)
+  const notifyError = (text: string) => toast.error(text)
 
   const onChangeUsername = useCallback(
     (value: string) => {
@@ -38,8 +40,10 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
 
   const onLoginClick = useCallback(async () => {
     const result = await dispatch(loginByUsername({username, password}))
-    if (result.meta.requestStatus === 'fulfilled') {
+    if (result.payload && result.payload.length === 1 && result.meta.requestStatus === 'fulfilled') {
       onSuccess()
+    } else {
+      notifyError('Неверный логин или пароль пользователя')
     }
   }, [onSuccess, dispatch, password, username])
 

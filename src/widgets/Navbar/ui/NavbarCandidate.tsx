@@ -29,7 +29,7 @@ export const NavbarCandidate: React.FC<NavabarCandidateProps> = (props) => {
 
   const finishTask = () => {
     optionTimeLimits.stopTimer()
-    navigate(RoutePath.main)
+    navigate(RoutePath.vacancy)
   }
 
   return (

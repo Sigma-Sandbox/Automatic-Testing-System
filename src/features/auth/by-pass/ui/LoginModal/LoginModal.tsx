@@ -4,6 +4,7 @@ import cls from './LoginModal.module.scss'
 import LogoIcon from 'shared/assets/logo_white.svg'
 import { Toggle_ios } from 'shared/ui/Toggle_ios/Toggle_ios'
 import { LoginForm } from '../LoginForm/LoginForm'
+import { ToastContainer } from 'react-toastify'
 
 interface LoginModalProps {
   className?: string
@@ -21,6 +22,18 @@ export const LoginModal: React.FC<LoginModalProps> = (props) => {
   return (
     <div className={classNames(cls.loginModal, {}, [])}>
       <img src={LogoIcon} alt="" className={cls.logo} />
+      <ToastContainer
+        position="top-center"
+        autoClose={2500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
 
       <LoginForm onSuccess={onSuccess} />
     </div>

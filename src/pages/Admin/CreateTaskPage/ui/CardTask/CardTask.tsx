@@ -10,16 +10,35 @@ interface cardTaskProps {
   className?: string
   task: ProgTask | TestTask
   editTask: (task: ProgTask | TestTask) => void
+  afterDelete: () => void
 }
 
 export const CardTask: React.FC<cardTaskProps> = (props) => {
-  const { className = '', task, editTask } = props
+  const { className = '', task, editTask, afterDelete } = props
 
   const [condType, setCondType] = useState(0)
 
   const startEditTask = useCallback(() => {
     editTask(task)
   }, [editTask])
+
+  const handleDeleteTestTask = async () => {
+    await fetch('api/delete/test_task', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({id: task.id}),
+    })
+    afterDelete()
+  }
+
+  const handleDeleteProgTask = async () => {
+    await fetch('api/delete/prog_task', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({id: task.id}),
+    })
+    afterDelete()
+  }
 
   if ('conditions' in task) {
     return (
@@ -34,7 +53,7 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
             <img src={editSvg} alt="edit card" />
           </Button>
           <Button
-            onClick={startEditTask}
+            onClick={handleDeleteProgTask}
             theme={ThemeButton.CLEAR}
             color={ColorButton.TRANSPARENT}
             className={cls.trashCard}
@@ -87,7 +106,7 @@ export const CardTask: React.FC<cardTaskProps> = (props) => {
           <img src={editSvg} alt="edit card" />
         </Button>
         <Button
-          onClick={startEditTask}
+          onClick={handleDeleteTestTask}
           theme={ThemeButton.CLEAR}
           color={ColorButton.TRANSPARENT}
           className={cls.trashCard}

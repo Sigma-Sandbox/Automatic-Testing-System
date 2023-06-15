@@ -36,6 +36,11 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
       </div>
     )
   }
+
+  const handleOnExit = () => {
+    navigate(RoutePath.login)
+  }
+
   return (
     <div
       className={classNames(cls.navbar, { [cls.collaps]: pathname === RoutePath.login }, [
@@ -49,7 +54,7 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
           <span>{userData?.firstname}</span>
           <span>{userData?.lastname}</span>
         </div>
-        <Button className={cls.btnExit}>Выйти</Button>
+        <Button className={cls.btnExit} onClick={handleOnExit}>Выйти</Button>
       </div>
     </div>
   )

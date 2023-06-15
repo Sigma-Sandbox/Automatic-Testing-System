@@ -15,16 +15,9 @@ export const loginByUsername = createAsyncThunk<User[], LoginByUsernameProps, { 
   'login/loginByUsername',
   async (authData, thunkAPI) => {
     try {
-      //const response = await axios.get<User>('https://jsonplaceholder.typicode.com/users')
 
       const payload = { email: authData.username, password: authData.password }
       const response = await axios.post<User[]>('http://localhost:3000/api/get/user', payload)
-
-      /*
-      if (!response.data) {
-        throw new Error();
-      }
-      */
 
       thunkAPI.dispatch(userActions.setAuthData(response.data[0]))
       thunkAPI.dispatch(testTaskActions.setTestTaskData(testTaskDataExample))

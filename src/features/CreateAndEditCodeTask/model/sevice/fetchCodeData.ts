@@ -13,7 +13,6 @@ export const fetchCodeData = async (option: ProgTask, add = false) => {
       },
     }
     const response = await axios.post(add ? addEntitiePath : updateEntitiePath, option, config)
-    console.log(response)
 
     return response.statusText
   } catch (e) {
