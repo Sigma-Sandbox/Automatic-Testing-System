@@ -13,6 +13,7 @@ import { Button, ColorButton, ThemeButton } from 'shared/ui/Button/Button'
 import { ReactComponent as PlusSvg } from 'shared/assets/icon/plus.svg'
 import { ReactComponent as CodeSvg } from 'shared/assets/icon/codeCreate.svg'
 import { ReactComponent as TestSvg } from 'shared/assets/icon/testCreate.svg'
+import QuestSvg from 'shared/assets/icon/quest.png'
 import { NotFoundElements } from 'shared/ui/NotFoundElements/NotFoundElements'
 import { CreateAndEditCodeTask } from 'features/CreateAndEditCodeTask'
 import { type } from 'os'
@@ -25,6 +26,7 @@ interface CreateTaskPageProps {
 export enum typeTaskPopup {
   PROG = 'prog',
   TEST = 'test',
+  QUEST = 'quest',
   NULL = 'null',
 }
 export interface TaskCreatePopupStatus {
@@ -98,6 +100,9 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
           return <CreateAndEditTestTask closeModal={finishTaskCreate} test={statusPopup.prop} />
         }
         break
+      case typeTaskPopup.QUEST:
+        return <QuestionCreator closeModal={finishTaskCreate} />
+        break
       default:
         return ''
     }
@@ -109,6 +114,14 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
         {popupTabShow}
         <div className={classNames(cls.createBtns)}>
           <Button
+            className={classNames(cls.createBtn, {}, [cls.createQuest])}
+            color={ColorButton.PRIMARY_COLOR}
+            theme={ThemeButton.BACKGROUND}
+            onClick={() => startTaskCreate(typeTaskPopup.QUEST, null)}
+          >
+            <img src={QuestSvg} alt="question" />
+          </Button>
+          <Button
             className={classNames(cls.createBtn, {}, [cls.createTest])}
             color={ColorButton.PRIMARY_COLOR}
             theme={ThemeButton.BACKGROUND}
@@ -119,7 +132,6 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
           <div className={classNames(cls.plusImg)}>
             <PlusSvg />
           </div>
-          {/* <QuestionCreator closeModal={() => {}}></QuestionCreator> */}
 
           <Button
             className={classNames(cls.createBtn, {}, [cls.createCode])}

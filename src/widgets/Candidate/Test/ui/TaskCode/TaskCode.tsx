@@ -1,20 +1,22 @@
-import React, {useState} from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import React, { useState } from 'react'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './TaskCode.module.scss'
-import {ProgTask} from 'entities/Candidate/TestTask'
-import {Code} from 'shared/ui/Code/Code'
-import {CodeEditor} from './CodeEditor'
-import {Language, languageOptions} from 'widgets/Candidate/Test/model/const/testConst'
+import { ProgTask } from 'entities/Candidate/TestTask'
+import { Code } from 'shared/ui/Code/Code'
+import { CodeEditor } from './CodeEditor'
+import { Language, languageOptions } from 'widgets/Candidate/Test/model/const/testConst'
 import axios from 'axios'
 import LanguageSelector from '../LanguageSelector'
-import {SingleValue} from 'react-select'
-import {UserSolution, WithNumOfTry, WithVacancyId} from 'core/entities'
-import {TaskResult, TaskType} from 'core/enums'
-import {Button, ColorButton, SizeButton, ThemeButton} from 'shared/ui/Button/Button'
+import { SingleValue } from 'react-select'
+import { UserSolution, WithNumOfTry, WithVacancyId } from 'core/entities'
+import { TaskResult, TaskType } from 'core/enums'
+import { Button, ColorButton, SizeButton, ThemeButton } from 'shared/ui/Button/Button'
 
 interface TaskCodeProps {
   className?: string
   dataItem: WithVacancyId<WithNumOfTry<ProgTask>>
+  userId: number
+  taskSetId: number
 }
 
 export enum ActionTypeCode {
@@ -23,14 +25,14 @@ export enum ActionTypeCode {
 
 export const TaskCode: React.FC<TaskCodeProps> = (props) => {
   const className = props.className || ''
-  const {id, description, name, conditions, complexityAssessment, numOfTry, vacancyId} = props.dataItem
+  const { id, description, name, conditions, complexityAssessment, numOfTry, vacancyId } = props.dataItem
   const [examples, setExamples] = useState(conditions[0].codeExample)
   const [autoTests, setAutoTests] = useState(conditions[0].autoTests)
   const [code, setCode] = useState(examples || '')
   const [outputDetails, setOutputDetails]: any = useState(undefined)
-  const [language, setLanguage] = useState(
-    languageOptions.find((l) => l.value === conditions[0].language)!
-  )
+  const [language, setLanguage] = useState(languageOptions.find((l) => l.value === conditions[0].language)!)
+  const userId = props.userId
+  const taskSetId = props.taskSetId
   const [processing, setProcessing] = useState(false)
   const [maxTimeExecution, setMaxTimeExecution] = useState(conditions[0].maxTime)
   const [maxMemoryExecution, setMaxMemoryExecution] = useState(conditions[0].maxMemory)
@@ -82,7 +84,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
     const options = {
       method: 'POST',
       url: 'http://localhost:2358/submissions/',
-      params: {base64_encoded: 'true', fields: '*'},
+      params: { base64_encoded: 'true', fields: '*' },
       headers: {
         'content-type': 'application/json',
         'Content-Type': 'application/json',
@@ -109,7 +111,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
     const options = {
       method: 'GET',
       url: 'http://localhost:2358/submissions/' + token,
-      params: {base64_encoded: 'true', fields: '*'},
+      params: { base64_encoded: 'true', fields: '*' },
     }
 
     let response = await axios.request(options)
@@ -117,14 +119,14 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
     let userSolution: UserSolution = {
       taskId: id,
       numOfTry: numOfTry,
-      userId: 1,
+      userId: userId,
       vacancyId: vacancyId,
       execStartTime: Date.now() - 1000,
       execEndTime: Date.now(),
       programCode: code,
       progTaskMemory: response.data.memory,
       progTaskTime: response.data.wall_time,
-      taskSetId: 1,
+      taskSetId: taskSetId,
       taskType: TaskType.PROG_TASK,
       result: TaskResult.FAIL,
     }
@@ -183,7 +185,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
   const postUserSolutionProg = async (solution: UserSolution) => {
     fetch('api/add', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(solution),
     })
   }
@@ -195,9 +197,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
           <div className={classNames(cls.taskNum, {}, [])}></div>
           <div className={classNames(cls.descrip, {}, [])}>
             <div className={classNames(cls.descripName, {}, [])}>{name}</div>
-            <div className={classNames(cls.descripComplexity, {}, [])}>
-              Количество баллов: {complexityAssessment}
-            </div>
+            <div className={classNames(cls.descripComplexity, {}, [])}>Количество баллов: {complexityAssessment}</div>
 
             <div className={classNames(cls.descripText, {}, [])}>{description}</div>
             <div className={classNames(cls.descripExample, {}, [])}>
@@ -224,7 +224,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
           </div>
           <div className={classNames(cls.codeResult, {}, [])}>
             <span className={cls.codeName}>Результат</span>
-            <div style={{padding: '10px'}}>{getOutput()}</div>
+            <div style={{ padding: '10px' }}>{getOutput()}</div>
           </div>
           <div className={classNames(cls.codeBtns, {}, [])}>
             <Button

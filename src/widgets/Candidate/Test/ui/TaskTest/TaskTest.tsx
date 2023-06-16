@@ -1,18 +1,20 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './TaskTest.module.scss'
-import {TaskTestItem} from './TaskTestItem'
+import { TaskTestItem } from './TaskTestItem'
 import markImg from 'shared/assets/icon/check.svg'
-import {TaskTestStart} from './TaskTestStart'
-import {TimeType, useTimer} from 'shared/lib/hooks/useTimer/useTimer'
-import {TestTask} from 'entities/Candidate/TestTask'
+import { TaskTestStart } from './TaskTestStart'
+import { TimeType, useTimer } from 'shared/lib/hooks/useTimer/useTimer'
+import { TestTask } from 'entities/Candidate/TestTask'
 import { UserSolution, WithNumOfTry, WithVacancyId } from 'core/entities'
-import {TaskResult, TaskType} from 'core/enums'
+import { TaskResult, TaskType } from 'core/enums'
 
 interface TaskTestProps {
   className?: string
   dataItem: WithVacancyId<WithNumOfTry<TestTask>>
   isStartedTest: (state: boolean) => void
+  userId: number
+  taskSetId: number
 }
 
 enum TypeTransformState {
@@ -21,10 +23,12 @@ enum TypeTransformState {
 }
 export const TaskTest: React.FC<TaskTestProps> = (props) => {
   const className = props.className || ''
-  const {id, name = 'Тест на знание JS', execTime = 1800, questions, numOfTry, vacancyId} = props.dataItem
+  const userId = props.userId
+  const taskSetId = props.taskSetId
+  const { id, name = 'Тест на знание JS', execTime = 1800, questions, numOfTry, vacancyId } = props.dataItem
   const isStartedTest = props.isStartedTest
   const [currentTestItem, setCurrentTestItem] = useState<number>(0)
-  const [seconds, timeOptions] = useTimer(600)
+  const [seconds, timeOptions] = useTimer(execTime)
   const [startTimeValue, setStartTimeValue] = useState<number>(0)
   const taskCount = questions.length
 
@@ -48,11 +52,11 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
     const userSolution: UserSolution = {
       taskId: id,
       numOfTry: numOfTry,
-      userId: 1,
+      userId: userId,
       vacancyId: vacancyId,
       execStartTime: startTimeValue,
       execEndTime: +new Date(),
-      taskSetId: 1,
+      taskSetId: taskSetId,
       taskType: TaskType.TEST_QUESTION,
       result: result ? TaskResult.DONE : TaskResult.FAIL,
       questionAnswers: selectedItems,
@@ -64,7 +68,7 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
   const postUserSolutionQuestion = async (solution: UserSolution) => {
     fetch('api/add', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(solution),
     })
   }
@@ -102,12 +106,12 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
           key={'navbar ' + i}
           className={classNames(
             cls.navbarItem,
-            {[cls.passed]: i < currentTestItem, [cls.select]: i === currentTestItem},
+            { [cls.passed]: i < currentTestItem, [cls.select]: i === currentTestItem },
             []
           )}
-          style={{transform: calcTransformState(TypeTransformState.NAVBAR_ITEM)}}
+          style={{ transform: calcTransformState(TypeTransformState.NAVBAR_ITEM) }}
         >
-          {i === taskCount + 1 ? <img src={markImg} alt='mark' /> : i}
+          {i === taskCount + 1 ? <img src={markImg} alt="mark" /> : i}
         </div>
       )
     }
@@ -145,10 +149,10 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
     taskTestList.push(
       <div
         className={classNames(cls.taskTestItem, {}, [cls.taskTestFinish])}
-        style={{transform: calcTransformState(TypeTransformState.MAIN_ITEM)}}
+        style={{ transform: calcTransformState(TypeTransformState.MAIN_ITEM) }}
         key={'finish'}
       >
-        Тест пройден <img src={markImg} alt='mark'></img>
+        Тест пройден <img src={markImg} alt="mark"></img>
       </div>
     )
 
@@ -158,7 +162,7 @@ export const TaskTest: React.FC<TaskTestProps> = (props) => {
   return (
     <div className={classNames('', {}, [className])}>
       <div className={classNames(cls.taskTestWrap)}>
-        <div className={classNames(cls.timeTask, {[cls.show]: currentTestItem > 0}, [])}>
+        <div className={classNames(cls.timeTask, { [cls.show]: currentTestItem > 0 }, [])}>
           {timeOptions.getTime(TimeType.MM_SS)}
         </div>
         <div className={classNames(cls.navbarTask)}>{navbarItem}</div>

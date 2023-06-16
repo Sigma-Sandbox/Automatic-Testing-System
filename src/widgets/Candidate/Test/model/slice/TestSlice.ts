@@ -20,14 +20,18 @@ export const testUserSlice = createSlice({
   name: 'test',
   initialState,
   reducers: {
-    setInitialData: (state, action: PayloadAction<{ task: ProgAndTestTask; testPackId: number }>) => {
+    setInitialData: (
+      state,
+      action: PayloadAction<{ task: ProgAndTestTask; testPackId: number; timeLimits?: number }>
+    ) => {
       const newData: TestUser = {
         currentItem: 0,
         allCountItem: action.payload.task.length,
         statusItem: { '0': { status: StatusItemTest.ENABLE, id: 'start' } },
-        timeLimits: 1800,
+        timeLimits: action.payload.timeLimits,
         currentTestId: action.payload.testPackId,
       }
+
       for (let i = 1; i <= newData.allCountItem; i++) {
         newData.statusItem[i] = { status: StatusItemTest.ENABLE, id: action.payload.task[i - 1].id }
       }

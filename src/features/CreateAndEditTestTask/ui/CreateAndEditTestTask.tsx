@@ -61,6 +61,7 @@ export const CreateAndEditTestTask: React.FC<CreateAndEditTestTaskProps> = (prop
     if (currentItem > newQuestions.length) {
       setCurrentItem(newQuestions.length)
     }
+
     setQuestions(newQuestions)
   }
   const navbarItems = useMemo(() => {
@@ -148,20 +149,22 @@ export const CreateAndEditTestTask: React.FC<CreateAndEditTestTaskProps> = (prop
           <div className={classNames(cls.contentItem)} style={{ transform: `translateX(calc(-${currentItem * 100}%)` }}>
             <TestTaskStart nextTask={() => setCurrentItem(1)} info={info} handlerInfo={handlerInfo}></TestTaskStart>
           </div>
-          {questions.map((question, index) => (
-            <div
-              className={classNames(cls.contentItem)}
-              style={{ transform: `translateX(calc(-${currentItem * 100}%)` }}
-              key={index}
-            >
-              <TestTaskItem
-                // key={question?.id || 'null ' + index}
-                deleteQuestion={index === 0 && questions.length === 1 ? null : deleteQuestion}
-                changeQuestion={changeQuestion}
-                question={question}
-              />
-            </div>
-          ))}
+          {questions.map((question, index) => {
+            return (
+              <div
+                className={classNames(cls.contentItem)}
+                style={{ transform: `translateX(calc(-${currentItem * 100}%)` }}
+                key={`${index} ${question?.id}`}
+              >
+                <TestTaskItem
+                  // key={question?.id || 'null ' + index}
+                  deleteQuestion={index === 0 && questions.length === 1 ? null : deleteQuestion}
+                  changeQuestion={changeQuestion}
+                  question={question}
+                />
+              </div>
+            )
+          })}
         </div>
         <div className={classNames(cls.navbar)}>{navbarItems}</div>
         <Button

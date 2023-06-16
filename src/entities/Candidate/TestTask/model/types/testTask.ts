@@ -1,20 +1,34 @@
 import { ProgrammingLanguage } from 'core/enums'
+import { UserSolution } from 'entities/Admin/Users'
+import { Vacancy } from 'entities/Admin/Vacancies'
 
 export interface TaskSetPackSchema {
   isLoading: boolean
   error?: string
-  data?: TaskSetPack
+  data?: { [key: number]: ResultVacancyTaskSets }
 }
 
-export interface TaskSetPack {
-  id: number
-  name?: string
-  description?: string
-  timeLimits?: number
-  data: TaskSet[]
+// export interface TaskSetPack {
+//   id: number
+//   name?: string
+//   description?: string
+//   timeLimits?: number
+//   data: TaskSet[]
+//   numOfTry: number
+// }
+
+export interface ResultVacancyTaskSets {
+  vacancyId: number
+  vacancyName: string
+  userSolutions: UserSolution[]
   numOfTry: number
+  taskSets: TaskSet[]
 }
-
+export interface VacancyTest {
+  id: number
+  name: string
+  taskSets: TaskSet[]
+}
 export interface TaskSet {
   id?: number
   name: string

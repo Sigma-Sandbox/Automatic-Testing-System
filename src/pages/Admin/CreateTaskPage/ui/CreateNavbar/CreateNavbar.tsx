@@ -52,12 +52,10 @@ export const CreateNavbar: React.FC<CreateNavbarProps> = (props) => {
   }
 
   const filterByLang = (workList: ProgTask[]) => {
-    console.log('filterByLang', workList, filterOption)
     const newList = workList?.filter((el) => {
       if (!filterOption.lang) return true
       return el.conditions.find((cond) => cond.language === filterOption.lang)
     })
-    console.log('filterByLang', newList, filterOption)
     return newList
   }
 

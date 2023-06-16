@@ -73,6 +73,8 @@
 }
 .createTest {
   border-radius: 10px 0 0 10px;
+  position: relative;
+  z-index: 5;
 }
 .createTest svg {
   width: 45px;
@@ -82,4 +84,22 @@
 }
 .createCode svg {
   width: 40px;
+}
+
+.createBtn.createQuest {
+  position: absolute;
+  left: 50px;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+}
+
+.createBtns:hover .createBtn.createQuest {
+  left: -32px;
+  // z-index: 10;
+}
+.createQuest {
 }

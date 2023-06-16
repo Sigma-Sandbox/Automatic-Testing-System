@@ -1,19 +1,20 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {TaskSetPack, TaskSetPackSchema} from '../types/testTask'
-import {fetchTestTask} from '../services/fetchTestTask/getTestTask'
-import { testTaskDataExample } from '../consts/testTaskConsts'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { ResultVacancyTaskSets, TaskSet, TaskSetPackSchema } from '../types/testTask'
+// import { TaskSetPack } from '../types/testTask'
+import { fetchTestTask } from '../services/fetchTestTask/getTestTask'
+import { stat } from 'fs'
+// import { testTaskDataExample } from '../consts/testTaskConsts'
 
 const initialState: TaskSetPackSchema = {
   isLoading: false,
   error: undefined,
-  data: testTaskDataExample,
 }
 
 export const testTaskSlice = createSlice({
   name: 'testTask',
   initialState,
   reducers: {
-    setTestTaskData: (state, action: PayloadAction<TaskSetPack>) => {
+    setTestTaskData: (state, action: PayloadAction<{ [key: number]: ResultVacancyTaskSets }>) => {
       state.data = action.payload
     },
   },
@@ -23,10 +24,19 @@ export const testTaskSlice = createSlice({
         state.error = undefined
         state.isLoading = true
       })
-      .addCase(fetchTestTask.fulfilled, (state, action: PayloadAction<TaskSetPack>) => {
-        state.isLoading = false
-        // state.data = action.payload;
-      })
+      .addCase(
+        fetchTestTask.fulfilled,
+        (state, action: PayloadAction<{ data: TaskSet[]; vacancy: ResultVacancyTaskSets }>) => {
+          state.isLoading = false
+          const vacancyWithTaskSest = action.payload.vacancy
+          vacancyWithTaskSest.taskSets = action.payload.data
+          if (state.data) {
+            state.data[action.payload.vacancy.vacancyId] = action.payload.vacancy
+          } else {
+            state.data = { [action.payload.vacancy.vacancyId]: action.payload.vacancy }
+          }
+        }
+      )
       .addCase(fetchTestTask.rejected, (state, action) => {
         state.isLoading = false
         state.error = action.payload
@@ -34,5 +44,5 @@ export const testTaskSlice = createSlice({
   },
 })
 
-export const {actions: testTaskActions} = testTaskSlice
-export const {reducer: testTaskReducer} = testTaskSlice
+export const { actions: testTaskActions } = testTaskSlice
+export const { reducer: testTaskReducer } = testTaskSlice

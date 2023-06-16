@@ -103,8 +103,9 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
     selectedVacancies.forEach((vacancyName) => {
       const vacancyId = allVacancies.find((vac) => vac.name === vacancyName)
       if (vacancyId) {
+        // TODO: Обнуление попыток, странные дела
         const userSolutions = user?.vacancies.find((vac) => vac.vacancyId === vacancyId.id)?.userSolutions || []
-        vacanciesUser.push({ vacancyId: vacancyId.id, vacancyName, userSolutions })
+        vacanciesUser.push({ vacancyId: vacancyId.id, vacancyName, userSolutions, numOfTry: 1 })
       } else {
         console.log('Вакансия с именем ', vacancyName, ' не найдена')
       }
@@ -143,9 +144,11 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
           <span className={cls.vacansiesTitle}> Вакансии соискателя</span>
           <MySelect
             isMulti={true}
-            className={cls.vacanciesSelect}
+            className={classNames(cls.vacanciesSelect, {})}
+            customScroll={true}
             placeHolder="Выберите вакансию"
             changeSelect={(el) => Array.isArray(el) && setSelectedVacancies(el)}
+            controStyle={{ maxHeight: '120px' }}
             selected={selectedVacancies.map((vacancy) => ({
               value: vacancy,
               label: vacancy,
@@ -156,29 +159,23 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
           ></MySelect>
         </div>
       </div>
-      {user && (
-        <div className={cls.link}>
-          <span>{personState.actualLink}</span>{' '}
-          <div style={{ display: 'inline-flex', gap: 5 }}>
-            <Button
-              color={ColorButton.TRANSPARENT}
-              theme={ThemeButton.CLEAR}
-              className={cls.copyBtn}
-              onClick={() => generateActualLink(user?.id)}
-            >
-              <img src={PlusSvg} alt="copy" />
-            </Button>
-            <Button
-              color={ColorButton.TRANSPARENT}
-              theme={ThemeButton.CLEAR}
-              className={cls.copyBtn}
-              onClick={copyLink}
-            >
-              <img src={CopySvg} alt="copy" />
-            </Button>
-          </div>
+
+      <div className={cls.link}>
+        <span>{personState.actualLink}</span>{' '}
+        <div style={{ display: 'inline-flex', gap: 5 }}>
+          <Button
+            color={ColorButton.TRANSPARENT}
+            theme={ThemeButton.CLEAR}
+            className={cls.copyBtn}
+            onClick={() => generateActualLink(user?.id)}
+          >
+            <img src={PlusSvg} alt="copy" />
+          </Button>
+          <Button color={ColorButton.TRANSPARENT} theme={ThemeButton.CLEAR} className={cls.copyBtn} onClick={copyLink}>
+            <img src={CopySvg} alt="copy" />
+          </Button>
         </div>
-      )}
+      </div>
 
       <Button
         onClick={checkAndSendData}

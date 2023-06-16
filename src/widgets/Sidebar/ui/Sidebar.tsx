@@ -35,12 +35,8 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   const dispatch = useDispatch()
   const [, turnOnSwitching] = useSwitching()
 
-  useEffect(() => {
-    console.log(userRole, userInfo)
-  }, [])
-
   const testItemList = useMemo(() => {
-    if (!testItem) return null
+    if (!testItem || testItem.allCountItem === 0 || !pathname.includes('test')) return null
 
     const goToTask = (newItem: number) => {
       if (newItem === 0) return
@@ -58,7 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         />
       )
     })
-  }, [testItem, testItem?.currentItem, testItem.statusItem])
+  }, [testItem, testItem?.currentItem, testItem.statusItem, pathname])
 
   return (
     <div className={classNames(cls.sidebar, { [cls.collaps]: pathname === RoutePath.login }, [className])}>

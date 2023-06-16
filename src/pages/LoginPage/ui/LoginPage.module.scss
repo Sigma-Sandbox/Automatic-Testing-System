@@ -4,12 +4,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('../../../shared/assets/bg_main.png') center/cover no-repeat,
-    rgba(255, 255, 255, 0.6);
+  background: url('../../../shared/assets/bg_main.png') center/cover no-repeat, rgba(255, 255, 255, 0.6);
   -webkit-background-size: 100% 100%;
   -o-background-size: 100% 100%;
   -moz-background-size: 100% 100%;
   -ms-background-size: 100% 100%;
   -khtml-background-size: 100% 100%;
   background-size: 100% 100%;
+}
+
+html {
+  // scrollbar-gutter: auto;
 }

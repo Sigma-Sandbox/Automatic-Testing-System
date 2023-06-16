@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './AdminTaskSetsPage.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
@@ -15,6 +15,8 @@ import { CreateAndEditTaskSet } from 'features/CreateAndEditTaskSet'
 import { fetchTestTaskList } from 'entities/Admin/TestTask'
 import { fetchProgTaskList } from 'entities/Admin/ProgTask'
 import plusImg from 'shared/assets/icon/plusWhite2.png'
+import { loginByUsername } from 'features/auth/by-pass/model/services/loginByUsername/loginByUsername'
+import { getUserAuthData } from 'entities/User'
 interface AdminTaskSetsPageProps {
   className?: string
 }
@@ -24,6 +26,7 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
   const taskSetsListInit = useSelector(getTaskSets)
   const taskSetsLoader = useSelector((state: StateSchema) => state.taskSets.isLoading)
   const [taskSetsList, setTaskSetsList] = useState<TaskSet[]>([])
+  const userAuthData = useSelector(getUserAuthData)
   const [createAndEdit, setCreateAndEdit] = useState<{
     status: cardEditStatus
     editCard: TaskSet | null
@@ -32,8 +35,21 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
+    if (!userAuthData) {
+      let data = localStorage.getItem('authData')
+      if (data) {
+        let [username, pass] = JSON.parse(data)
+        onLogin(username, pass)
+      }
+    } else {
+    }
+
     dispatch(fetchTestTaskList({}))
     dispatch(fetchProgTaskList({}))
+  }, [])
+
+  const onLogin = useCallback(async (username: string, password: string) => {
+    const result = await dispatch(loginByUsername({ username, password }))
   }, [])
 
   useEffect(() => {
@@ -80,7 +96,7 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
     <div className={classNames(cls.adminTaskSetsPage, {}, [className])}>
       <div className={cls.headerTab}>
         <SearchField value="" onChange={(text) => console.log(text)}></SearchField>
-        <Button className={cls.addTaskSets} size={SizeButton.L} onClick={startCreateTaskSet} style={{gap: 5}}>
+        <Button className={cls.addTaskSets} size={SizeButton.L} onClick={startCreateTaskSet} style={{ gap: 5 }}>
           Добавить набор заданий
           <img src={plusImg} className={cls.plus} alt="plus" />
         </Button>

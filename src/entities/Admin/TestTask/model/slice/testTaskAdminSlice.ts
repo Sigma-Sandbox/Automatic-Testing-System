@@ -18,6 +18,18 @@ export const testTaskAdminSlice = createSlice({
     setQusetions: (state, action: PayloadAction<TestQuestion[]>) => {
       state.questions = action.payload
     },
+    setAddQusetions: (state, action: PayloadAction<TestQuestion>) => {
+      state.questions.push(action.payload)
+    },
+    setUpdateQusetions: (state, action: PayloadAction<TestQuestion>) => {
+      state.questions = state.questions.map((test) => {
+        if (test.id === action.payload.id) {
+          return action.payload
+        } else {
+          return test
+        }
+      })
+    },
     setAddTest: (state, action: PayloadAction<TestTask>) => {
       state.data.push(action.payload)
     },

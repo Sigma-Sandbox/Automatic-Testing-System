@@ -4,7 +4,7 @@ import { fetchTestTask } from './model/services/fetchTestTask/getTestTask'
 import { testTaskReducer, testTaskActions } from './model/slice/testTaskSlice'
 import {
   TaskSetPackSchema,
-  TaskSetPack,
+  // TaskSetPack,
   TaskSet,
   ProgTask,
   TestTask,
@@ -12,11 +12,13 @@ import {
   TestQuestion,
   ProgAndTestTask,
   Condition,
+  VacancyTest,
+  ResultVacancyTaskSets,
 } from './model/types/testTask'
 
 export type {
   TaskSetPackSchema,
-  TaskSetPack,
+  // TaskSetPack,
   TaskSet,
   ProgTask,
   TestTask,
@@ -24,6 +26,8 @@ export type {
   TestQuestion,
   ProgAndTestTask,
   Condition,
+  VacancyTest,
+  ResultVacancyTaskSets,
 }
 
 export { selectTestTask, testTaskReducer, fetchTestTask, getCurrentTask, testTaskActions }

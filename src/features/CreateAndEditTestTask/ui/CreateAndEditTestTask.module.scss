@@ -55,6 +55,7 @@
 }
 .hide {
   opacity: 0;
+  pointer-events: none;
 }
 .content {
   display: flex;
@@ -143,6 +144,7 @@
   max-height: 80px;
   height: auto;
   width: 450px;
+  height: auto;
   // margin-bottom: 30px;
 }
 .testTaskItem .btnDel {

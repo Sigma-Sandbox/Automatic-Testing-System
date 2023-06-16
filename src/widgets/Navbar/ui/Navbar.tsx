@@ -21,10 +21,6 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    console.log(userRole)
-  }, [userRole])
-
   if (userRole === UserRole.APPLICANT) {
     return (
       <div
@@ -54,7 +50,9 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
           <span>{userData?.firstname}</span>
           <span>{userData?.lastname}</span>
         </div>
-        <Button className={cls.btnExit} onClick={handleOnExit}>Выйти</Button>
+        <Button className={cls.btnExit} onClick={handleOnExit}>
+          Выйти
+        </Button>
       </div>
     </div>
   )

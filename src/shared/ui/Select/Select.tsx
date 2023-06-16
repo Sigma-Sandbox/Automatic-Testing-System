@@ -19,6 +19,8 @@ interface SelectProps {
   isClearable?: boolean
   styleSingleValue?: CSSProperties
   styleMenuList?: CSSProperties
+  controStyle?: CSSProperties
+  customScroll?: boolean
 }
 
 export const MySelect: React.FC<SelectProps> = (props) => {
@@ -34,6 +36,8 @@ export const MySelect: React.FC<SelectProps> = (props) => {
     isClearable = true,
     styleSingleValue = {},
     styleMenuList = {},
+    controStyle = {},
+    customScroll = false,
   } = props
   const [value, setValue] = useState<SelectOption | readonly SelectOption[] | null>(selected ? selected : null)
 
@@ -60,7 +64,7 @@ export const MySelect: React.FC<SelectProps> = (props) => {
             borderRadius: '10px',
             boxShadow: 'var(--shadow-block)',
             overflow: 'auto',
-            height: '100%',
+            ...controStyle,
           }),
           menu: (baseStyles, state) => ({
             ...baseStyles,

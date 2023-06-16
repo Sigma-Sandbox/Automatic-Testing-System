@@ -1,8 +1,8 @@
-import React, {useEffect, useMemo, useState} from 'react'
-import {classNames} from 'shared/lib/classNames/classNames'
+import React, { useEffect, useMemo, useState } from 'react'
+import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './TaskTest.module.scss'
-import {all} from 'axios'
-import {Button, ColorButton, SizeButton} from 'shared/ui/Button/Button'
+import { all } from 'axios'
+import { Button, ColorButton, SizeButton } from 'shared/ui/Button/Button'
 
 interface TaskTestItemProps {
   className?: string
@@ -14,14 +14,7 @@ interface TaskTestItemProps {
 }
 
 export const TaskTestItem: React.FC<TaskTestItemProps> = (props) => {
-  const {
-    className = '',
-    descript,
-    correctAnswers,
-    wrongAnswers,
-    nextQuestion,
-    calcTransform,
-  } = props
+  const { className = '', descript, correctAnswers, wrongAnswers, nextQuestion, calcTransform } = props
 
   const [selectedItems, setSelectedItems] = useState<string[]>([])
 
@@ -80,7 +73,7 @@ export const TaskTestItem: React.FC<TaskTestItemProps> = (props) => {
             checked={selectedItems.includes(item)}
             value={item}
             onChange={() => handlerItems(item)}
-            name='testUser'
+            name="testUser"
           />
 
           {item}
@@ -89,15 +82,8 @@ export const TaskTestItem: React.FC<TaskTestItemProps> = (props) => {
     })
   }, [createAllItem, selectedItems])
   return (
-    <div
-      className={classNames(cls.taskTestItem, {}, [className])}
-      style={{transform: calcTransform}}
-    >
+    <div className={classNames(cls.taskTestItem, {}, [className])} style={{ transform: calcTransform }}>
       <div className={classNames(cls.itemDescr)}>{descript}</div>
-      <img
-        src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxVf9FOcF5qEKCCut0cdGZgNPMc-KlS1X77O-GqP2lw2W7nkBY5i5JuJptwJUgTiYbp3k&usqp=CAU'
-        alt=''
-      />
 
       <div className={classNames(cls.itemOptions)}>{itemOptions}</div>
 

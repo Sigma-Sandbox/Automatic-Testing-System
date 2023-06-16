@@ -71,7 +71,7 @@ export const UserMainCard: React.FC<UserMainCardProps> = (props) => {
           {user.patronymic && <span>{user.patronymic}</span>}
         </div>
       </div>
-      <div className={classNames(cls.tests)}>
+      <div className={classNames(cls.tests, {}, ['custom_scroll'])}>
         <div className={classNames(cls.testsTitle)}>Результаты тестов</div>
         {loadCard && <UserResults resultVacancies={user.vacancies} userId={user.id} />}
       </div>

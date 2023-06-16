@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef, useState} from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 export enum TimeType {
   MM_SS = 'MM_SS',
@@ -34,7 +34,7 @@ export const useTimer = (time: number) => {
     const timeMin = Math.trunc(seconds / 60)
     const timeSec = seconds % 60
 
-    const answer = {HH: timeHour, MM: timeMin, SS: timeSec}
+    const answer = { HH: timeHour, MM: timeMin, SS: timeSec }
 
     switch (typeT) {
       case TimeType.HH_MM_SS:
@@ -51,7 +51,10 @@ export const useTimer = (time: number) => {
         break
     }
   }
-
+  const setNewTime = (seconds: number) => {
+    stopTimer()
+    setSeconds(seconds)
+  }
   const addPrefix = (num: number) => {
     if (num > 9) {
       return `${num}`
@@ -60,5 +63,5 @@ export const useTimer = (time: number) => {
     }
   }
 
-  return [seconds, {startTimer, stopTimer, getTime}] as const
+  return [seconds, { startTimer, stopTimer, getTime, setNewTime }] as const
 }

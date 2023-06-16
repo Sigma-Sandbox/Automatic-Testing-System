@@ -14,6 +14,7 @@ import { AppDispatch } from 'app/providers/StoreProvider/config/store'
 import { Button, ColorButton, ThemeButton } from 'shared/ui/Button/Button'
 import upPageSrc from 'shared/assets/icon/up_page.svg'
 import downPageSrc from 'shared/assets/icon/down_page.svg'
+import { getUserAuthData, getUserCurTaskSetData } from 'entities/User'
 
 interface MainContainerProps {
   className?: string
@@ -29,8 +30,9 @@ enum SwitcherItemType {
 export const MainContainer: React.FC<MainContainerProps> = (props) => {
   const { className = '' } = props
   const location = useLocation()
-  const testData = useSelector(getCurrentTask(location.state?.testId || 1))
+  const testData = useSelector(getCurrentTask(location.state?.testId, location.state?.vacancyId))
   const testItemData = useSelector(getTestItemData)
+  const usersData = useSelector(getUserAuthData)
   const [startedTest, setStartedTest] = useState<boolean>(false)
   const [isSwitchPage, turnOnSwitching] = useSwitching()
   const dispatch = useDispatch<AppDispatch>()
@@ -53,6 +55,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
         testUserActions.setInitialData({
           task: [...progTask, ...testTask],
           testPackId: location.state.testId,
+          timeLimits: testData.timeLimits,
         })
       )
     }
@@ -84,6 +87,8 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
           taskItemList.push(
             <TaskTest
               key={el.id}
+              userId={usersData?.id || -1}
+              taskSetId={testData.id || -1}
               className={classNames(cls.mainItem, { [cls.animate]: isSwitchPage }, [])}
               dataItem={{ ...el, numOfTry: testData.numOfTry, vacancyId: testData.vacancyId }}
               isStartedTest={changeStartedTest}
@@ -93,6 +98,8 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
           taskItemList.push(
             <TaskCode
               key={el.id}
+              userId={usersData?.id || -1}
+              taskSetId={testData.id || -1}
               className={classNames(cls.mainItem, { [cls.animate]: isSwitchPage }, [])}
               dataItem={{ ...el, numOfTry: testData.numOfTry, vacancyId: testData.vacancyId }}
             ></TaskCode>

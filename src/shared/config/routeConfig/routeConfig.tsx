@@ -25,7 +25,7 @@ export const RoutePath: Record<AppRoutes, string> = {
   [AppRoutes.TASK_SET]: '/tests',
   [AppRoutes.VACANCY]: '/vaca',
   [AppRoutes.CREATE]: '/create',
-  [AppRoutes.CANDIDATE_VACANCY]: '/vacancy',
+  [AppRoutes.CANDIDATE_VACANCY]: '/vacancy/:userId',
   [AppRoutes.CANDIDATE_TEST]: '/test',
 }
 

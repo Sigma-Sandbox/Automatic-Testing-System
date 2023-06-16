@@ -1,5 +1,7 @@
 import { UserRole } from 'core/enums'
 import { UserSolution } from 'entities/Admin/Users'
+import { Vacancy } from 'entities/Admin/Vacancies'
+import { TaskSet } from 'entities/Candidate/TestTask'
 
 export interface User {
   id: number
@@ -19,6 +21,7 @@ export interface ResultVacancyTest {
   vacancyId: number
   vacancyName: string
   userSolutions: UserSolution[]
+  numOfTry: number
 }
 
 export interface UserSchema {

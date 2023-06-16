@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './AdminMainPage.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { User } from 'entities/User'
+import { User, getUserAuthData } from 'entities/User'
 import { fetchUsersData, getUsersList } from 'entities/Admin/Users'
 import { AppDispatch } from 'app/providers/StoreProvider/config/store'
 import { StateSchema } from 'app/providers/StoreProvider'
@@ -16,6 +16,7 @@ import { CreateOrEditCard, cardEditStatus } from 'features/CreateAndEditCard'
 import { Button, SizeButton } from 'shared/ui/Button/Button'
 import { NotFoundElements } from 'shared/ui/NotFoundElements/NotFoundElements'
 import { ToastContainer } from 'react-toastify'
+import { loginByUsername } from 'features/auth/by-pass/model/services/loginByUsername/loginByUsername'
 
 interface AdminMainPageProps {
   className?: string
@@ -25,6 +26,7 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
   const { className = '' } = props
   const dispatch = useDispatch<AppDispatch>()
   const [usersList, setUserList] = useState<User[] | null>(null)
+  const userAuthData = useSelector(getUserAuthData)
   const userListInit = useSelector(getUsersList)
   const [createAndEdit, setCreateAndEdit] = useState<{
     status: cardEditStatus
@@ -34,9 +36,21 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
   const loadUsersList = useSelector((state: StateSchema) => state.allUsersData.isLoading)
 
   useEffect(() => {
+    if (!userAuthData) {
+      let data = localStorage.getItem('authData')
+      if (data) {
+        let [username, pass] = JSON.parse(data)
+        onLogin(username, pass)
+      }
+    } else {
+    }
     dispatch(fetchTaskSetsData({}))
     dispatch(fetchVacanciesData({}))
     dispatch(fetchUsersData({}))
+  }, [])
+
+  const onLogin = useCallback(async (username: string, password: string) => {
+    const result = await dispatch(loginByUsername({ username, password }))
   }, [])
 
   useEffect(() => {
@@ -83,9 +97,13 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
       )}
 
       <div
-        className={classNames(cls.usersList, {
-          [cls.loader]: loadUsersList || cardListUsers?.length === 0,
-        })}
+        className={classNames(
+          cls.usersList,
+          {
+            [cls.loader]: loadUsersList || cardListUsers?.length === 0,
+          },
+          ['custom_scroll']
+        )}
       >
         {loadUsersList ? (
           <Loader />
