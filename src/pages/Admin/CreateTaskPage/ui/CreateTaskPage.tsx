@@ -19,6 +19,7 @@ import { CreateAndEditCodeTask } from 'features/CreateAndEditCodeTask'
 import { type } from 'os'
 import { ToastContainer } from 'react-toastify'
 import { CreateAndEditTestTask, QuestionCreator } from 'features/CreateAndEditTestTask'
+import { useAuthLocalStrorage } from 'shared/lib/hooks/useAuthLocalStrorage/useAuthLocalStrorage'
 
 interface CreateTaskPageProps {
   className?: string
@@ -41,11 +42,13 @@ export const CreateTaskPage: React.FC<CreateTaskPageProps> = (props) => {
   const [testTasks, setTestTasks] = useState<TestTask[]>([])
   const [progTasks, setProgTasks] = useState<ProgTask[]>([])
   const [statusPopup, setStatusPopup] = useState<TaskCreatePopupStatus>({ type: typeTaskPopup.NULL, prop: null })
-
+  const [checkAuthLocalStorage, clearAuthData] = useAuthLocalStrorage()
   const [langProg, setLangProg] = useState<{ [key: string]: string }>({})
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
+    checkAuthLocalStorage()
+
     if (testTasksInit.length === 0 || progTasksInit.length === 0) {
       dispatch(fetchProgTaskList({}))
       dispatch(fetchTestTaskList({}))

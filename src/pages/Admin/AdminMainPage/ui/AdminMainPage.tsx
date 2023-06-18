@@ -16,7 +16,10 @@ import { CreateOrEditCard, cardEditStatus } from 'features/CreateAndEditCard'
 import { Button, SizeButton } from 'shared/ui/Button/Button'
 import { NotFoundElements } from 'shared/ui/NotFoundElements/NotFoundElements'
 import { ToastContainer } from 'react-toastify'
-import { loginByUsername } from 'features/auth/by-pass/model/services/loginByUsername/loginByUsername'
+import { useNavigate } from 'react-router-dom'
+import { RoutePath } from 'shared/config/routeConfig/routeConfig'
+import { loginByUsername } from 'features/auth/by-pass'
+import { useAuthLocalStrorage } from 'shared/lib/hooks/useAuthLocalStrorage/useAuthLocalStrorage'
 
 interface AdminMainPageProps {
   className?: string
@@ -26,31 +29,21 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
   const { className = '' } = props
   const dispatch = useDispatch<AppDispatch>()
   const [usersList, setUserList] = useState<User[] | null>(null)
-  const userAuthData = useSelector(getUserAuthData)
   const userListInit = useSelector(getUsersList)
   const [createAndEdit, setCreateAndEdit] = useState<{
     status: cardEditStatus
     editCard: User | null
   }>({ status: cardEditStatus.CLOSE, editCard: null })
 
+  const [checkAuthLocalStorage, clearAuthData] = useAuthLocalStrorage()
+
   const loadUsersList = useSelector((state: StateSchema) => state.allUsersData.isLoading)
 
   useEffect(() => {
-    if (!userAuthData) {
-      let data = localStorage.getItem('authData')
-      if (data) {
-        let [username, pass] = JSON.parse(data)
-        onLogin(username, pass)
-      }
-    } else {
-    }
+    checkAuthLocalStorage()
     dispatch(fetchTaskSetsData({}))
     dispatch(fetchVacanciesData({}))
     dispatch(fetchUsersData({}))
-  }, [])
-
-  const onLogin = useCallback(async (username: string, password: string) => {
-    const result = await dispatch(loginByUsername({ username, password }))
   }, [])
 
   useEffect(() => {

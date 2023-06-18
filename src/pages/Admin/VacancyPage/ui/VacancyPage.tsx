@@ -15,6 +15,7 @@ import { CreateOrEditVacancy } from 'features/CreateAndEditVacancy'
 import { fetchTaskSetsData } from 'entities/Admin/TaskSets'
 import suitImg from 'shared/assets/icon/businessWhite.png'
 import plusImg from 'shared/assets/icon/plusWhite2.png'
+import { useAuthLocalStrorage } from 'shared/lib/hooks/useAuthLocalStrorage/useAuthLocalStrorage'
 
 interface VacancyPageProps {
   className?: string
@@ -25,6 +26,7 @@ export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
   const vacanciesListInit = useSelector(getVacancies)
   const vacanciesListLoader = useSelector((state: StateSchema) => state.vacancies.isLoading)
   const check = useSelector((state: StateSchema) => state)
+  const [checkAuthLocalStorage, clearAuthData] = useAuthLocalStrorage()
 
   const [vacanciesList, setVacanciesList] = useState<Vacancy[]>([])
   const [createAndEdit, setCreateAndEdit] = useState<{
@@ -33,6 +35,10 @@ export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
   }>({ status: cardEditStatus.CLOSE, editCard: null })
 
   const dispatch = useDispatch<AppDispatch>()
+
+  useEffect(() => {
+    checkAuthLocalStorage()
+  }, [])
 
   useEffect(() => {
     if (vacanciesListInit.length === 0) {
@@ -79,7 +85,12 @@ export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
     <div className={classNames(cls.vacancyPage, {}, [className])}>
       <div className={cls.headerTab}>
         <SearchField value="" onChange={(text) => console.log(text)}></SearchField>
-        <Button className={classNames(cls.addVacancy)} size={SizeButton.L} onClick={startCreateVacancy} style={{gap: 5}}>
+        <Button
+          className={classNames(cls.addVacancy)}
+          size={SizeButton.L}
+          onClick={startCreateVacancy}
+          style={{ gap: 5 }}
+        >
           {/* <img src={suitImg} className={cls.suit} alt="add vacancy" /> */}
           Добавить вакансию
           <img src={plusImg} className={cls.plus} alt="plus" />

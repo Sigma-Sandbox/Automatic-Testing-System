@@ -3,3 +3,5 @@ import { LoginSchema } from './model/types/loginSchema'
 import { loginReducer } from './model/slice/loginSlice'
 
 export { LoginModal, type LoginSchema, loginReducer }
+
+export { loginByUsername } from './model/services/loginByUsername/loginByUsername'

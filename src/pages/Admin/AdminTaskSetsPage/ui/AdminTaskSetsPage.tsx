@@ -17,6 +17,7 @@ import { fetchProgTaskList } from 'entities/Admin/ProgTask'
 import plusImg from 'shared/assets/icon/plusWhite2.png'
 import { loginByUsername } from 'features/auth/by-pass/model/services/loginByUsername/loginByUsername'
 import { getUserAuthData } from 'entities/User'
+import { useAuthLocalStrorage } from 'shared/lib/hooks/useAuthLocalStrorage/useAuthLocalStrorage'
 interface AdminTaskSetsPageProps {
   className?: string
 }
@@ -31,18 +32,11 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
     status: cardEditStatus
     editCard: TaskSet | null
   }>({ status: cardEditStatus.CLOSE, editCard: null })
-
+  const [checkAuthLocalStorage, clearAuthData] = useAuthLocalStrorage()
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
-    if (!userAuthData) {
-      let data = localStorage.getItem('authData')
-      if (data) {
-        let [username, pass] = JSON.parse(data)
-        onLogin(username, pass)
-      }
-    } else {
-    }
+    checkAuthLocalStorage()
 
     dispatch(fetchTestTaskList({}))
     dispatch(fetchProgTaskList({}))

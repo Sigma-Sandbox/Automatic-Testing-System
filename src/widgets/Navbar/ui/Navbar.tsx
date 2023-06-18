@@ -9,6 +9,7 @@ import { Button } from 'shared/ui/Button/Button'
 import { StateSchema } from 'app/providers/StoreProvider'
 import { UserRole } from 'core/enums'
 import { NavbarCandidate } from './NavbarCandidate'
+import { useAuthLocalStrorage } from 'shared/lib/hooks/useAuthLocalStrorage/useAuthLocalStrorage'
 
 interface NavabarProps {
   className?: string
@@ -18,6 +19,7 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
   const { className = '' } = props
   const userData = useSelector(getUserData)
   const userRole = useSelector((state: StateSchema) => state.user.authData?.accessRights)
+  const [, clearAuthData] = useAuthLocalStrorage()
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
@@ -34,6 +36,7 @@ export const Navbar: React.FC<NavabarProps> = (props) => {
   }
 
   const handleOnExit = () => {
+    clearAuthData()
     navigate(RoutePath.login)
   }
 
