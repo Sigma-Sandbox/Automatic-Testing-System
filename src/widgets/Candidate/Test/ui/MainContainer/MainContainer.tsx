@@ -3,7 +3,7 @@ import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './MainContainer.module.scss'
 import { Start } from '../Start/Start'
 import { getCurrentTask } from 'entities/Candidate/TestTask'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { TaskCode } from '../TaskCode/TaskCode'
 import { TaskTest } from '../TaskTest/TaskTest'
@@ -35,6 +35,7 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
   const usersData = useSelector(getUserAuthData)
   const [startedTest, setStartedTest] = useState<boolean>(false)
   const [isSwitchPage, turnOnSwitching] = useSwitching()
+  const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
@@ -119,7 +120,6 @@ export const MainContainer: React.FC<MainContainerProps> = (props) => {
   }, [testItemData.currentItem, startedTest])
 
   if (!(testData && (testData?.progTasks || testData.testTasks))) {
-    return <div>Not data</div>
   }
   return (
     <div className={classNames(cls.mainContainer, {}, [className])}>
