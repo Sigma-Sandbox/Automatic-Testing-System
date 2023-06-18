@@ -17,6 +17,16 @@ export const testTaskSlice = createSlice({
     setTestTaskData: (state, action: PayloadAction<{ [key: number]: ResultVacancyTaskSets }>) => {
       state.data = action.payload
     },
+    setDeleteTaskSet: (state, action: PayloadAction<{ vacancyId: number; taskSetId: string }>) => {
+      if (state.data) {
+        const newDataVacancy = { ...state.data[action.payload.vacancyId] }
+        console.log(newDataVacancy, action.payload)
+        newDataVacancy.taskSets = newDataVacancy.taskSets.filter((taskSet) => taskSet.id !== +action.payload.taskSetId)
+
+        state.data[action.payload.vacancyId] = newDataVacancy
+        console.log(newDataVacancy)
+      }
+    },
   },
   extraReducers: (builder) => {
     builder

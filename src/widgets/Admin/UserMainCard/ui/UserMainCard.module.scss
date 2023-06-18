@@ -35,6 +35,7 @@
 .vacancy {
   width: -moz-fit-content;
   width: fit-content;
+  font-size: smaller;
   border-radius: 10px;
   color: var(--invert-bg-color);
   background-color: var(--primary-color);
@@ -112,7 +113,7 @@
   border-radius: 15px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   overflow: auto;
 }
 .testsTitle {

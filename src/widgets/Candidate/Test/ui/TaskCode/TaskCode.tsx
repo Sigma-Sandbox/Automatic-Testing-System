@@ -11,6 +11,7 @@ import { SingleValue } from 'react-select'
 import { UserSolution, WithNumOfTry, WithVacancyId } from 'core/entities'
 import { TaskResult, TaskType } from 'core/enums'
 import { Button, ColorButton, SizeButton, ThemeButton } from 'shared/ui/Button/Button'
+import { FormatText } from 'shared/ui/FormatText/FormatText'
 
 interface TaskCodeProps {
   className?: string
@@ -199,8 +200,10 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
             <div className={classNames(cls.descripName, {}, [])}>{name}</div>
             <div className={classNames(cls.descripComplexity, {}, [])}>Количество баллов: {complexityAssessment}</div>
 
-            <div className={classNames(cls.descripText, {}, [])}>{description}</div>
+            <div className={classNames(cls.descripText, {}, [])}>{FormatText(description)}</div>
             <div className={classNames(cls.descripExample, {}, [])}>
+              {/* <CodeEditor code={examples || ''} readonly={true} language={language.value} /> */}
+
               <Code code={examples || ''} language={language.value} />
             </div>
             <div className={classNames(cls.descripCond, {}, [])}>
@@ -217,7 +220,7 @@ export const TaskCode: React.FC<TaskCodeProps> = (props) => {
             <div className={classNames(cls.topPanel, {}, [])}>
               <span className={cls.codeName}>Решение</span>
               <div className={classNames(cls.languageSelector, {}, [])}>
-                <LanguageSelector languages={conditions} onSelectChange={onSelectChange} />
+                <LanguageSelector select={language} languages={conditions} onSelectChange={onSelectChange} />
               </div>
             </div>
             <CodeEditor code={examples || ''} onChange={onChange} language={language.value} />

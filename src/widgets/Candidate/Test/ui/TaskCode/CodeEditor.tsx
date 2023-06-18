@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './TaskCode.module.scss'
 import { Editor } from '@monaco-editor/react'
@@ -7,25 +7,32 @@ import { ActionTypeCode } from './TaskCode'
 
 interface CodeEditorProps {
   className?: string
-  onChange: (action: ActionTypeCode, data: string) => void
+  onChange?: (action: ActionTypeCode, data: string) => void
   language: string
   code: string
   theme?: string
+  readonly?: boolean
 }
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
-  const { className, onChange, language, code, theme } = props
+  const { className, onChange, language, code, theme, readonly = false } = props
   const [value, setValue] = useState(code || '')
 
   const handleEditorChange = (value: string | undefined) => {
     if (value) {
       setValue(value)
-      onChange(ActionTypeCode.CODE, value)
+      onChange && onChange(ActionTypeCode.CODE, value)
     }
   }
 
+  useEffect(() => {
+    if (code) {
+      setValue(code)
+    }
+  }, [language, code])
+
   const options = {
-    readOnly: false,
+    readOnly: readonly,
     minimap: { enabled: false },
     tabSize: 2,
     lineDecorationsWidth: 1,

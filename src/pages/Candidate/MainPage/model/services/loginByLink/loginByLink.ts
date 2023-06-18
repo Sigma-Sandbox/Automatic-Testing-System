@@ -15,9 +15,6 @@ export const loginByLink = async (authData: LoginByLinkProps) => {
     const payload = { link: authData.link }
     const response = await axios.post<User[]>(getApplicantPath, payload)
 
-    // thunkAPI.dispatch(userActions.setAuthData(response.data[0]))
-    // thunkAPI.dispatch(testTaskActions.setTestTaskData(testTaskDataExample))
-    console.log(response)
     return response.data
   } catch (e) {
     console.log(e)

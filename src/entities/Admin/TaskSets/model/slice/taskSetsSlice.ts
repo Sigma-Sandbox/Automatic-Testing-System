@@ -26,7 +26,17 @@ export const taskSetsSlice = createSlice({
       })
       .addCase(fetchTaskSetsData.fulfilled, (state, action: PayloadAction<TaskSet[]>) => {
         state.isLoading = false
-        state.data = action.payload
+
+        const newTaskSets: TaskSet[] = []
+
+        action.payload.forEach((taskSet) => {
+          if (state.data.find((t) => t.id === taskSet.id)) {
+          } else {
+            newTaskSets.push(taskSet)
+          }
+        })
+
+        state.data.push(...newTaskSets)
       })
       .addCase(fetchTaskSetsData.rejected, (state, action) => {
         state.isLoading = false

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './Sidebar.module.scss'
-import { AppRoutes, RoutePath } from 'shared/config/routeConfig/routeConfig'
+import { AppRoutes, RoutePath, RoutePathOnlyUserDomain } from 'shared/config/routeConfig/routeConfig'
 import logoImgSrc from 'shared/assets/logo_sidebar.png'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserAuthData, getUserRole } from 'entities/User'
@@ -56,49 +56,58 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
     })
   }, [testItem, testItem?.currentItem, testItem.statusItem, pathname])
 
+  const adminItemList = useMemo(() => {
+    return (
+      <div className={cls.itemsAdmin}>
+        <Button
+          className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.MAIN) }, [])}
+          theme={ThemeButton.CLEAR}
+          color={ColorButton.TRANSPARENT}
+          onClick={() => navigate(RoutePath.main)}
+        >
+          <img src={usersImg} alt="Img7" />
+        </Button>
+        <Button
+          className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.VACANCY) }, [])}
+          theme={ThemeButton.CLEAR}
+          color={ColorButton.TRANSPARENT}
+          onClick={() => navigate(RoutePath.vaca)}
+        >
+          <img src={vacancyImg} alt="Img8" />
+        </Button>
+        <Button
+          className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.TASK_SET) }, [])}
+          theme={ThemeButton.CLEAR}
+          color={ColorButton.TRANSPARENT}
+          onClick={() => navigate(RoutePath.tests)}
+        >
+          <img src={testsImg} alt="Img1" />
+        </Button>
+        <Button
+          className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.CREATE) }, [])}
+          theme={ThemeButton.CLEAR}
+          color={ColorButton.TRANSPARENT}
+          onClick={() => navigate(RoutePath.create)}
+        >
+          <img src={createImg} alt="Img6" />
+        </Button>
+      </div>
+    )
+  }, [userAuthData, pathname])
+
+  const typeNavbar = useMemo(() => {
+    if (pathname.includes(RoutePathOnlyUserDomain) || pathname === RoutePath.test) {
+      return 'user'
+    } else {
+      return 'admin'
+    }
+  }, [userAuthData, pathname])
+
   return (
     <div className={classNames(cls.sidebar, { [cls.collaps]: pathname === RoutePath.login }, [className])}>
       <img className={cls.logo} src={logoImgSrc} alt="logo" />
 
-      <div className={cls.itemsWrap}>
-        {userRole === UserRole.APPLICANT && <div className={cls.items}>{testItemList}</div>}
-        {(userRole === UserRole.ADMIN || userRole === UserRole.EMPLOYEE) && (
-          <div className={cls.itemsAdmin}>
-            <Button
-              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.MAIN) }, [])}
-              theme={ThemeButton.CLEAR}
-              color={ColorButton.TRANSPARENT}
-              onClick={() => navigate(RoutePath.main)}
-            >
-              <img src={usersImg} alt="Img7" />
-            </Button>
-            <Button
-              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.VACANCY) }, [])}
-              theme={ThemeButton.CLEAR}
-              color={ColorButton.TRANSPARENT}
-              onClick={() => navigate(RoutePath.vaca)}
-            >
-              <img src={vacancyImg} alt="Img8" />
-            </Button>
-            <Button
-              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.TASK_SET) }, [])}
-              theme={ThemeButton.CLEAR}
-              color={ColorButton.TRANSPARENT}
-              onClick={() => navigate(RoutePath.tests)}
-            >
-              <img src={testsImg} alt="Img1" />
-            </Button>
-            <Button
-              className={classNames(cls.link, { [cls.active]: pathname.includes(AppRoutes.CREATE) }, [])}
-              theme={ThemeButton.CLEAR}
-              color={ColorButton.TRANSPARENT}
-              onClick={() => navigate(RoutePath.create)}
-            >
-              <img src={createImg} alt="Img6" />
-            </Button>
-          </div>
-        )}
-      </div>
+      <div className={cls.itemsWrap}>{typeNavbar === 'user' ? testItemList : adminItemList}</div>
     </div>
   )
 }

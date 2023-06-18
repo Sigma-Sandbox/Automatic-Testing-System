@@ -11,6 +11,7 @@ interface fetchTaskSetsDataProps {
 export const fetchTaskSetsData = createAsyncThunk<TaskSet[], fetchTaskSetsDataProps, { rejectValue: string }>(
   'taskSets/getTaskSets',
   async (option, thunkAPI) => {
+    console.log('fetch taskSet')
     try {
       const config = {
         headers: {

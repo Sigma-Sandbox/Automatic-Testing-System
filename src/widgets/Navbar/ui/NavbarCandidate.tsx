@@ -10,6 +10,7 @@ import { TimeType, useTimer } from 'shared/lib/hooks/useTimer/useTimer'
 import { Button, ColorButton, SizeButton } from 'shared/ui/Button/Button'
 import { testUserActions } from 'widgets/Candidate/Test'
 import { getUserAuthData } from 'entities/User'
+import { testTaskActions } from 'entities/Candidate/TestTask'
 
 interface NavabarCandidateProps {
   className?: string
@@ -20,7 +21,8 @@ export const NavbarCandidate: React.FC<NavabarCandidateProps> = (props) => {
   const userData = useSelector(getUserData)
   const userAuthData = useSelector(getUserAuthData)
   const currentTestData = useSelector(getCurrentTestData)
-  const { pathname } = useLocation()
+  const { pathname, state } = useLocation()
+
   const [timeLimits, optionTimeLimits] = useTimer(currentTestData.timeLimits || 0)
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -43,6 +45,8 @@ export const NavbarCandidate: React.FC<NavabarCandidateProps> = (props) => {
 
   const finishTask = () => {
     optionTimeLimits.stopTimer()
+
+    if (state) dispatch(testTaskActions.setDeleteTaskSet({ vacancyId: state.vacancyId, taskSetId: state.testId }))
     dispatch(testUserActions.setInitialData({ task: [], testPackId: -10 }))
 
     navigate('/vacancy/' + userAuthData?.actualLink || '')

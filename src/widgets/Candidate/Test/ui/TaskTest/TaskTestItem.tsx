@@ -3,6 +3,7 @@ import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './TaskTest.module.scss'
 import { all } from 'axios'
 import { Button, ColorButton, SizeButton } from 'shared/ui/Button/Button'
+import { FormatText } from 'shared/ui/FormatText/FormatText'
 
 interface TaskTestItemProps {
   className?: string
@@ -76,7 +77,7 @@ export const TaskTestItem: React.FC<TaskTestItemProps> = (props) => {
             name="testUser"
           />
 
-          {item}
+          {FormatText(item)}
         </label>
       )
     })

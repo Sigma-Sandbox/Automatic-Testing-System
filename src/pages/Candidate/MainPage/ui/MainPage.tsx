@@ -28,7 +28,7 @@ export const MainPage: React.FC<MainProps> = (props) => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (userId) {
+    if (userId && !authData) {
       sendQueryApplicant(userId)
     }
 

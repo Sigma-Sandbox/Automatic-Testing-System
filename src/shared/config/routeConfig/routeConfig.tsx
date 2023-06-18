@@ -29,6 +29,8 @@ export const RoutePath: Record<AppRoutes, string> = {
   [AppRoutes.CANDIDATE_TEST]: '/test',
 }
 
+export const RoutePathOnlyUserDomain = RoutePath.vacancy.slice(0, RoutePath.vacancy.lastIndexOf(':userId'))
+
 export const routeConfig: Record<AppRoutes, RouteProps> = {
   [AppRoutes.MAIN]: {
     path: RoutePath.main,

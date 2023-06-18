@@ -14,6 +14,7 @@ import { UserRole } from 'core/enums'
 import { getVacancies } from 'entities/Admin/Vacancies/model/selectors/getVacancies/getVacancies'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { RoutePath, RoutePathOnlyUserDomain } from 'shared/config/routeConfig/routeConfig'
 
 interface CardFormProps {
   className?: string
@@ -45,8 +46,9 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
 
   const notify = (text: string) => toast(text)
   const copyLink = () => {
+    const currentPath = window.location.protocol + '//' + window.location.host
     navigator.clipboard
-      .writeText(personState.actualLink)
+      .writeText(currentPath + RoutePathOnlyUserDomain + personState.actualLink)
       .then(() => {
         console.log('Ссылка скопирована')
         notify('Ссылка скопирована')

@@ -9,12 +9,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Vacancy } from 'entities/Admin/Vacancies'
 import { fetchTaskSetsData, getTaskSetsById } from 'entities/Admin/TaskSets'
 import { AppDispatch } from 'app/providers/StoreProvider/config/store'
+import { StateSchema } from 'app/providers/StoreProvider'
 
 interface UserResultTaskSetProps {
   className?: string
   taskSetId: number
   userId: number
   decisions: UserSolution[]
+  nymOfTry: number
 }
 interface IResultTaskSets {
   taskSetName: string | null
@@ -23,8 +25,8 @@ interface IResultTaskSets {
   userScore: number | null
 }
 export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
-  const { className = '', taskSetId, userId, decisions } = props
-  const [loadResults, setLoadResult] = useState<boolean>(false)
+  const { className = '', taskSetId, userId, decisions, nymOfTry } = props
+  const [loadResults, setLoadResult] = useState<boolean>(true)
   const [errorResults, setErrorResult] = useState<string | null>(null)
   const taskSet: TaskSet | undefined = useSelector(getTaskSetsById(taskSetId))
   const totalScoreTaskSet = useSelector(getTotalScoreTaskSet(taskSetId))
@@ -33,10 +35,7 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
   const dispatch = useDispatch<AppDispatch>()
 
   const countTotalScoreTaskSet = (taskSet: TaskSet) => {
-    let totalScoreTaskSetNew = taskSet.progTasks.reduce(
-      (curSum, progTask) => progTask.complexityAssessment + curSum,
-      0
-    )
+    let totalScoreTaskSetNew = taskSet.progTasks.reduce((curSum, progTask) => progTask.complexityAssessment + curSum, 0)
     totalScoreTaskSetNew += taskSet.testTasks.reduce(
       (curSum, testTasks) => (testTasks.questions?.length || 0) + curSum,
       0
@@ -49,7 +48,6 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
     return totalScoreTaskSetNew
   }
   useEffect(() => {
-    setLoadResult(true)
     if (taskSet) {
       countInfoResultUser()
       if (totalScoreTaskSet) {
@@ -59,7 +57,6 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
       }
       setLoadResult(false)
     } else {
-      dispatch(fetchTaskSetsData({ id: taskSetId }))
     }
   }, [taskSet])
 
@@ -76,7 +73,10 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
 
   return (
     <div className={classNames(cls.userResultTaskSet, { [cls.gray]: decisions.length === 0 }, [className])}>
-      <span className={cls.taskSetName}>{taskSet?.name}</span>
+      <span className={cls.taskSetName}>
+        {taskSet?.name}
+        {nymOfTry > 1 ? ' (#' + nymOfTry + ')' : ''}
+      </span>
 
       <span>-</span>
       <span className={cls.taskSetScore}>
