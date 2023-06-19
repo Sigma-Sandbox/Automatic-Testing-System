@@ -12,6 +12,9 @@ import { getTotalScoreTaskSet } from 'entities/Admin/Users'
 import { UserResultTaskSet } from './UserResultTaskSet/UserResultTaskSet'
 import { Button, ColorButton, ThemeButton } from 'shared/ui/Button/Button'
 import { ReactComponent as EditSvg } from 'shared/assets/icon/edit_main_card.svg'
+import chatImg from 'shared/assets/icon/chat.png'
+import closeSvg from 'shared/assets/icon/icons8-close-16.png'
+
 import { ReactComponent as TelegramSvg } from 'shared/assets/icon/telegram.svg'
 import { ReactComponent as WhatsAppSvg } from 'shared/assets/icon/whatsapp.svg'
 import { UserResults } from './UserResults'
@@ -20,10 +23,11 @@ interface UserMainCardProps {
   className?: string
   user: User
   startEditCard: (user: User) => void
+  deleteCard: (user: User) => void
 }
 
 export const UserMainCard: React.FC<UserMainCardProps> = (props) => {
-  const { className = '', user, startEditCard } = props
+  const { className = '', user, startEditCard, deleteCard } = props
 
   const [loadCard, setLoadCard] = useState<boolean>(false)
   const [errorCard, setErrorCard] = useState<string | null>(null)
@@ -54,8 +58,21 @@ export const UserMainCard: React.FC<UserMainCardProps> = (props) => {
         >
           <EditSvg />
         </Button>
+        <Button
+          onDoubleClick={() => {
+            user && deleteCard(user)
+          }}
+          theme={ThemeButton.CLEAR}
+          color={ColorButton.RED_COLOR}
+          className={cls.deleteCard}
+        >
+          <img src={closeSvg} alt="" />
+        </Button>
         <div className={classNames(cls.email)}>
-          <a href={'mailto:' + user.email}>{user.email}</a>
+          <a href={'mailto:' + user.email}>
+            {' '}
+            <img src={chatImg} alt="" />{' '}
+          </a>
         </div>
       </div>
       <div className={classNames(cls.about)}>

@@ -1,5 +1,5 @@
 .navbarEditTaskSet {
-  height: var(--navbar-height);
+  height: 70px;
   background-color: var(--invert-bg-color);
   width: 100%;
   display: flex;
@@ -24,6 +24,11 @@
   cursor: pointer;
 }
 .btn.disable {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: none;
+}
+.disable {
   opacity: 0.5;
   pointer-events: none;
   cursor: none;

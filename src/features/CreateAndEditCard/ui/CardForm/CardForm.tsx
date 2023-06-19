@@ -107,13 +107,23 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
       if (vacancyId) {
         // TODO: Обнуление попыток, странные дела
         const userSolutions = user?.vacancies.find((vac) => vac.vacancyId === vacancyId.id)?.userSolutions || []
-        vacanciesUser.push({ vacancyId: vacancyId.id, vacancyName, userSolutions, numOfTry: 1 })
+        vacanciesUser.push({
+          vacancyId: vacancyId.id,
+          vacancyName,
+          userSolutions,
+          numOfTry: user?.vacancies.find((el) => el.vacancyId === vacancyId.id)?.numOfTry || 0,
+        })
       } else {
         console.log('Вакансия с именем ', vacancyName, ' не найдена')
       }
     })
     if (user) {
       option = { ...user, ...personState, vacancies: vacanciesUser }
+
+      if (JSON.stringify(user) === JSON.stringify(option)) {
+        closeModal()
+        return
+      }
       const answer = await sendUsersData(option)
       if (answer === 'OK') {
         dispatch(usersDataActions.setUpdateUsers(option))
@@ -124,7 +134,7 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
         ...personState,
         id: -100,
         accessRights: UserRole.APPLICANT,
-        actualLink: 'blablabalbal',
+        actualLink: '',
         startLinkTimestamp: '2023-04-30T21:00:00.000Z',
         endLinkTimestamp: '2023-04-30T21:00:00.000Z',
         vacancies: vacanciesUser,

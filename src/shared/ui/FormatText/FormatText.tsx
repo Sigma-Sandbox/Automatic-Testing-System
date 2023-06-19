@@ -1,5 +1,4 @@
 export const FormatText = (text: string) => {
-  console.log(text)
   const textArr = text.split('\\n')
 
   const returnAns = []

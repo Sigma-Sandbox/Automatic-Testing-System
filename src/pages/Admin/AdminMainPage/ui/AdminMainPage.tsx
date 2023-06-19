@@ -3,7 +3,7 @@ import { classNames } from 'shared/lib/classNames/classNames'
 import cls from './AdminMainPage.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { User, getUserAuthData } from 'entities/User'
-import { fetchUsersData, getUsersList } from 'entities/Admin/Users'
+import { fetchUsersData, getUsersList, usersDataActions } from 'entities/Admin/Users'
 import { AppDispatch } from 'app/providers/StoreProvider/config/store'
 import { StateSchema } from 'app/providers/StoreProvider'
 import { UserMainCard } from 'widgets/Admin/UserMainCard'
@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom'
 import { RoutePath } from 'shared/config/routeConfig/routeConfig'
 import { loginByUsername } from 'features/auth/by-pass'
 import { useAuthLocalStrorage } from 'shared/lib/hooks/useAuthLocalStrorage/useAuthLocalStrorage'
+import { fetchDeleteUser } from '../model/service/fetchDeleteUser'
 
 interface AdminMainPageProps {
   className?: string
@@ -47,6 +48,10 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
   }, [])
 
   useEffect(() => {
+    console.log('update main')
+  }, [])
+
+  useEffect(() => {
     if (usersList === null || (usersList && usersList.length === 0) || (userListInit && userListInit?.length > 0)) {
       setUserList(userListInit)
     }
@@ -67,9 +72,19 @@ export const AdminMainPage: React.FC<AdminMainPageProps> = (props) => {
     setCreateAndEdit({ status: cardEditStatus.CLOSE, editCard: null })
   }
 
+  const deleteUser = async (user: User) => {
+    const response = await fetchDeleteUser(user)
+
+    if (response === 'OK') {
+      dispatch(usersDataActions.setDeleteUser(user))
+    }
+  }
+
   const cardListUsers = useMemo(() => {
     if (usersList)
-      return usersList.map((user) => <UserMainCard startEditCard={startEditCard} key={user.id} user={user} />)
+      return usersList
+        .map((user) => <UserMainCard deleteCard={deleteUser} startEditCard={startEditCard} key={user.id} user={user} />)
+        .reverse()
   }, [usersList])
 
   return (

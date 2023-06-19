@@ -10,6 +10,7 @@ import { Button, SizeButton } from 'shared/ui/Button/Button'
 import { ProgrammingLanguage } from 'core/enums'
 import { getAllProgTask } from 'entities/Admin/ProgTask'
 import { getAllTestTask } from 'entities/Admin/TestTask'
+import { getUserAuthData } from 'entities/User'
 
 interface MainEditTaskSetProps {
   className?: string
@@ -27,16 +28,26 @@ export interface CommonTask {
 export type TypeTaskInEdit = ProgTask | TestTask | null | CommonTask
 
 export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
-  const {className = '', taskSet, closeModal} = props
+  const { className = '', taskSet, closeModal } = props
   const [currentTask, setCurrentTask] = useState<number>(1)
   const [isEditableCard, setIsEditableCard] = useState<boolean>(true)
+  const userData = useSelector(getUserAuthData)
   const progTaskListInit = useSelector(getAllProgTask)
   const testTaskListInit = useSelector(getAllTestTask)
 
   const [createdTask, setCreatedTask] = useState<TypeTaskInEdit[]>(
-      taskSet ?
-      [{name: taskSet.name, time: taskSet.timeLimits, languages: taskSet.language, description: taskSet.description}, ...taskSet.progTasks, ...taskSet.testTasks] :
-      [{name: '', time: 0, languages: [], description: ''}]
+    taskSet
+      ? [
+          {
+            name: taskSet.name,
+            time: taskSet.timeLimits,
+            languages: taskSet.language,
+            description: taskSet.description,
+          },
+          ...taskSet.progTasks,
+          ...taskSet.testTasks,
+        ]
+      : [{ name: '', time: 0, languages: [], description: '' }]
   )
 
   const validateAddTask = () => {
@@ -63,6 +74,18 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
     }
   }
 
+  const checkTaskSet = useMemo(() => {
+    const haveEditableCard = createdTask.some((el) => el === null)
+    const startSlide = createdTask[0]
+    const isFeildStartSlide = startSlide && startSlide.name !== ''
+
+    if (haveEditableCard || !isFeildStartSlide) {
+      return false
+    } else {
+      return true
+    }
+  }, [createdTask])
+
   const taskSetList = useMemo(() => {
     if (currentTask > createdTask.length) {
       if (!validateAddTask()) {
@@ -76,7 +99,7 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
   const changeTaskSelect = (elem: ProgTask | TestTask, index: number) => {
     const newCreated = createdTask
     newCreated[index] = elem
-    setCreatedTask(newCreated)
+    setCreatedTask([...newCreated])
     if (createdTask[createdTask.length - 1] !== null) {
       setIsEditableCard(false)
     }
@@ -85,12 +108,11 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
   const handleDeleteTask = (index: number) => {
     const newCreated: TypeTaskInEdit[] = []
     createdTask.forEach((task, i) => {
-      if (i < index) {
-        newCreated[i] = task
-      } else if (i > index) {
-        newCreated[i - 1] = task
+      if (i !== index) {
+        newCreated.push(task)
       }
     })
+    if (currentTask > newCreated.length) setCurrentTask(newCreated.length)
     setCreatedTask(newCreated)
   }
 
@@ -124,7 +146,7 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
     const progTasks: ProgTask[] = []
     const testTasks: TestTask[] = []
 
-    createdTask.forEach(task => {
+    createdTask.forEach((task) => {
       if (task && 'complexityAssessment' in task) {
         progTasks.push(task)
       } else if (task && 'questions' in task) {
@@ -140,7 +162,7 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
         progTasks: progTasks,
         testTasks: testTasks,
         language: (createdTask[0]! as CommonTask).languages,
-        timeLimits: (createdTask[0]! as CommonTask).time
+        timeLimits: (createdTask[0]! as CommonTask).time,
       }
     } else {
       return {
@@ -148,10 +170,10 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
         description: (createdTask[0]! as CommonTask).description,
         progTasks: progTasks,
         testTasks: testTasks,
-        creator: 'Кто-то',   // FIXME: откуда достать создателя?
+        creator: userData?.name + ' ' + userData?.surname, // FIXME: откуда достать создателя?
         language: (createdTask[0]! as CommonTask).languages,
         timeLimits: (createdTask[0]! as CommonTask).time,
-        timeOfCreation: Date.now()
+        timeOfCreation: Date.now(),
       }
     }
   }
@@ -161,7 +183,7 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
     if (taskSet !== null) {
       const response = await fetch('api/update', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(ts),
       })
       if (response.status === 200) {
@@ -172,7 +194,7 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
     } else {
       const response = await fetch('api/add', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(ts),
       })
       if (response.status === 200) {
@@ -191,8 +213,9 @@ export const MainEditTaskSet: React.FC<MainEditTaskSetProps> = (props) => {
         currentTask={currentTask}
         isEditableCard={isEditableCard}
         saveEdit={handleSaveEdit}
+        checkTaskSet={checkTaskSet}
       ></NavbarEditTaskSet>
-      <div style={{marginTop: 30}}>
+      <div style={{ marginTop: 20 }}>
         <Button size={SizeButton.XL} onClick={closeModal}>
           {'Вернуться в меню Task Set'}
         </Button>

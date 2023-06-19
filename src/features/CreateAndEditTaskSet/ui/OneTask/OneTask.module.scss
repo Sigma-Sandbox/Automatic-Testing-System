@@ -6,11 +6,13 @@
   height: 170px;
   display: flex;
   column-gap: 5px;
+  font-size: smaller;
+  line-height: normal;
   //   align-items: center;
 }
 
 .side {
-  flex-basis: 50%;
+  flex-basis: 35%;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -22,14 +24,22 @@
 }
 
 .name {
+  margin-bottom: 5px;
 }
 .descipt {
+  line-height: normal;
 }
 
 .sideQuest {
   overflow-y: auto;
 }
+.taskDescript {
+  line-height: 1.15rem;
+}
 .questions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 .question {
 }

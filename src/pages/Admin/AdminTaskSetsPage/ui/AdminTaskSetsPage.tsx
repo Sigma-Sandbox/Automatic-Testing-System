@@ -27,6 +27,7 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
   const taskSetsListInit = useSelector(getTaskSets)
   const taskSetsLoader = useSelector((state: StateSchema) => state.taskSets.isLoading)
   const [taskSetsList, setTaskSetsList] = useState<TaskSet[]>([])
+  const [searchTaskSet, setSearchTaskSet] = useState<string>('')
   const userAuthData = useSelector(getUserAuthData)
   const [createAndEdit, setCreateAndEdit] = useState<{
     status: cardEditStatus
@@ -75,21 +76,34 @@ export const AdminTaskSetsPage: React.FC<AdminTaskSetsPageProps> = (props) => {
   }
 
   const taskSetsListMemo = useMemo(() => {
-    return taskSetsList.map((taskSet) => (
-      <TaskSetCard
-        key={taskSet.id}
-        className={cls.taskSet}
-        taskSet={taskSet}
-        startEdit={startEditTaskSet}
-        afterDelete={setTaskSets}
-      />
-    ))
-  }, [taskSetsList])
+    if (searchTaskSet === '') {
+      return taskSetsList.map((taskSet) => (
+        <TaskSetCard
+          key={taskSet.id}
+          className={cls.taskSet}
+          taskSet={taskSet}
+          startEdit={startEditTaskSet}
+          afterDelete={setTaskSets}
+        />
+      ))
+    } else {
+      const filterTaskSet = taskSetsList.filter((el) => el.name.includes(searchTaskSet))
+      return filterTaskSet.map((taskSet) => (
+        <TaskSetCard
+          key={taskSet.id}
+          className={cls.taskSet}
+          taskSet={taskSet}
+          startEdit={startEditTaskSet}
+          afterDelete={setTaskSets}
+        />
+      ))
+    }
+  }, [taskSetsList, searchTaskSet])
 
   return (
     <div className={classNames(cls.adminTaskSetsPage, {}, [className])}>
       <div className={cls.headerTab}>
-        <SearchField value="" onChange={(text) => console.log(text)}></SearchField>
+        <SearchField value={searchTaskSet} onChange={(text) => setSearchTaskSet(text)}></SearchField>
         <Button className={cls.addTaskSets} size={SizeButton.L} onClick={startCreateTaskSet} style={{ gap: 5 }}>
           Добавить набор заданий
           <img src={plusImg} className={cls.plus} alt="plus" />

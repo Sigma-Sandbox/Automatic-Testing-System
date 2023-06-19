@@ -18,7 +18,7 @@ interface EditTaskSlideProps {
 }
 
 export const EditTaskSlide: React.FC<EditTaskSlideProps> = (props) => {
-  const {className = '', task, progTaskListInit, testTaskListInit, changeTaskSelect, index, handleDeleteTask} = props
+  const { className = '', task, progTaskListInit, testTaskListInit, changeTaskSelect, index, handleDeleteTask } = props
 
   const [progTaskList, setProgTaskList] = useState<ProgTask[]>(progTaskListInit)
   const [testTaskList, setTestTaskList] = useState<TestTask[]>(testTaskListInit)
@@ -32,46 +32,87 @@ export const EditTaskSlide: React.FC<EditTaskSlideProps> = (props) => {
 
   const progTaskListMemo = useMemo(() => {
     // TODO FILTER
-    return progTaskList.map((prog) => {
-      return (
-        <OneTask
-          task={prog}
-          select={select && 'conditions' in select && select.id === prog.id}
-          index={index}
-          changeTaskSelect={changeTaskSelect}
-          handleBorder={setSelect}
-        />
+    if (searchProg === '') {
+      return progTaskList.map((prog) => {
+        return (
+          <OneTask
+            task={prog}
+            select={select && 'conditions' in select && select.id === prog.id}
+            index={index}
+            changeTaskSelect={changeTaskSelect}
+            handleBorder={setSelect}
+          />
+        )
+      })
+    } else {
+      const filterprogTaskList = progTaskList.filter(
+        (el) => el.name.includes(searchProg) || el.description.includes(searchProg)
       )
-    })
+      return filterprogTaskList.map((prog) => {
+        return (
+          <OneTask
+            task={prog}
+            select={select && 'conditions' in select && select.id === prog.id}
+            index={index}
+            changeTaskSelect={changeTaskSelect}
+            handleBorder={setSelect}
+          />
+        )
+      })
+    }
   }, [searchProg, progTaskListInit, select])
 
   const testTaskListMemo = useMemo(() => {
     // TODO FILTER
-    return testTaskList.map((test) => (
-      <OneTask
-        task={test}
-        index={index}
-        select={select && 'questions' in select && select.id === test.id}
-        changeTaskSelect={changeTaskSelect}
-        handleBorder={setSelect}
-      />
-    ))
+    if (searchTest === '') {
+      return testTaskList.map((test) => (
+        <OneTask
+          task={test}
+          index={index}
+          select={select && 'questions' in select && select.id === test.id}
+          changeTaskSelect={changeTaskSelect}
+          handleBorder={setSelect}
+        />
+      ))
+    } else {
+      const filterTestTaskList = testTaskList.filter(
+        (el) =>
+          el.description.includes(searchTest) ||
+          el.name.includes(searchTest) ||
+          el.questions.find(
+            (q) =>
+              q.description.includes(searchTest) ||
+              q.correctAnswers.join(' ').includes(searchTest) ||
+              q.wrongAnswers.join(' ').includes(searchTest)
+          )
+      )
+
+      return filterTestTaskList.map((test) => (
+        <OneTask
+          task={test}
+          index={index}
+          select={select && 'questions' in select && select.id === test.id}
+          changeTaskSelect={changeTaskSelect}
+          handleBorder={setSelect}
+        />
+      ))
+    }
   }, [searchTest, testTaskListInit, select])
 
   return (
     <div className={cls.container}>
       <div className={classNames(cls.editTaskSlide, {}, [className])}>
-        <div className={classNames(cls.sideList, {}, [cls.testTask])}>
+        <div className={classNames(cls.sideList, {}, [cls.testTask, 'custom_scroll'])}>
           <SearchField value={searchTest} onChange={(text) => setSearchTest(text)} />
           {testTaskListMemo}
         </div>
 
-        <div className={classNames(cls.sideList, {}, [cls.progTask])}>
+        <div className={classNames(cls.sideList, {}, [cls.progTask, 'custom_scroll'])}>
           <SearchField value={searchProg} onChange={(text) => setSearchProg(text)} />
           {progTaskListMemo}
         </div>
       </div>
-      <div style={{display: 'flex', justifyContent: 'center', marginTop: 30}}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
         <Button
           size={SizeButton.XL}
           theme={ThemeButton.CLEAR}

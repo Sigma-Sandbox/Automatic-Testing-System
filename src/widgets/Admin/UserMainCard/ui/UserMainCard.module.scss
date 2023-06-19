@@ -67,6 +67,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.email img {
+  width: 28px;
+}
+
+.email a {
+  display: flex;
+}
 .userMainCard:hover .email {
   // margin-bottom: 15px;
 }
@@ -75,6 +82,11 @@
   transition: all 0.3s ease;
   // bottom: 1px;
   // left: 0px;
+}
+.deleteCard {
+  height: 24px;
+  padding: 4px;
+  border-radius: 50%;
 }
 .links {
   position: absolute;

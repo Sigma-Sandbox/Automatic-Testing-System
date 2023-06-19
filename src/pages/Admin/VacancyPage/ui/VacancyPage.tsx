@@ -26,6 +26,7 @@ export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
   const vacanciesListInit = useSelector(getVacancies)
   const vacanciesListLoader = useSelector((state: StateSchema) => state.vacancies.isLoading)
   const check = useSelector((state: StateSchema) => state)
+  const [searchVac, setSearchVac] = useState<string>('')
   const [checkAuthLocalStorage, clearAuthData] = useAuthLocalStrorage()
 
   const [vacanciesList, setVacanciesList] = useState<Vacancy[]>([])
@@ -70,21 +71,34 @@ export const VacancyPage: React.FC<VacancyPageProps> = (props) => {
   }
 
   const vacanciesListMemo = useMemo(() => {
-    return vacanciesList.map((vacancy) => (
-      <VacancyCard
-        key={vacancy.id}
-        className={cls.vacancy}
-        vacancy={vacancy}
-        startEdit={startEditVacancy}
-        afterDelete={setVacancies}
-      />
-    ))
-  }, [vacanciesList])
+    if (searchVac === '') {
+      return vacanciesList.map((vacancy) => (
+        <VacancyCard
+          key={vacancy.id}
+          className={cls.vacancy}
+          vacancy={vacancy}
+          startEdit={startEditVacancy}
+          afterDelete={setVacancies}
+        />
+      ))
+    } else {
+      const filterVacList = vacanciesList.filter((el) => el.name.includes(searchVac))
+      return filterVacList.map((vacancy) => (
+        <VacancyCard
+          key={vacancy.id}
+          className={cls.vacancy}
+          vacancy={vacancy}
+          startEdit={startEditVacancy}
+          afterDelete={setVacancies}
+        />
+      ))
+    }
+  }, [vacanciesList, searchVac])
 
   return (
     <div className={classNames(cls.vacancyPage, {}, [className])}>
       <div className={cls.headerTab}>
-        <SearchField value="" onChange={(text) => console.log(text)}></SearchField>
+        <SearchField value={searchVac} onChange={(text) => setSearchVac(text)}></SearchField>
         <Button
           className={classNames(cls.addVacancy)}
           size={SizeButton.L}

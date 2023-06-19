@@ -12,3 +12,5 @@ export const getApplicantPath = serverPath + 'api/get/applicant'
 export const updateEntitiePath = serverPath + 'api/update'
 
 export const addEntitiePath = serverPath + 'api/add'
+
+export const deleteUserPath = serverPath + 'api/delete/user'

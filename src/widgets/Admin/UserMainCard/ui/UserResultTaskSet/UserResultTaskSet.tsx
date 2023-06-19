@@ -71,8 +71,14 @@ export const UserResultTaskSet: React.FC<UserResultTaskSetProps> = (props) => {
     return <div className={classNames(cls.userResultTaskSet, {}, [className, cls.gradient])}></div>
   }
 
+  const show = () => {
+    console.log(taskSet, decisions)
+  }
   return (
-    <div className={classNames(cls.userResultTaskSet, { [cls.gray]: decisions.length === 0 }, [className])}>
+    <div
+      onClick={show}
+      className={classNames(cls.userResultTaskSet, { [cls.gray]: decisions.length === 0 }, [className])}
+    >
       <span className={cls.taskSetName}>
         {taskSet?.name}
         {nymOfTry > 1 ? ' (#' + nymOfTry + ')' : ''}
